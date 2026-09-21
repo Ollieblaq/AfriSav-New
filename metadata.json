@@ -1,0 +1,6 @@
+{
+  "name": "AfriSav",
+  "description": "AfriSav - Nigeria's food savings and local food marketplace platform with smart wallet, bulk buying circles, and Mama Basket AI assistant.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
