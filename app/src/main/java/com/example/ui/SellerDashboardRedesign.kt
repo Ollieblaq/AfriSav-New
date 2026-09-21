@@ -26,12 +26,14 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.data.*
+import com.example.ui.components.*
 import com.example.ui.theme.*
 import java.io.File
 import java.io.FileOutputStream
@@ -61,7 +63,7 @@ fun SellerDashboardScreen(
     val reviews by viewModel.allReviews.collectAsStateWithLifecycle()
     val myReviews = reviews.filter { it.targetName.equals(sellerName, ignoreCase = true) && it.isTargetSeller }
     val escrowOrdersForSeller by viewModel.escrowOrdersForSeller.collectAsStateWithLifecycle()
-    
+
     val pendingEscrowBalance = escrowOrdersForSeller.filter { it.status == "PENDING" }.sumOf { it.amount }
 
     val earnings = sellerEarningState ?: SellerEarningState(
@@ -118,6 +120,10 @@ fun SellerDashboardScreen(
     var withdrawAccountStr by remember { mutableStateOf("") }
     var withdrawErrorText by remember { mutableStateOf("") }
     var showSellerWithdrawConfirmDialog by remember { mutableStateOf(false) }
+    var showWithdrawalCelebrationDialog by remember { mutableStateOf(false) }
+    var lastWithdrawalAmount by remember { mutableStateOf(0.0) }
+    var lastWithdrawalAccount by remember { mutableStateOf("") }
+    var lastWithdrawalBank by remember { mutableStateOf("") }
     val banks = listOf("Opay", "Access Bank", "GTBank", "Zenith Bank", "Moniepoint", "Kuda")
 
     // Form states for Reviewing Buyers
@@ -132,78 +138,107 @@ fun SellerDashboardScreen(
     var listingsSubTab by remember { mutableStateOf("listings") }
 
     Scaffold(
-        contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0, 0, 0, 0),
+        containerColor = WarmCream,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
-            NavigationBar(
-                containerColor = SurfaceBg,
-                tonalElevation = 0.dp,
-                modifier = Modifier.navigationBarsPadding()
-            ) {
-                NavigationBarItem(
-                    selected = selectedTab == 0,
-                    onClick = { selectedTab = 0 },
-                    icon = { Icon(Icons.Default.Storefront, contentDescription = "My Listings") },
-                    label = { Text("My Listings", fontSize = 10.sp, fontWeight = FontWeight.Bold) },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = PrimaryGreen,
-                        selectedTextColor = PrimaryGreen,
-                        unselectedIconColor = TextSlate400,
-                        unselectedTextColor = TextSlate400,
-                        indicatorColor = PrimaryGreen.copy(alpha = 0.12f)
+            Column {
+                Divider(color = CardBorderLight, thickness = 1.dp)
+                NavigationBar(
+                    containerColor = SurfaceWhite,
+                    tonalElevation = 0.dp,
+                    modifier = Modifier.navigationBarsPadding()
+                ) {
+                    NavigationBarItem(
+                        selected = selectedTab == 0,
+                        onClick = { selectedTab = 0 },
+                        icon = { Icon(Icons.Default.Storefront, contentDescription = "My Listings") },
+                        label = {
+                            Text(
+                                text = "Listings",
+                                style = AppTypography.label.copy(fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+                            )
+                        },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = SavPurple,
+                            selectedTextColor = SavPurple,
+                            unselectedIconColor = CharcoalMuted,
+                            unselectedTextColor = CharcoalMuted,
+                            indicatorColor = Purple100
+                        )
                     )
-                )
-                NavigationBarItem(
-                    selected = selectedTab == 1,
-                    onClick = { selectedTab = 1 },
-                    icon = { Icon(Icons.Default.AccountBalanceWallet, contentDescription = "Earnings") },
-                    label = { Text("Earnings", fontSize = 10.sp, fontWeight = FontWeight.Bold) },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = PrimaryGreen,
-                        selectedTextColor = PrimaryGreen,
-                        unselectedIconColor = TextSlate400,
-                        unselectedTextColor = TextSlate400,
-                        indicatorColor = PrimaryGreen.copy(alpha = 0.12f)
+                    NavigationBarItem(
+                        selected = selectedTab == 1,
+                        onClick = { selectedTab = 1 },
+                        icon = { Icon(Icons.Default.AccountBalanceWallet, contentDescription = "Earnings") },
+                        label = {
+                            Text(
+                                text = "Earnings",
+                                style = AppTypography.label.copy(fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+                            )
+                        },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = SavPurple,
+                            selectedTextColor = SavPurple,
+                            unselectedIconColor = CharcoalMuted,
+                            unselectedTextColor = CharcoalMuted,
+                            indicatorColor = Purple100
+                        )
                     )
-                )
-                NavigationBarItem(
-                    selected = selectedTab == 2,
-                    onClick = { selectedTab = 2 },
-                    icon = { Icon(Icons.Default.BarChart, contentDescription = "Analytics") },
-                    label = { Text("Analytics", fontSize = 10.sp, fontWeight = FontWeight.Bold) },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = PrimaryGreen,
-                        selectedTextColor = PrimaryGreen,
-                        unselectedIconColor = TextSlate400,
-                        unselectedTextColor = TextSlate400,
-                        indicatorColor = PrimaryGreen.copy(alpha = 0.12f)
+                    NavigationBarItem(
+                        selected = selectedTab == 2,
+                        onClick = { selectedTab = 2 },
+                        icon = { Icon(Icons.Default.BarChart, contentDescription = "Analytics") },
+                        label = {
+                            Text(
+                                text = "Analytics",
+                                style = AppTypography.label.copy(fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+                            )
+                        },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = SavPurple,
+                            selectedTextColor = SavPurple,
+                            unselectedIconColor = CharcoalMuted,
+                            unselectedTextColor = CharcoalMuted,
+                            indicatorColor = Purple100
+                        )
                     )
-                )
-                NavigationBarItem(
-                    selected = selectedTab == 3,
-                    onClick = { selectedTab = 3 },
-                    icon = { Icon(Icons.Default.RateReview, contentDescription = "Reviews") },
-                    label = { Text("Reviews", fontSize = 10.sp, fontWeight = FontWeight.Bold) },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = PrimaryGreen,
-                        selectedTextColor = PrimaryGreen,
-                        unselectedIconColor = TextSlate400,
-                        unselectedTextColor = TextSlate400,
-                        indicatorColor = PrimaryGreen.copy(alpha = 0.12f)
+                    NavigationBarItem(
+                        selected = selectedTab == 3,
+                        onClick = { selectedTab = 3 },
+                        icon = { Icon(Icons.Default.RateReview, contentDescription = "Reviews") },
+                        label = {
+                            Text(
+                                text = "Reviews",
+                                style = AppTypography.label.copy(fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+                            )
+                        },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = SavPurple,
+                            selectedTextColor = SavPurple,
+                            unselectedIconColor = CharcoalMuted,
+                            unselectedTextColor = CharcoalMuted,
+                            indicatorColor = Purple100
+                        )
                     )
-                )
-                NavigationBarItem(
-                    selected = selectedTab == 4,
-                    onClick = { selectedTab = 4 },
-                    icon = { Icon(Icons.Default.Person, contentDescription = "Profile") },
-                    label = { Text("Profile", fontSize = 10.sp, fontWeight = FontWeight.Bold) },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = PrimaryGreen,
-                        selectedTextColor = PrimaryGreen,
-                        unselectedIconColor = TextSlate400,
-                        unselectedTextColor = TextSlate400,
-                        indicatorColor = PrimaryGreen.copy(alpha = 0.12f)
+                    NavigationBarItem(
+                        selected = selectedTab == 4,
+                        onClick = { selectedTab = 4 },
+                        icon = { Icon(Icons.Default.Person, contentDescription = "Profile") },
+                        label = {
+                            Text(
+                                text = "Profile",
+                                style = AppTypography.label.copy(fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+                            )
+                        },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = SavPurple,
+                            selectedTextColor = SavPurple,
+                            unselectedIconColor = CharcoalMuted,
+                            unselectedTextColor = CharcoalMuted,
+                            indicatorColor = Purple100
+                        )
                     )
-                )
+                }
             }
         }
     ) { innerPadding ->
@@ -211,124 +246,139 @@ fun SellerDashboardScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(BgSlate50)
+                .background(WarmCream)
         ) {
-            // Seller Header
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(PrimaryGreen)
-                    .statusBarsPadding()
-                    .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 14.dp)
+            // Standardized AfriSav Merchant Header (White on Warm Cream system)
+            Surface(
+                color = SurfaceWhite,
+                border = BorderStroke(1.dp, CardBorderLight),
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .statusBarsPadding()
+                        .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 12.dp)
                 ) {
                     Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(8.dp))
-                            .clickable { selectedTab = 4 } // Tapping avatar navigates directly to Profile screen
-                            .testTag("seller_avatar_profile_btn")
-                            .padding(4.dp)
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Box(
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
-                                .size(40.dp)
-                                .clip(CircleShape)
-                                .border(1.dp, Color.White.copy(alpha = 0.4f), CircleShape)
+                                .clip(RoundedCornerShape(8.dp))
+                                .clickable { selectedTab = 4 } // Tapping avatar navigates directly to Profile
+                                .testTag("seller_avatar_profile_btn")
+                                .padding(4.dp)
                         ) {
-                            ProfileAvatar(
-                                imageUrl = null,
-                                role = "seller",
-                                modifier = Modifier.fillMaxSize()
-                            )
+                            Box(
+                                modifier = Modifier
+                                    .size(42.dp)
+                                    .clip(CircleShape)
+                                    .border(1.5.dp, SavPurple, CircleShape)
+                            ) {
+                                ProfileAvatar(
+                                    imageUrl = null,
+                                    role = "seller",
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Column {
+                                Text(
+                                    text = sellerName,
+                                    style = AppTypography.bodyMedium.copy(
+                                        fontFamily = SoraFontFamily,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Charcoal
+                                    )
+                                )
+                                Text(
+                                    text = "Merchant • $sellerPhone",
+                                    style = AppTypography.caption.copy(color = CharcoalSecondary)
+                                )
+                            }
                         }
-                        Spacer(modifier = Modifier.width(10.dp))
-                        Column {
-                            Text(
-                                text = sellerName,
-                                fontSize = 15.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
-                            )
-                            Text(
-                                text = "Merchant • $sellerPhone",
-                                fontSize = 10.sp,
-                                color = Color.White.copy(alpha = 0.8f)
-                            )
-                        }
-                    }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        val isDarkMode by viewModel.isDarkMode.collectAsStateWithLifecycle()
-                        ThemeToggle(
-                            isDarkMode = isDarkMode,
-                            onToggle = { viewModel.toggleDarkMode() }
-                        )
-                        IconButton(
-                            onClick = onLogoutClick,
-                            modifier = Modifier.background(Color.White.copy(alpha = 0.15f), CircleShape)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.Logout,
-                                contentDescription = "Logout",
-                                tint = Color.White
+                            val isDarkMode by viewModel.isDarkMode.collectAsStateWithLifecycle()
+                            ThemeToggle(
+                                isDarkMode = isDarkMode,
+                                onToggle = { viewModel.toggleDarkMode() }
                             )
+                            IconButton(
+                                onClick = onLogoutClick,
+                                modifier = Modifier
+                                    .background(Purple50, CircleShape)
+                                    .border(1.dp, CardBorderLight, CircleShape)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.Logout,
+                                    contentDescription = "Logout",
+                                    tint = SavPurple
+                                )
+                            }
                         }
                     }
                 }
             }
 
-            // Screen Content Router
+            // Screen Content Router (Each screen strictly adheres to White on Warm Cream surface rules)
             when (selectedTab) {
                 0 -> {
-                    // --- MY LISTINGS TAB ---
+                    // =========================================================================
+                    // --- SCREEN 0: MY PRODUCTS / LISTINGS TAB ---
+                    // Surface: White on Warm Cream, Sav Purple actions
+                    // =========================================================================
                     Column(modifier = Modifier.fillMaxSize()) {
+                        // Sub-Tab Switcher
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp, vertical = 12.dp)
-                                .background(Color.White, RoundedCornerShape(12.dp))
+                                .background(SurfaceWhite, RoundedCornerShape(12.dp))
+                                .border(1.dp, CardBorderLight, RoundedCornerShape(12.dp))
                                 .padding(4.dp),
                             horizontalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
                             Box(
                                 modifier = Modifier
                                     .weight(1f)
-                                    .height(38.dp)
+                                    .height(40.dp)
                                     .clip(RoundedCornerShape(8.dp))
-                                    .background(if (listingsSubTab == "listings") PrimaryGreen else Color.Transparent)
+                                    .background(if (listingsSubTab == "listings") SavPurple else Color.Transparent)
                                     .clickable { listingsSubTab = "listings" }
                                     .testTag("seller_tab_listings_list"),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = "My Inventory (${sellerItems.size})",
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = if (listingsSubTab == "listings") Color.White else TextSlate500
+                                    text = "My inventory (${sellerItems.size})",
+                                    style = AppTypography.button.copy(
+                                        fontSize = 12.sp,
+                                        color = if (listingsSubTab == "listings") Color.White else CharcoalSecondary
+                                    )
                                 )
                             }
                             Box(
                                 modifier = Modifier
                                     .weight(1f)
-                                    .height(38.dp)
+                                    .height(40.dp)
                                     .clip(RoundedCornerShape(8.dp))
-                                    .background(if (listingsSubTab == "add") PrimaryGreen else Color.Transparent)
+                                    .background(if (listingsSubTab == "add") SavPurple else Color.Transparent)
                                     .clickable { listingsSubTab = "add" }
                                     .testTag("seller_tab_listings_add"),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = "➕ Add Product",
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = if (listingsSubTab == "add") Color.White else TextSlate500
+                                    text = "+ Add product",
+                                    style = AppTypography.button.copy(
+                                        fontSize = 12.sp,
+                                        color = if (listingsSubTab == "add") Color.White else CharcoalSecondary
+                                    )
                                 )
                             }
                         }
@@ -342,10 +392,11 @@ fun SellerDashboardScreen(
                                     contentAlignment = Alignment.Center
                                 ) {
                                     EmptyStateCard(
-                                        message = "Your Store is Empty",
+                                        message = "Your store is empty",
                                         subMessage = "Get started by adding high-quality local foodstuffs to your Soko digital storefront.",
                                         icon = Icons.Default.Storefront,
-                                        iconColor = PrimaryGreen
+                                        iconColor = SavPurple,
+                                        ground = SurfaceGround.LIGHT
                                     )
                                 }
                             } else {
@@ -358,29 +409,27 @@ fun SellerDashboardScreen(
                                     item {
                                         Text(
                                             text = "Active Listed Products",
-                                            fontSize = 14.sp,
-                                            fontWeight = FontWeight.Bold,
-                                            color = TextSlate800,
+                                            style = AppTypography.h3.copy(color = Charcoal),
                                             modifier = Modifier.padding(vertical = 4.dp)
                                         )
                                     }
                                     items(sellerItems) { item ->
                                         Card(
-                                            colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-                                            shape = RoundedCornerShape(16.dp),
-                                            border = BorderStroke(1.dp, BorderSlate100)
+                                            colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                            shape = AppShapes.card,
+                                            border = BorderStroke(1.dp, CardBorderLight)
                                         ) {
                                             Row(
                                                 modifier = Modifier
                                                     .fillMaxWidth()
-                                                    .padding(12.dp),
+                                                    .padding(16.dp),
                                                 verticalAlignment = Alignment.CenterVertically
                                             ) {
                                                 Box(
                                                     modifier = Modifier
-                                                        .size(50.dp)
+                                                        .size(52.dp)
                                                         .clip(RoundedCornerShape(12.dp))
-                                                        .background(PrimaryGreen.copy(alpha = 0.08f)),
+                                                        .background(Purple50),
                                                     contentAlignment = Alignment.Center
                                                 ) {
                                                     FoodItemImage(
@@ -394,44 +443,41 @@ fun SellerDashboardScreen(
                                                 Column(modifier = Modifier.weight(1f)) {
                                                     Text(
                                                         text = item.name,
-                                                        fontWeight = FontWeight.Bold,
-                                                        fontSize = 14.sp,
-                                                        color = TextSlate800
+                                                        style = AppTypography.bodyLarge.copy(
+                                                            fontWeight = FontWeight.Bold,
+                                                            color = Charcoal
+                                                        )
                                                     )
-                                                    Spacer(modifier = Modifier.height(2.dp))
+                                                    Spacer(modifier = Modifier.height(4.dp))
                                                     Row(
                                                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                                                         verticalAlignment = Alignment.CenterVertically
                                                     ) {
-                                                        Box(
-                                                            modifier = Modifier
-                                                                .background(PrimaryGreen.copy(alpha = 0.1f), RoundedCornerShape(4.dp))
-                                                                .padding(horizontal = 6.dp, vertical = 2.dp)
-                                                        ) {
-                                                            Text(item.category, fontSize = 9.sp, fontWeight = FontWeight.Bold, color = PrimaryGreen)
-                                                        }
-                                                        Box(
-                                                            modifier = Modifier
-                                                                .background(SecondaryOrange.copy(alpha = 0.1f), RoundedCornerShape(4.dp))
-                                                                .padding(horizontal = 6.dp, vertical = 2.dp)
-                                                        ) {
-                                                            Text("From ${item.state}", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = SecondaryOrange)
-                                                        }
+                                                        AfriSavBadge(
+                                                            text = item.category,
+                                                            type = AfriSavBadgeType.INFO,
+                                                            ground = SurfaceGround.LIGHT
+                                                        )
+                                                        AfriSavBadge(
+                                                            text = "From ${item.state}",
+                                                            type = AfriSavBadgeType.NEUTRAL,
+                                                            ground = SurfaceGround.LIGHT
+                                                        )
                                                     }
                                                     if (item.allowPortions) {
                                                         Text(
                                                             text = "Portions setup: ${item.portionType}",
-                                                            fontSize = 11.sp,
-                                                            color = TextSlate400,
+                                                            style = AppTypography.caption.copy(color = CharcoalMuted),
                                                             modifier = Modifier.padding(top = 4.dp)
                                                         )
                                                     }
                                                 }
                                                 Text(
-                                                    text = "₦${String.format("%,.0f", item.price)}",
-                                                    fontWeight = FontWeight.Black,
-                                                    fontSize = 16.sp,
-                                                    color = PrimaryGreen
+                                                    text = AppFormatters.formatNaira(item.price),
+                                                    style = AppTypography.figure.copy(
+                                                        fontSize = 17.sp,
+                                                        color = SavPurple
+                                                    )
                                                 )
                                             }
                                         }
@@ -439,6 +485,7 @@ fun SellerDashboardScreen(
                                 }
                             }
                         } else {
+                            // Sub-View: Add Product
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize()
@@ -447,118 +494,137 @@ fun SellerDashboardScreen(
                                 verticalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
                                 Card(
-                                    colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-                                    shape = RoundedCornerShape(16.dp),
-                                    border = BorderStroke(1.dp, BorderSlate100)
+                                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                    shape = AppShapes.card,
+                                    border = BorderStroke(1.dp, CardBorderLight)
                                 ) {
-                                    Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                                        Text("NEW LISTING DETAILS", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = TextSlate400, letterSpacing = 1.sp)
-                                        
-                                        OutlinedTextField(
+                                    Column(
+                                        modifier = Modifier.padding(18.dp),
+                                        verticalArrangement = Arrangement.spacedBy(14.dp)
+                                    ) {
+                                        Text(
+                                            text = "NEW LISTING DETAILS",
+                                            style = AppTypography.label.copy(color = CharcoalMuted, letterSpacing = 1.sp)
+                                        )
+
+                                        SellerInputField(
                                             value = foodName,
                                             onValueChange = { foodName = it },
-                                            label = { Text("Foodstuff Name") },
-                                            placeholder = { Text("e.g. Clean White Garri (1 Bag)") },
+                                            label = "Foodstuff Name",
+                                            placeholder = "e.g. Clean White Garri (1 Bag)",
                                             singleLine = true,
-                                            modifier = Modifier.fillMaxWidth().testTag("seller_add_item_name"),
-                                            colors = defaultTextFieldColors(),
-                                            shape = RoundedCornerShape(10.dp)
+                                            modifier = Modifier.testTag("seller_add_item_name")
                                         )
 
-                                        OutlinedTextField(
+                                        SellerInputField(
                                             value = priceStr,
                                             onValueChange = { priceStr = it },
-                                            label = { Text("Price (₦)") },
-                                            placeholder = { Text("e.g. 24000") },
+                                            label = "Price (₦)",
+                                            placeholder = "e.g. 24000",
                                             singleLine = true,
                                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                            modifier = Modifier.fillMaxWidth().testTag("seller_add_item_price"),
-                                            colors = defaultTextFieldColors(),
-                                            shape = RoundedCornerShape(10.dp)
+                                            modifier = Modifier.testTag("seller_add_item_price")
                                         )
 
-                                        Text("Select Foodstuff Category", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = TextSlate500)
-                                        LazyRow(
-                                            horizontalArrangement = Arrangement.spacedBy(6.dp),
-                                            modifier = Modifier.fillMaxWidth()
-                                        ) {
-                                            items(categories) { cat ->
-                                                Box(
-                                                    modifier = Modifier
-                                                        .clip(RoundedCornerShape(8.dp))
-                                                        .background(if (selectedCategory == cat) PrimaryGreen else BgSlate50)
-                                                        .border(1.dp, if (selectedCategory == cat) PrimaryGreen else BorderSlate100, RoundedCornerShape(8.dp))
-                                                        .clickable { selectedCategory = cat }
-                                                        .padding(horizontal = 12.dp, vertical = 6.dp)
-                                                ) {
-                                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                                        Text(getCategoryEmoji(cat), fontSize = 14.sp)
-                                                        Spacer(modifier = Modifier.width(4.dp))
+                                        Column {
+                                            Text(
+                                                text = "Select Foodstuff Category",
+                                                style = AppTypography.label.copy(fontWeight = FontWeight.Bold, color = CharcoalSecondary),
+                                                modifier = Modifier.padding(bottom = 6.dp)
+                                            )
+                                            LazyRow(
+                                                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                                modifier = Modifier.fillMaxWidth()
+                                            ) {
+                                                items(categories) { cat ->
+                                                    val isSelected = selectedCategory == cat
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .clip(RoundedCornerShape(8.dp))
+                                                            .background(if (isSelected) SavPurple else SurfaceWhite)
+                                                            .border(1.dp, if (isSelected) SavPurple else CardBorderLight, RoundedCornerShape(8.dp))
+                                                            .clickable { selectedCategory = cat }
+                                                            .padding(horizontal = 12.dp, vertical = 8.dp)
+                                                    ) {
+                                                        Row(verticalAlignment = Alignment.CenterVertically) {
+                                                            Text(getCategoryEmoji(cat), fontSize = 14.sp)
+                                                            Spacer(modifier = Modifier.width(4.dp))
+                                                            Text(
+                                                                text = cat,
+                                                                style = AppTypography.bodySmall.copy(
+                                                                    fontWeight = FontWeight.SemiBold,
+                                                                    color = if (isSelected) Color.White else CharcoalSecondary
+                                                                )
+                                                            )
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        Column {
+                                            Text(
+                                                text = "Sourcing State Origin",
+                                                style = AppTypography.label.copy(fontWeight = FontWeight.Bold, color = CharcoalSecondary),
+                                                modifier = Modifier.padding(bottom = 6.dp)
+                                            )
+                                            LazyRow(
+                                                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                                modifier = Modifier.fillMaxWidth()
+                                            ) {
+                                                items(states) { st ->
+                                                    val isSelected = selectedState == st
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .clip(RoundedCornerShape(8.dp))
+                                                            .background(if (isSelected) SavPurple else SurfaceWhite)
+                                                            .border(1.dp, if (isSelected) SavPurple else CardBorderLight, RoundedCornerShape(8.dp))
+                                                            .clickable { selectedState = st }
+                                                            .padding(horizontal = 12.dp, vertical = 8.dp)
+                                                    ) {
                                                         Text(
-                                                            text = cat,
-                                                            fontSize = 12.sp,
-                                                            fontWeight = FontWeight.SemiBold,
-                                                            color = if (selectedCategory == cat) Color.White else TextSlate500
+                                                            text = st,
+                                                            style = AppTypography.bodySmall.copy(
+                                                                fontWeight = FontWeight.SemiBold,
+                                                                color = if (isSelected) Color.White else CharcoalSecondary
+                                                            )
                                                         )
                                                     }
                                                 }
                                             }
                                         }
 
-                                        Text("Sourcing State Origin", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = TextSlate500)
-                                        LazyRow(
-                                            horizontalArrangement = Arrangement.spacedBy(6.dp),
-                                            modifier = Modifier.fillMaxWidth()
-                                        ) {
-                                            items(states) { st ->
-                                                Box(
-                                                    modifier = Modifier
-                                                        .clip(RoundedCornerShape(8.dp))
-                                                        .background(if (selectedState == st) SecondaryOrange else BgSlate50)
-                                                        .border(1.dp, if (selectedState == st) SecondaryOrange else BorderSlate100, RoundedCornerShape(8.dp))
-                                                        .clickable { selectedState = st }
-                                                        .padding(horizontal = 12.dp, vertical = 6.dp)
-                                                ) {
-                                                    Text(
-                                                        text = st,
-                                                        fontSize = 12.sp,
-                                                        fontWeight = FontWeight.SemiBold,
-                                                        color = if (selectedState == st) Color.White else TextSlate500
-                                                    )
-                                                }
-                                            }
-                                        }
-
                                         Row(
                                             modifier = Modifier.fillMaxWidth(),
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.SpaceBetween
                                         ) {
                                             Column(modifier = Modifier.weight(1f)) {
-                                                Text("Is this a Food Bundle?", fontWeight = FontWeight.Bold, fontSize = 13.sp, color = TextSlate800)
-                                                Text("Group multiple foodstuffs into one single sale item", fontSize = 11.sp, color = TextSlate400)
+                                                Text("Is this a food bundle?", style = AppTypography.bodyMedium.copy(fontWeight = FontWeight.Bold, color = Charcoal))
+                                                Text("Group multiple foodstuffs into one single sale item", style = AppTypography.caption.copy(color = CharcoalMuted))
                                             }
                                             Spacer(modifier = Modifier.width(8.dp))
                                             Switch(
                                                 checked = isBundle,
                                                 onCheckedChange = { isBundle = it },
-                                                colors = SwitchDefaults.colors(checkedThumbColor = Color.White, checkedTrackColor = PrimaryGreen)
+                                                colors = SwitchDefaults.colors(
+                                                    checkedThumbColor = Color.White,
+                                                    checkedTrackColor = SavPurple,
+                                                    uncheckedTrackColor = BorderSubtle
+                                                )
                                             )
                                         }
 
                                         if (isBundle) {
-                                            OutlinedTextField(
+                                            SellerInputField(
                                                 value = bundleItems,
                                                 onValueChange = { bundleItems = it },
-                                                label = { Text("List items in bundle (comma separated)") },
-                                                placeholder = { Text("e.g. 1 Tub of Yam, 1 Bottle of Palm Oil") },
-                                                modifier = Modifier.fillMaxWidth(),
-                                                colors = defaultTextFieldColors(),
-                                                shape = RoundedCornerShape(10.dp)
+                                                label = "List items in bundle (comma separated)",
+                                                placeholder = "e.g. 1 Tub of Yam, 1 Bottle of Palm Oil"
                                             )
                                         }
 
-                                        Divider(color = BorderSlate100)
+                                        Divider(color = CardBorderLight)
 
                                         Row(
                                             modifier = Modifier.fillMaxWidth(),
@@ -566,40 +632,52 @@ fun SellerDashboardScreen(
                                             horizontalArrangement = Arrangement.SpaceBetween
                                         ) {
                                             Column(modifier = Modifier.weight(1f)) {
-                                                Text("Allow Portion Breakdown?", fontWeight = FontWeight.Bold, fontSize = 13.sp, color = TextSlate800)
-                                                Text("Let buyers buy in portions/smaller units", fontSize = 11.sp, color = TextSlate400)
+                                                Text("Allow portion breakdown?", style = AppTypography.bodyMedium.copy(fontWeight = FontWeight.Bold, color = Charcoal))
+                                                Text("Let buyers buy in portions or smaller units", style = AppTypography.caption.copy(color = CharcoalMuted))
                                             }
                                             Spacer(modifier = Modifier.width(8.dp))
                                             Switch(
                                                 checked = allowPortions,
                                                 onCheckedChange = { allowPortions = it },
-                                                colors = SwitchDefaults.colors(checkedThumbColor = Color.White, checkedTrackColor = PrimaryGreen)
+                                                colors = SwitchDefaults.colors(
+                                                    checkedThumbColor = Color.White,
+                                                    checkedTrackColor = SavPurple,
+                                                    uncheckedTrackColor = BorderSubtle
+                                                )
                                             )
                                         }
 
                                         if (allowPortions) {
-                                            Text("Select Portion Breakdown Type", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = TextSlate500)
-                                            Row(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                            ) {
-                                                listOf("Bag", "Mudu", "Paint Bucket", "Tuber").forEach { pType ->
-                                                    Box(
-                                                        modifier = Modifier
-                                                            .weight(1f)
-                                                            .clip(RoundedCornerShape(8.dp))
-                                                            .background(if (portionType == pType) PrimaryGreen.copy(alpha = 0.1f) else BgSlate50)
-                                                            .border(1.dp, if (portionType == pType) PrimaryGreen else BorderSlate100, RoundedCornerShape(8.dp))
-                                                            .clickable { portionType = pType }
-                                                            .padding(vertical = 8.dp),
-                                                        contentAlignment = Alignment.Center
-                                                    ) {
-                                                        Text(
-                                                            text = pType,
-                                                            fontSize = 11.sp,
-                                                            fontWeight = FontWeight.Bold,
-                                                            color = if (portionType == pType) PrimaryGreen else TextSlate500
-                                                        )
+                                            Column {
+                                                Text(
+                                                    text = "Select Portion Breakdown Type",
+                                                    style = AppTypography.label.copy(fontWeight = FontWeight.Bold, color = CharcoalSecondary),
+                                                    modifier = Modifier.padding(bottom = 6.dp)
+                                                )
+                                                Row(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                                ) {
+                                                    listOf("Bag", "Mudu", "Paint Bucket", "Tuber").forEach { pType ->
+                                                        val isSelected = portionType == pType
+                                                        Box(
+                                                            modifier = Modifier
+                                                                .weight(1f)
+                                                                .clip(RoundedCornerShape(8.dp))
+                                                                .background(if (isSelected) Purple100 else SurfaceWhite)
+                                                                .border(1.dp, if (isSelected) SavPurple else CardBorderLight, RoundedCornerShape(8.dp))
+                                                                .clickable { portionType = pType }
+                                                                .padding(vertical = 10.dp),
+                                                            contentAlignment = Alignment.Center
+                                                        ) {
+                                                            Text(
+                                                                text = pType,
+                                                                style = AppTypography.bodySmall.copy(
+                                                                    fontWeight = FontWeight.Bold,
+                                                                    color = if (isSelected) SavPurple else CharcoalSecondary
+                                                                )
+                                                            )
+                                                        }
                                                     }
                                                 }
                                             }
@@ -608,20 +686,20 @@ fun SellerDashboardScreen(
                                 }
 
                                 Card(
-                                    colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-                                    shape = RoundedCornerShape(16.dp),
-                                    border = BorderStroke(1.dp, BorderSlate100)
+                                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                    shape = AppShapes.card,
+                                    border = BorderStroke(1.dp, CardBorderLight)
                                 ) {
-                                    Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                                        Text("FOODSTUFF IMAGE (OPTIONAL)", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = TextSlate400, letterSpacing = 1.sp)
-                                        
+                                    Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                                        Text("FOODSTUFF IMAGE (OPTIONAL)", style = AppTypography.label.copy(color = CharcoalMuted, letterSpacing = 1.sp))
+
                                         if (attachedImageUri != null) {
                                             Box(
                                                 modifier = Modifier
                                                     .fillMaxWidth()
                                                     .height(140.dp)
                                                     .clip(RoundedCornerShape(12.dp))
-                                                    .background(Color(0xFFF1F5F9))
+                                                    .background(Purple50)
                                             ) {
                                                 AsyncImage(
                                                     model = attachedImageUri,
@@ -646,25 +724,25 @@ fun SellerDashboardScreen(
                                             ) {
                                                 OutlinedButton(
                                                     onClick = { galleryLauncher.launch("image/*") },
-                                                    modifier = Modifier.weight(1f).height(48.dp),
-                                                    colors = ButtonDefaults.outlinedButtonColors(contentColor = PrimaryGreen),
-                                                    border = BorderStroke(1.dp, PrimaryGreen),
-                                                    shape = RoundedCornerShape(8.dp)
+                                                    modifier = Modifier.weight(1f).heightIn(min = 48.dp),
+                                                    colors = ButtonDefaults.outlinedButtonColors(contentColor = SavPurple),
+                                                    border = BorderStroke(1.5.dp, SavPurple),
+                                                    shape = AppShapes.button
                                                 ) {
                                                     Icon(Icons.Default.Photo, contentDescription = null, modifier = Modifier.size(16.dp))
                                                     Spacer(modifier = Modifier.width(6.dp))
-                                                    Text("Gallery", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                                    Text("Gallery", style = AppTypography.button.copy(color = SavPurple))
                                                 }
                                                 OutlinedButton(
                                                     onClick = { cameraLauncher.launch(null) },
-                                                    modifier = Modifier.weight(1f).height(48.dp),
-                                                    colors = ButtonDefaults.outlinedButtonColors(contentColor = PrimaryGreen),
-                                                    border = BorderStroke(1.dp, PrimaryGreen),
-                                                    shape = RoundedCornerShape(8.dp)
+                                                    modifier = Modifier.weight(1f).heightIn(min = 48.dp),
+                                                    colors = ButtonDefaults.outlinedButtonColors(contentColor = SavPurple),
+                                                    border = BorderStroke(1.5.dp, SavPurple),
+                                                    shape = AppShapes.button
                                                 ) {
                                                     Icon(Icons.Default.CameraAlt, contentDescription = null, modifier = Modifier.size(16.dp))
                                                     Spacer(modifier = Modifier.width(6.dp))
-                                                    Text("Camera", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                                    Text("Camera", style = AppTypography.button.copy(color = SavPurple))
                                                 }
                                             }
                                         }
@@ -674,13 +752,14 @@ fun SellerDashboardScreen(
                                 if (errorText.isNotEmpty()) {
                                     Text(
                                         text = errorText,
-                                        color = MaterialTheme.colorScheme.error,
-                                        fontSize = 12.sp,
+                                        color = SemanticErrorLight,
+                                        style = AppTypography.caption.copy(fontWeight = FontWeight.SemiBold),
                                         modifier = Modifier.padding(horizontal = 4.dp)
                                     )
                                 }
 
-                                Button(
+                                AfriSavPrimaryButton(
+                                    text = "Publish to Soko market",
                                     onClick = {
                                         val priceVal = priceStr.toDoubleOrNull()
                                         if (foodName.isBlank()) {
@@ -711,21 +790,21 @@ fun SellerDashboardScreen(
                                             attachedImageUri = null
                                             errorText = ""
                                             listingsSubTab = "listings"
-                                            Toast.makeText(context, "New Listing Published Successfully!", Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(context, "New listing published successfully!", Toast.LENGTH_SHORT).show()
                                         }
                                     },
-                                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryGreen),
-                                    shape = RoundedCornerShape(12.dp),
-                                    modifier = Modifier.fillMaxWidth().height(48.dp).testTag("seller_add_item_btn")
-                                ) {
-                                    Text("Publish to Soko Market", fontWeight = FontWeight.Bold, color = Color.White)
-                                }
+                                    ground = SurfaceGround.LIGHT,
+                                    modifier = Modifier.testTag("seller_add_item_btn")
+                                )
                             }
                         }
                     }
                 }
                 1 -> {
-                    // --- EARNINGS & PAY TAB ---
+                    // =========================================================================
+                    // --- SCREEN 1: EARNINGS & PAY TAB ---
+                    // Surface: White on Warm Cream, Sav Purple actions with White labels
+                    // =========================================================================
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
@@ -737,29 +816,39 @@ fun SellerDashboardScreen(
                             item {
                                 Card(
                                     modifier = Modifier.fillMaxWidth(),
-                                    colors = CardDefaults.cardColors(containerColor = if (sellBal <= 0.0) Color(0xFFFEF2F2) else Color(0xFFFFFBEB)),
-                                    border = BorderStroke(1.dp, if (sellBal <= 0.0) Color(0xFFFEE2E2) else Color(0xFFFEF3C7)),
-                                    shape = RoundedCornerShape(16.dp)
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = if (sellBal <= 0.0) Color(0xFFFEF2F2) else Color(0xFFFFFBEB)
+                                    ),
+                                    border = BorderStroke(
+                                        1.dp,
+                                        if (sellBal <= 0.0) Color(0xFFFEE2E2) else Color(0xFFFEF3C7)
+                                    ),
+                                    shape = AppShapes.card
                                 ) {
-                                    Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                                    Row(
+                                        modifier = Modifier.padding(16.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
                                         Icon(
                                             imageVector = Icons.Default.Warning,
                                             contentDescription = "Warning",
-                                            tint = if (sellBal <= 0.0) Color(0xFFEF4444) else Color(0xFFD97706),
-                                            modifier = Modifier.size(20.dp)
+                                            tint = if (sellBal <= 0.0) SemanticErrorLight else SemanticWarningLight,
+                                            modifier = Modifier.size(22.dp)
                                         )
                                         Spacer(modifier = Modifier.width(12.dp))
                                         Column {
                                             Text(
                                                 text = if (sellBal <= 0.0) "No Earnings Available" else "Low Balance Warning",
-                                                fontWeight = FontWeight.Bold,
-                                                fontSize = 13.sp,
-                                                color = if (sellBal <= 0.0) Color(0xFF991B1B) else Color(0xFF92400E)
+                                                style = AppTypography.bodySmall.copy(
+                                                    fontWeight = FontWeight.Bold,
+                                                    color = if (sellBal <= 0.0) SemanticErrorLight else SemanticWarningLight
+                                                )
                                             )
                                             Text(
                                                 text = if (sellBal <= 0.0) "Once buyers confirm receipt, your escrow funds will be released." else "Your balance is low. Withdrawals require at least ₦1,000.",
-                                                fontSize = 11.sp,
-                                                color = if (sellBal <= 0.0) Color(0xFFB91C1C) else Color(0xFFB45309)
+                                                style = AppTypography.caption.copy(
+                                                    color = if (sellBal <= 0.0) SemanticErrorLight.copy(alpha = 0.9f) else SemanticWarningLight.copy(alpha = 0.9f)
+                                                )
                                             )
                                         }
                                     }
@@ -767,48 +856,67 @@ fun SellerDashboardScreen(
                             }
                         }
 
-                        // Earnings Top Summary Card
+                        // Merchant Coffer Summary Card (White on Warm Cream)
                         item {
                             Card(
-                                colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-                                shape = RoundedCornerShape(20.dp),
-                                border = BorderStroke(1.dp, BorderSlate100)
+                                colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                shape = AppShapes.card,
+                                border = BorderStroke(1.dp, CardBorderLight)
                             ) {
                                 Column(modifier = Modifier.padding(20.dp)) {
-                                    Text("MERCHANT COFFER SUMMARY", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = TextSlate400, letterSpacing = 1.sp)
+                                    Text(
+                                        text = "MERCHANT COFFER SUMMARY",
+                                        style = AppTypography.label.copy(color = CharcoalMuted, letterSpacing = 1.sp)
+                                    )
                                     Spacer(modifier = Modifier.height(16.dp))
-                                    
+
                                     Row(
                                         modifier = Modifier.fillMaxWidth(),
                                         horizontalArrangement = Arrangement.SpaceBetween,
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         Column {
-                                            Text("Available Balance", fontSize = 11.sp, color = TextSlate500)
+                                            Text("Available balance", style = AppTypography.caption.copy(color = CharcoalSecondary))
                                             Text(
-                                                text = "₦${String.format("%,.2f", earnings.availableBalance)}",
-                                                fontSize = 24.sp,
-                                                fontWeight = FontWeight.Black,
-                                                color = PrimaryGreen
+                                                text = AppFormatters.formatNaira(earnings.availableBalance),
+                                                style = AppTypography.figureLarge.copy(
+                                                    fontSize = 26.sp,
+                                                    color = SavPurple
+                                                )
                                             )
                                             Spacer(modifier = Modifier.height(8.dp))
-                                            Text("Escrow Account (Pending Release)", fontSize = 11.sp, color = TextSlate500)
-                                            Text(
-                                                text = "₦${String.format("%,.2f", pendingEscrowBalance)}",
-                                                fontSize = 18.sp,
-                                                fontWeight = FontWeight.Bold,
-                                                color = SecondaryOrange
-                                            )
+                                            Text("Escrow account (pending release)", style = AppTypography.caption.copy(color = CharcoalSecondary))
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                            ) {
+                                                Text(
+                                                    text = AppFormatters.formatNaira(pendingEscrowBalance),
+                                                    style = AppTypography.figureMedium.copy(
+                                                        fontSize = 18.sp,
+                                                        color = Charcoal
+                                                    )
+                                                )
+                                                AfriSavBadge(
+                                                    text = "In escrow",
+                                                    type = AfriSavBadgeType.INFO,
+                                                    ground = SurfaceGround.LIGHT
+                                                )
+                                            }
                                         }
                                         Button(
                                             onClick = { showSellerWithdrawConfirmDialog = true },
-                                            colors = ButtonDefaults.buttonColors(containerColor = SecondaryOrange),
-                                            shape = RoundedCornerShape(10.dp),
+                                            colors = ButtonDefaults.buttonColors(
+                                                containerColor = SavPurple,
+                                                contentColor = Color.White
+                                            ),
+                                            shape = AppShapes.button,
+                                            contentPadding = PaddingValues(horizontal = 14.dp, vertical = 10.dp),
                                             modifier = Modifier.testTag("seller_withdraw_open_btn")
                                         ) {
-                                            Icon(Icons.Default.AccountBalanceWallet, contentDescription = null, modifier = Modifier.size(14.dp))
+                                            Icon(Icons.Default.AccountBalanceWallet, contentDescription = null, modifier = Modifier.size(16.dp))
                                             Spacer(modifier = Modifier.width(6.dp))
-                                            Text("Withdraw", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                            Text("Withdraw", style = AppTypography.button.copy(color = Color.White))
                                         }
                                     }
                                 }
@@ -822,49 +930,59 @@ fun SellerDashboardScreen(
                                 horizontalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
                                 Card(
-                                    colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-                                    shape = RoundedCornerShape(16.dp),
-                                    border = BorderStroke(1.dp, BorderSlate100),
+                                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                    shape = AppShapes.card,
+                                    border = BorderStroke(1.dp, CardBorderLight),
                                     modifier = Modifier.weight(1f)
                                 ) {
                                     Column(modifier = Modifier.padding(16.dp)) {
-                                        Text("Total Revenue", fontSize = 11.sp, color = TextSlate400)
+                                        Text("Total revenue", style = AppTypography.caption.copy(color = CharcoalMuted))
                                         Spacer(modifier = Modifier.height(4.dp))
-                                        Text("₦${String.format("%,.0f", earnings.totalRevenue)}", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = TextSlate800)
+                                        Text(
+                                            text = AppFormatters.formatNaira(earnings.totalRevenue),
+                                            style = AppTypography.figureMedium.copy(
+                                                fontSize = 17.sp,
+                                                color = Charcoal
+                                            )
+                                        )
                                     }
                                 }
                                 Card(
-                                    colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-                                    shape = RoundedCornerShape(16.dp),
-                                    border = BorderStroke(1.dp, BorderSlate100),
+                                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                    shape = AppShapes.card,
+                                    border = BorderStroke(1.dp, CardBorderLight),
                                     modifier = Modifier.weight(1f)
                                 ) {
                                     Column(modifier = Modifier.padding(16.dp)) {
-                                        Text("Successful Sales", fontSize = 11.sp, color = TextSlate400)
+                                        Text("Successful sales", style = AppTypography.caption.copy(color = CharcoalMuted))
                                         Spacer(modifier = Modifier.height(4.dp))
-                                        Text("${earnings.totalSalesCount} Orders", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = TextSlate800)
+                                        Text(
+                                            text = "${earnings.totalSalesCount} orders",
+                                            style = AppTypography.figureMedium.copy(
+                                                fontSize = 17.sp,
+                                                color = Charcoal
+                                            )
+                                        )
                                     }
                                 }
                             }
                         }
 
-                        // Escrow Orders list if any
+                        // Escrow Orders list
                         val escrowOrders = escrowOrdersForSeller.filter { it.status == "PENDING" }
                         if (escrowOrders.isNotEmpty()) {
                             item {
                                 Text(
                                     text = "Active Escrow Orders (${escrowOrders.size})",
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 15.sp,
-                                    color = TextSlate800,
+                                    style = AppTypography.h3.copy(color = Charcoal),
                                     modifier = Modifier.padding(top = 8.dp)
                                 )
                             }
                             items(escrowOrders) { esc ->
                                 Card(
-                                    colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-                                    shape = RoundedCornerShape(16.dp),
-                                    border = BorderStroke(1.dp, BorderSlate100)
+                                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                    shape = AppShapes.card,
+                                    border = BorderStroke(1.dp, CardBorderLight)
                                 ) {
                                     Column(modifier = Modifier.padding(16.dp)) {
                                         Row(
@@ -873,74 +991,88 @@ fun SellerDashboardScreen(
                                             verticalAlignment = Alignment.CenterVertically
                                         ) {
                                             Column {
-                                                Text(esc.itemName, fontWeight = FontWeight.Bold, fontSize = 13.sp, color = TextSlate800)
-                                                Text("Buyer: ${esc.buyerName}", fontSize = 11.sp, color = TextSlate500)
+                                                Text(esc.itemName, style = AppTypography.bodyMedium.copy(fontWeight = FontWeight.Bold, color = Charcoal))
+                                                Text("Buyer: ${esc.buyerName}", style = AppTypography.caption.copy(color = CharcoalSecondary))
                                             }
                                             Text(
-                                                text = "₦${String.format("%,.0f", esc.amount)}",
-                                                fontWeight = FontWeight.Bold,
-                                                fontSize = 13.sp,
-                                                color = PrimaryGreen
+                                                text = AppFormatters.formatNaira(esc.amount),
+                                                style = AppTypography.figureSmall.copy(
+                                                    fontSize = 15.sp,
+                                                    color = SavPurple
+                                                )
                                             )
                                         }
-                                        
+
                                         if (esc.pickupPin.isNotEmpty()) {
                                             Spacer(modifier = Modifier.height(10.dp))
                                             Box(
                                                 modifier = Modifier
                                                     .fillMaxWidth()
-                                                    .background(Color(0xFFF0FDF4), RoundedCornerShape(8.dp))
-                                                    .border(1.dp, Color(0xFFDCFCE7), RoundedCornerShape(8.dp))
-                                                    .padding(8.dp)
+                                                    .background(Purple50, RoundedCornerShape(10.dp))
+                                                    .border(1.dp, CardBorderLight, RoundedCornerShape(10.dp))
+                                                    .padding(10.dp)
                                             ) {
                                                 Row(
                                                     modifier = Modifier.fillMaxWidth(),
                                                     horizontalArrangement = Arrangement.SpaceBetween,
                                                     verticalAlignment = Alignment.CenterVertically
                                                 ) {
-                                                    Column {
-                                                        Text("SECURE PICKUP PIN", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = Color(0xFF14532D))
-                                                        Text("Give this to the rider upon pickup", fontSize = 9.sp, color = Color(0xFF14532D).copy(alpha = 0.8f))
+                                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                                        Icon(
+                                                            imageVector = Icons.Default.Lock,
+                                                            contentDescription = null,
+                                                            tint = SavPurple,
+                                                            modifier = Modifier.size(16.dp)
+                                                        )
+                                                        Spacer(modifier = Modifier.width(8.dp))
+                                                        Column {
+                                                            Text("SECURE PICKUP PIN", style = AppTypography.labelSmall.copy(fontWeight = FontWeight.Bold, color = SavPurple))
+                                                            Text("Give this to the rider upon pickup", style = AppTypography.caption.copy(color = CharcoalMuted))
+                                                        }
                                                     }
                                                     Text(
                                                         text = esc.pickupPin,
-                                                        fontSize = 14.sp,
-                                                        fontWeight = FontWeight.Black,
-                                                        color = Color(0xFF166534),
+                                                        style = AppTypography.figureSmall.copy(
+                                                            fontSize = 15.sp,
+                                                            color = SavPurple
+                                                        ),
                                                         modifier = Modifier
-                                                            .background(Color.White, RoundedCornerShape(4.dp))
-                                                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                                                            .background(SurfaceWhite, RoundedCornerShape(6.dp))
+                                                            .border(1.dp, CardBorderLight, RoundedCornerShape(6.dp))
+                                                            .padding(horizontal = 10.dp, vertical = 4.dp)
                                                     )
                                                 }
                                             }
                                         }
 
                                         if (!esc.riderName.isNullOrEmpty()) {
-                                            Spacer(modifier = Modifier.height(10.dp))
+                                            Spacer(modifier = Modifier.height(12.dp))
                                             Row(
                                                 modifier = Modifier.fillMaxWidth(),
                                                 horizontalArrangement = Arrangement.SpaceBetween,
                                                 verticalAlignment = Alignment.CenterVertically
                                             ) {
-                                                Text("Rider: ${esc.riderName}", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = TextSlate800)
+                                                Text("Rider: ${esc.riderName}", style = AppTypography.caption.copy(fontWeight = FontWeight.Bold, color = Charcoal))
                                                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                                     OutlinedButton(
                                                         onClick = { onContactRider?.invoke(esc, "CALL") },
-                                                        modifier = Modifier.height(30.dp),
-                                                        colors = ButtonDefaults.outlinedButtonColors(contentColor = PrimaryGreen),
-                                                        border = BorderStroke(1.dp, PrimaryGreen),
-                                                        contentPadding = PaddingValues(horizontal = 8.dp)
+                                                        modifier = Modifier.heightIn(min = 34.dp),
+                                                        colors = ButtonDefaults.outlinedButtonColors(contentColor = SavPurple),
+                                                        border = BorderStroke(1.dp, SavPurple),
+                                                        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp),
+                                                        shape = AppShapes.button
                                                     ) {
-                                                        Text("Call Rider", fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                                                        Text("Call Rider", style = AppTypography.button.copy(fontSize = 11.sp, color = SavPurple))
                                                     }
                                                     OutlinedButton(
                                                         onClick = { onContactRider?.invoke(esc, "CHAT") },
-                                                        modifier = Modifier.height(30.dp),
-                                                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFF1D4ED8)),
-                                                        border = BorderStroke(1.dp, Color(0xFF1D4ED8)),
-                                                        contentPadding = PaddingValues(horizontal = 8.dp)
+                                                        modifier = Modifier.heightIn(min = 34.dp),
+                                                        colors = ButtonDefaults.outlinedButtonColors(contentColor = SavPurple),
+                                                        border = BorderStroke(1.dp, SavPurple),
+                                                        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp),
+                                                        shape = AppShapes.button
                                                     ) {
-                                                        Text("Chat Rider", fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                                                        Text("Chat Rider", style = AppTypography.button.copy(fontSize = 11.sp, color = SavPurple))
                                                     }
                                                 }
                                             }
@@ -950,13 +1082,11 @@ fun SellerDashboardScreen(
                             }
                         }
 
-                        // Withdrawal History Section Header
+                        // Settlement Withdrawal Logs
                         item {
                             Text(
                                 text = "Settlement Withdrawal Logs",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 15.sp,
-                                color = TextSlate800,
+                                style = AppTypography.h3.copy(color = Charcoal),
                                 modifier = Modifier.padding(top = 8.dp)
                             )
                         }
@@ -964,18 +1094,19 @@ fun SellerDashboardScreen(
                         if (sellerWithdrawals.isEmpty()) {
                             item {
                                 EmptyStateCard(
-                                    message = "No Settlement Logs Yet",
+                                    message = "No settlement logs yet",
                                     subMessage = "Your bank transfer withdrawals will appear here chronologically.",
                                     icon = Icons.Default.History,
-                                    iconColor = TextSlate400
+                                    iconColor = CharcoalMuted,
+                                    ground = SurfaceGround.LIGHT
                                 )
                             }
                         } else {
                             items(sellerWithdrawals) { w ->
                                 Card(
-                                    colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-                                    shape = RoundedCornerShape(12.dp),
-                                    border = BorderStroke(1.dp, BorderSlate100)
+                                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                    shape = RoundedCornerShape(14.dp),
+                                    border = BorderStroke(1.dp, CardBorderLight)
                                 ) {
                                     Row(
                                         modifier = Modifier.padding(14.dp),
@@ -983,23 +1114,42 @@ fun SellerDashboardScreen(
                                     ) {
                                         Box(
                                             modifier = Modifier
-                                                .size(36.dp)
+                                                .size(38.dp)
                                                 .clip(CircleShape)
-                                                .background(SecondaryOrange.copy(alpha = 0.08f)),
+                                                .background(Color(0xFFFEF3C7)),
                                             contentAlignment = Alignment.Center
                                         ) {
-                                            Icon(Icons.Default.TrendingDown, contentDescription = null, tint = SecondaryOrange, modifier = Modifier.size(16.dp))
+                                            Icon(
+                                                imageVector = Icons.Default.TrendingDown,
+                                                contentDescription = "Withdrawal",
+                                                tint = SemanticWarningLight,
+                                                modifier = Modifier.size(18.dp)
+                                            )
                                         }
                                         Spacer(modifier = Modifier.width(12.dp))
                                         Column(modifier = Modifier.weight(1f)) {
-                                            Text("Withdrawal to ${w.bankName}", fontWeight = FontWeight.Bold, fontSize = 13.sp, color = TextSlate800)
-                                            Text("Acc: ${w.accountNumber} • Processing", fontSize = 11.sp, color = TextSlate400)
+                                            Text(
+                                                text = "Withdrawal to ${w.bankName}",
+                                                style = AppTypography.bodyMedium.copy(fontWeight = FontWeight.Bold, color = Charcoal)
+                                            )
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                            ) {
+                                                Text("Acc: ${w.accountNumber}", style = AppTypography.caption.copy(color = CharcoalMuted))
+                                                AfriSavBadge(
+                                                    text = "Processing",
+                                                    type = AfriSavBadgeType.WARNING,
+                                                    ground = SurfaceGround.LIGHT
+                                                )
+                                            }
                                         }
                                         Text(
-                                            text = "-₦${String.format("%,.0f", w.amount)}",
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = 14.sp,
-                                            color = SecondaryOrange
+                                            text = "-${AppFormatters.formatNaira(w.amount)}",
+                                            style = AppTypography.figureSmall.copy(
+                                                fontSize = 15.sp,
+                                                color = Charcoal
+                                            )
                                         )
                                     }
                                 }
@@ -1008,7 +1158,10 @@ fun SellerDashboardScreen(
                     }
                 }
                 2 -> {
-                    // --- MONTHLY ANALYTICS TAB ---
+                    // =========================================================================
+                    // --- SCREEN 2: MONTHLY ANALYTICS TAB ---
+                    // Surface: White on Warm Cream, Sav Purple actions with White labels
+                    // =========================================================================
                     val months = listOf("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")
                     var selectedMonth by remember { mutableStateOf("January") }
 
@@ -1024,9 +1177,7 @@ fun SellerDashboardScreen(
                         item {
                             Text(
                                 text = "Select Month Filter",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 15.sp,
-                                color = TextSlate800
+                                style = AppTypography.h3.copy(color = Charcoal)
                             )
                             Spacer(modifier = Modifier.height(8.dp))
 
@@ -1036,33 +1187,37 @@ fun SellerDashboardScreen(
                             ) {
                                 items(months) { m ->
                                     val count = sellerSales.count { it.month.equals(m, ignoreCase = true) }
+                                    val isSelected = selectedMonth == m
                                     Box(
                                         modifier = Modifier
                                             .clip(RoundedCornerShape(8.dp))
-                                            .background(if (selectedMonth == m) PrimaryGreen else BgSlate50)
-                                            .border(1.dp, if (selectedMonth == m) PrimaryGreen else BorderSlate100, RoundedCornerShape(8.dp))
+                                            .background(if (isSelected) SavPurple else SurfaceWhite)
+                                            .border(1.dp, if (isSelected) SavPurple else CardBorderLight, RoundedCornerShape(8.dp))
                                             .clickable { selectedMonth = m }
-                                            .padding(horizontal = 12.dp, vertical = 6.dp)
+                                            .padding(horizontal = 12.dp, vertical = 7.dp)
                                     ) {
                                         Row(verticalAlignment = Alignment.CenterVertically) {
                                             Text(
                                                 text = m,
-                                                fontSize = 12.sp,
-                                                fontWeight = FontWeight.SemiBold,
-                                                color = if (selectedMonth == m) Color.White else TextSlate500
+                                                style = AppTypography.bodySmall.copy(
+                                                    fontWeight = FontWeight.SemiBold,
+                                                    color = if (isSelected) Color.White else CharcoalSecondary
+                                                )
                                             )
                                             if (count > 0) {
-                                                Spacer(modifier = Modifier.width(4.dp))
+                                                Spacer(modifier = Modifier.width(6.dp))
                                                 Box(
                                                     modifier = Modifier
-                                                        .background(if (selectedMonth == m) Color.White else PrimaryGreen, CircleShape)
-                                                        .padding(horizontal = 5.dp, vertical = 2.dp)
+                                                        .background(if (isSelected) HarvestLime else Purple100, CircleShape)
+                                                        .padding(horizontal = 6.dp, vertical = 2.dp)
                                                 ) {
                                                     Text(
                                                         text = "$count",
-                                                        fontSize = 9.sp,
-                                                        fontWeight = FontWeight.Bold,
-                                                        color = if (selectedMonth == m) PrimaryGreen else Color.White
+                                                        style = AppTypography.labelSmall.copy(
+                                                            fontSize = 10.sp,
+                                                            fontWeight = FontWeight.Bold,
+                                                            color = if (isSelected) Charcoal else SavPurple
+                                                        )
                                                     )
                                                 }
                                             }
@@ -1072,26 +1227,29 @@ fun SellerDashboardScreen(
                             }
                         }
 
-                        // Visual Representation Bar Chart
+                        // Sales Volume Analysis Card (White on Warm Cream)
                         item {
                             Card(
-                                colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-                                shape = RoundedCornerShape(16.dp),
-                                border = BorderStroke(1.dp, BorderSlate100)
+                                colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                shape = AppShapes.card,
+                                border = BorderStroke(1.dp, CardBorderLight)
                             ) {
-                                Column(modifier = Modifier.padding(16.dp)) {
-                                    Text("SALES VOLUME ANALYSIS: ${selectedMonth.uppercase()}", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = TextSlate400, letterSpacing = 1.sp)
+                                Column(modifier = Modifier.padding(18.dp)) {
+                                    Text(
+                                        text = "SALES VOLUME ANALYSIS: ${selectedMonth.uppercase()}",
+                                        style = AppTypography.label.copy(color = CharcoalMuted, letterSpacing = 1.sp)
+                                    )
                                     Spacer(modifier = Modifier.height(16.dp))
 
                                     if (groupedSales.isEmpty()) {
                                         Box(
-                                            modifier = Modifier.fillMaxWidth().padding(vertical = 20.dp),
+                                            modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp),
                                             contentAlignment = Alignment.Center
                                         ) {
                                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                                Icon(Icons.Default.BarChart, contentDescription = null, tint = TextSlate400, modifier = Modifier.size(32.dp))
-                                                Spacer(modifier = Modifier.height(4.dp))
-                                                Text("No Sales Registered", fontSize = 12.sp, color = TextSlate400)
+                                                Icon(Icons.Default.BarChart, contentDescription = null, tint = CharcoalMuted, modifier = Modifier.size(34.dp))
+                                                Spacer(modifier = Modifier.height(6.dp))
+                                                Text("No sales registered for this month", style = AppTypography.caption.copy(color = CharcoalMuted))
                                             }
                                         }
                                     } else {
@@ -1109,51 +1267,55 @@ fun SellerDashboardScreen(
                                                 ) {
                                                     Box(
                                                         modifier = Modifier
-                                                            .size(32.dp)
-                                                            .clip(RoundedCornerShape(6.dp))
-                                                            .background(PrimaryGreen.copy(alpha = 0.08f)),
+                                                            .size(34.dp)
+                                                            .clip(RoundedCornerShape(8.dp))
+                                                            .background(Purple50),
                                                         contentAlignment = Alignment.Center
                                                     ) {
                                                         Text(getCategoryEmoji(firstSale.category), fontSize = 16.sp)
                                                     }
                                                     Spacer(modifier = Modifier.width(10.dp))
                                                     Column(modifier = Modifier.weight(1f)) {
-                                                        Text(itemName, fontWeight = FontWeight.Bold, fontSize = 13.sp, color = TextSlate800)
-                                                        Text("Total: ₦${String.format("%,.0f", totalAmt)}", fontSize = 10.sp, color = TextSlate500)
+                                                        Text(itemName, style = AppTypography.bodyMedium.copy(fontWeight = FontWeight.Bold, color = Charcoal))
+                                                        Text(
+                                                            text = "Total: ${AppFormatters.formatNaira(totalAmt)}",
+                                                            style = AppTypography.caption.copy(color = CharcoalSecondary)
+                                                        )
                                                     }
-                                                    Text("$count Sold", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryGreen)
+                                                    Text(
+                                                        text = "$count sold",
+                                                        style = AppTypography.small.copy(fontWeight = FontWeight.Bold, color = SavPurple)
+                                                    )
                                                 }
                                                 Spacer(modifier = Modifier.height(6.dp))
-                                                // Premium horizontal custom bar chart
+                                                // Standardized progress bar
                                                 Box(
                                                     modifier = Modifier
                                                         .fillMaxWidth()
                                                         .height(8.dp)
                                                         .clip(RoundedCornerShape(4.dp))
-                                                        .background(BorderSlate100)
+                                                        .background(Purple50)
                                                 ) {
                                                     Box(
                                                         modifier = Modifier
                                                             .fillMaxHeight()
                                                             .fillMaxWidth(fraction)
-                                                            .background(PrimaryGreen)
+                                                            .background(SavPurple)
                                                     )
                                                 }
                                             }
-                                            Divider(color = Color(0xFFF1F5F9))
+                                            Divider(color = CardBorderLight.copy(alpha = 0.5f))
                                         }
                                     }
                                 }
                             }
                         }
 
-                        // Combined Chronological Trade Logs with ALTERNATING shading
+                        // Combined Chronological Trade Logs with alternating shading
                         item {
                             Text(
                                 text = "Chronological Transaction History",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 15.sp,
-                                color = TextSlate800,
+                                style = AppTypography.h3.copy(color = Charcoal),
                                 modifier = Modifier.padding(top = 8.dp)
                             )
                         }
@@ -1162,14 +1324,14 @@ fun SellerDashboardScreen(
                             HistoryItem(
                                 isSale = true,
                                 title = "Sale: ${it.itemName}",
-                                subtitle = "Buyer: ${it.buyerName} • Month: ${it.month}",
+                                subtitle = "Buyer: ${it.buyerName} • ${it.month}",
                                 amount = it.amount
                             )
                         } + sellerWithdrawals.map {
                             HistoryItem(
                                 isSale = false,
                                 title = "Withdrawal to ${it.bankName}",
-                                subtitle = "Acc: ${it.accountNumber} • Processing",
+                                subtitle = "Acc: ${it.accountNumber} • Settlement",
                                 amount = it.amount
                             )
                         })
@@ -1180,32 +1342,33 @@ fun SellerDashboardScreen(
                                     message = "No trade logs registered",
                                     subMessage = "Sales and bank withdrawals will show up here chronologically.",
                                     icon = Icons.Default.History,
-                                    iconColor = TextSlate400
+                                    iconColor = CharcoalMuted,
+                                    ground = SurfaceGround.LIGHT
                                 )
                             }
                         } else {
                             item {
                                 Card(
-                                    colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-                                    shape = RoundedCornerShape(16.dp),
-                                    border = BorderStroke(1.dp, BorderSlate100)
+                                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                    shape = AppShapes.card,
+                                    border = BorderStroke(1.dp, CardBorderLight)
                                 ) {
                                     Column {
                                         // Header Row
                                         Row(
                                             modifier = Modifier
                                                 .fillMaxWidth()
-                                                .background(Color(0xFFF1F5F9))
+                                                .background(WarmCream)
                                                 .padding(horizontal = 14.dp, vertical = 10.dp),
                                             horizontalArrangement = Arrangement.SpaceBetween
                                         ) {
-                                            Text("TRANSACTION DETAILS", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = TextSlate500, modifier = Modifier.weight(1f))
-                                            Text("AMOUNT", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = TextSlate500, textAlign = TextAlign.End)
+                                            Text("TRANSACTION DETAILS", style = AppTypography.label.copy(color = CharcoalMuted), modifier = Modifier.weight(1f))
+                                            Text("AMOUNT", style = AppTypography.label.copy(color = CharcoalMuted), textAlign = TextAlign.End)
                                         }
 
-                                        // Data Rows with alternating backgrounds
+                                        // Alternating data rows
                                         combinedHistory.forEachIndexed { idx, history ->
-                                            val rowBg = if (idx % 2 == 0) Color.White else Color(0xFFF8FAFC)
+                                            val rowBg = if (idx % 2 == 0) SurfaceWhite else WarmCream.copy(alpha = 0.5f)
                                             Row(
                                                 modifier = Modifier
                                                     .fillMaxWidth()
@@ -1215,32 +1378,43 @@ fun SellerDashboardScreen(
                                             ) {
                                                 Box(
                                                     modifier = Modifier
-                                                        .size(28.dp)
+                                                        .size(32.dp)
                                                         .clip(CircleShape)
-                                                        .background(if (history.isSale) PrimaryGreen.copy(alpha = 0.08f) else SecondaryOrange.copy(alpha = 0.08f)),
+                                                        .background(if (history.isSale) Color(0xFFDCFCE7) else Color(0xFFFEF3C7)),
                                                     contentAlignment = Alignment.Center
                                                 ) {
                                                     Icon(
                                                         imageVector = if (history.isSale) Icons.Default.TrendingUp else Icons.Default.TrendingDown,
-                                                        contentDescription = null,
-                                                        tint = if (history.isSale) PrimaryGreen else SecondaryOrange,
-                                                        modifier = Modifier.size(14.dp)
+                                                        contentDescription = if (history.isSale) "Sale" else "Withdrawal",
+                                                        tint = if (history.isSale) SemanticSuccessLight else SemanticWarningLight,
+                                                        modifier = Modifier.size(16.dp)
                                                     )
                                                 }
                                                 Spacer(modifier = Modifier.width(10.dp))
                                                 Column(modifier = Modifier.weight(1f)) {
-                                                    Text(history.title, fontWeight = FontWeight.Bold, fontSize = 12.sp, color = TextSlate800)
-                                                    Text(history.subtitle, fontSize = 10.sp, color = TextSlate400)
+                                                    Row(
+                                                        verticalAlignment = Alignment.CenterVertically,
+                                                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                                    ) {
+                                                        Text(history.title, style = AppTypography.bodySmall.copy(fontWeight = FontWeight.Bold, color = Charcoal))
+                                                        AfriSavBadge(
+                                                            text = if (history.isSale) "Sale" else "Withdrawal",
+                                                            type = if (history.isSale) AfriSavBadgeType.SUCCESS else AfriSavBadgeType.WARNING,
+                                                            ground = SurfaceGround.LIGHT
+                                                        )
+                                                    }
+                                                    Text(history.subtitle, style = AppTypography.caption.copy(color = CharcoalMuted))
                                                 }
                                                 Text(
-                                                    text = "${if (history.isSale) "+" else "-"}₦${String.format("%,.0f", history.amount)}",
-                                                    fontWeight = FontWeight.Bold,
-                                                    fontSize = 13.sp,
-                                                    color = if (history.isSale) PrimaryGreen else SecondaryOrange,
+                                                    text = "${if (history.isSale) "+" else "-"}${AppFormatters.formatNaira(history.amount)}",
+                                                    style = AppTypography.figureSmall.copy(
+                                                        fontSize = 14.sp,
+                                                        color = if (history.isSale) SemanticSuccessLight else Charcoal
+                                                    ),
                                                     textAlign = TextAlign.End
                                                 )
                                             }
-                                            Divider(color = Color(0xFFF1F5F9))
+                                            Divider(color = CardBorderLight.copy(alpha = 0.5f))
                                         }
                                     }
                                 }
@@ -1249,7 +1423,10 @@ fun SellerDashboardScreen(
                     }
                 }
                 3 -> {
-                    // --- BUYER REVIEWS TAB ---
+                    // =========================================================================
+                    // --- SCREEN 3: BUYER REVIEWS TAB ---
+                    // Surface: White on Warm Cream, Sav Purple actions
+                    // =========================================================================
                     val buyersReviewedByMe = reviews.filter { it.reviewerName.equals(sellerName, ignoreCase = true) && !it.isTargetSeller }
 
                     LazyColumn(
@@ -1261,42 +1438,43 @@ fun SellerDashboardScreen(
                         // Section 1: Confidential Feedback Card
                         item {
                             Card(
-                                colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-                                shape = RoundedCornerShape(16.dp),
-                                border = BorderStroke(1.dp, BorderSlate100)
+                                colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                shape = AppShapes.card,
+                                border = BorderStroke(1.dp, CardBorderLight)
                             ) {
-                                Column(modifier = Modifier.padding(16.dp)) {
-                                    Text("CONFIDENTIAL FEEDBACK FROM BUYERS", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = TextSlate400, letterSpacing = 1.sp)
+                                Column(modifier = Modifier.padding(18.dp)) {
+                                    Text("CONFIDENTIAL FEEDBACK FROM BUYERS", style = AppTypography.label.copy(color = CharcoalMuted, letterSpacing = 1.sp))
                                     Spacer(modifier = Modifier.height(14.dp))
 
                                     Column(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .background(Color(0xFFF8FAFC), RoundedCornerShape(12.dp))
-                                            .border(1.dp, Color(0xFFE2E8F0), RoundedCornerShape(12.dp))
+                                            .background(WarmCream, RoundedCornerShape(14.dp))
+                                            .border(1.dp, CardBorderLight, RoundedCornerShape(14.dp))
                                             .padding(18.dp),
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
                                         Icon(
                                             imageVector = Icons.Default.Lock,
                                             contentDescription = "Confidential Lock",
-                                            tint = Color(0xFF64748B),
+                                            tint = SavPurple,
                                             modifier = Modifier.size(32.dp)
                                         )
                                         Spacer(modifier = Modifier.height(10.dp))
                                         Text(
                                             text = "Buyer Feedback is Encrypted & Private",
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = 13.sp,
-                                            color = TextSlate800
+                                            style = AppTypography.bodyLarge.copy(
+                                                fontFamily = SoraFontFamily,
+                                                fontWeight = FontWeight.Bold,
+                                                color = Charcoal
+                                            )
                                         )
                                         Spacer(modifier = Modifier.height(4.dp))
                                         Text(
                                             text = "To guarantee absolute shopping fairness on AfriSav, direct ratings and written comments left by buyers are kept strictly confidential from merchants.",
-                                            fontSize = 11.sp,
-                                            color = TextSlate500,
+                                            style = AppTypography.caption.copy(color = CharcoalSecondary),
                                             textAlign = TextAlign.Center,
-                                            lineHeight = 15.sp
+                                            lineHeight = 16.sp
                                         )
                                     }
                                 }
@@ -1306,95 +1484,97 @@ fun SellerDashboardScreen(
                         // Section 2: Rate & Review Buyers form
                         item {
                             Card(
-                                colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-                                shape = RoundedCornerShape(20.dp),
-                                border = BorderStroke(1.dp, BorderSlate100)
+                                colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                shape = AppShapes.card,
+                                border = BorderStroke(1.dp, CardBorderLight)
                             ) {
                                 Column(modifier = Modifier.padding(18.dp)) {
                                     Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Icon(Icons.Default.RateReview, contentDescription = null, tint = PrimaryGreen, modifier = Modifier.size(18.dp))
+                                        Icon(Icons.Default.RateReview, contentDescription = null, tint = SavPurple, modifier = Modifier.size(20.dp))
                                         Spacer(modifier = Modifier.width(8.dp))
-                                        Text("Rate & Review Your Buyers", fontWeight = FontWeight.Bold, fontSize = 15.sp, color = TextSlate800)
+                                        Text("Rate & Review Your Buyers", style = AppTypography.h3.copy(color = Charcoal))
                                     }
                                     Text(
-                                        "Help local farmers and bulk circles identify trusted and friendly shoppers.",
-                                        fontSize = 11.sp,
-                                        color = TextSlate400,
+                                        text = "Help local farmers and bulk circles identify trusted and friendly shoppers.",
+                                        style = AppTypography.caption.copy(color = CharcoalMuted),
                                         modifier = Modifier.padding(top = 4.dp, bottom = 12.dp)
                                     )
 
                                     if (buyerReviewSuccess) {
-                                        Box(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .background(Color(0xFFECFDF5), RoundedCornerShape(8.dp))
-                                                .border(1.dp, Color(0xFFA7F3D0), RoundedCornerShape(8.dp))
-                                                .padding(10.dp)
-                                        ) {
-                                            Text("Review submitted successfully! Thank you for your feedback.", fontSize = 11.sp, color = Color(0xFF065F46), fontWeight = FontWeight.Medium)
-                                        }
-                                        Spacer(modifier = Modifier.height(12.dp))
+                                        AfriSavBadge(
+                                            text = "Review submitted successfully! Thank you for your feedback.",
+                                            type = AfriSavBadgeType.SUCCESS,
+                                            ground = SurfaceGround.LIGHT,
+                                            modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp)
+                                        )
                                     }
 
-                                    Text("Select Buyer to Rate", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = TextSlate500)
-                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Text("Select Buyer to Rate", style = AppTypography.label.copy(fontWeight = FontWeight.Bold, color = CharcoalSecondary))
+                                    Spacer(modifier = Modifier.height(6.dp))
                                     LazyRow(
                                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                                         modifier = Modifier.fillMaxWidth()
                                     ) {
                                         items(buyerList) { buyer ->
+                                            val isSelected = selectedBuyerReview == buyer
                                             Box(
                                                 modifier = Modifier
                                                     .clip(RoundedCornerShape(8.dp))
-                                                    .background(if (selectedBuyerReview == buyer) PrimaryGreen else BgSlate50)
-                                                    .border(1.dp, if (selectedBuyerReview == buyer) PrimaryGreen else BorderSlate100, RoundedCornerShape(8.dp))
+                                                    .background(if (isSelected) SavPurple else SurfaceWhite)
+                                                    .border(1.dp, if (isSelected) SavPurple else CardBorderLight, RoundedCornerShape(8.dp))
                                                     .clickable { selectedBuyerReview = buyer }
-                                                    .padding(horizontal = 12.dp, vertical = 6.dp)
+                                                    .padding(horizontal = 12.dp, vertical = 7.dp)
                                             ) {
                                                 Text(
                                                     text = buyer,
-                                                    fontSize = 11.sp,
-                                                    fontWeight = FontWeight.SemiBold,
-                                                    color = if (selectedBuyerReview == buyer) Color.White else TextSlate500
+                                                    style = AppTypography.bodySmall.copy(
+                                                        fontWeight = FontWeight.SemiBold,
+                                                        color = if (isSelected) Color.White else CharcoalSecondary
+                                                    )
                                                 )
                                             }
                                         }
                                     }
 
-                                    Spacer(modifier = Modifier.height(12.dp))
+                                    Spacer(modifier = Modifier.height(14.dp))
 
-                                    Text("Assign Rating stars", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = TextSlate500)
+                                    Text("Assign Rating Stars", style = AppTypography.label.copy(fontWeight = FontWeight.Bold, color = CharcoalSecondary))
                                     Row(
-                                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
                                         modifier = Modifier.padding(vertical = 6.dp)
                                     ) {
                                         for (i in 1..5) {
                                             Icon(
                                                 imageVector = Icons.Default.Star,
                                                 contentDescription = "Star $i",
-                                                tint = if (i <= buyerRating) SecondaryOrange else Color(0xFFCBD5E1),
+                                                tint = if (i <= buyerRating) Color(0xFFEAB308) else Color(0xFFE2E8F0),
                                                 modifier = Modifier
-                                                    .size(28.dp)
+                                                    .size(30.dp)
                                                     .clickable { buyerRating = i }
                                             )
                                         }
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text(
+                                            text = "$buyerRating / 5 Stars",
+                                            style = AppTypography.label.copy(fontWeight = FontWeight.Bold, color = CharcoalSecondary)
+                                        )
                                     }
 
-                                    Spacer(modifier = Modifier.height(10.dp))
+                                    Spacer(modifier = Modifier.height(12.dp))
 
-                                    OutlinedTextField(
+                                    SellerInputField(
                                         value = buyerReviewComment,
                                         onValueChange = { buyerReviewComment = it },
-                                        label = { Text("Buyer Feedback Comment") },
-                                        placeholder = { Text("Friendly buyer, picked up foods without delay!") },
-                                        modifier = Modifier.fillMaxWidth().testTag("seller_buyer_review_comment"),
-                                        colors = defaultTextFieldColors(),
-                                        shape = RoundedCornerShape(10.dp)
+                                        label = "Buyer Feedback Comment",
+                                        placeholder = "Friendly buyer, picked up foods without delay!",
+                                        modifier = Modifier.testTag("seller_buyer_review_comment")
                                     )
 
-                                    Spacer(modifier = Modifier.height(14.dp))
+                                    Spacer(modifier = Modifier.height(16.dp))
 
-                                    Button(
+                                    AfriSavPrimaryButton(
+                                        text = "Submit buyer review",
                                         onClick = {
                                             if (buyerReviewComment.trim().isNotEmpty()) {
                                                 viewModel.submitReviewRating(selectedBuyerReview, false, buyerRating, buyerReviewComment.trim())
@@ -1402,12 +1582,9 @@ fun SellerDashboardScreen(
                                                 buyerReviewSuccess = true
                                             }
                                         },
-                                        colors = ButtonDefaults.buttonColors(containerColor = PrimaryGreen),
-                                        shape = RoundedCornerShape(10.dp),
-                                        modifier = Modifier.fillMaxWidth().testTag("seller_buyer_review_submit")
-                                    ) {
-                                        Text("Submit Buyer Review", fontWeight = FontWeight.Bold, color = Color.White)
-                                    }
+                                        ground = SurfaceGround.LIGHT,
+                                        modifier = Modifier.testTag("seller_buyer_review_submit")
+                                    )
                                 }
                             }
                         }
@@ -1417,17 +1594,15 @@ fun SellerDashboardScreen(
                             item {
                                 Text(
                                     text = "Reviews You've Left for Buyers",
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 15.sp,
-                                    color = TextSlate800,
+                                    style = AppTypography.h3.copy(color = Charcoal),
                                     modifier = Modifier.padding(top = 8.dp)
                                 )
                             }
                             items(buyersReviewedByMe) { rev ->
                                 Card(
-                                    colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-                                    shape = RoundedCornerShape(12.dp),
-                                    border = BorderStroke(1.dp, BorderSlate100)
+                                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                    shape = RoundedCornerShape(14.dp),
+                                    border = BorderStroke(1.dp, CardBorderLight)
                                 ) {
                                     Column(modifier = Modifier.padding(14.dp)) {
                                         Row(
@@ -1435,15 +1610,15 @@ fun SellerDashboardScreen(
                                             horizontalArrangement = Arrangement.SpaceBetween,
                                             verticalAlignment = Alignment.CenterVertically
                                         ) {
-                                            Text(rev.targetName, fontWeight = FontWeight.Bold, fontSize = 13.sp, color = TextSlate800)
-                                            Row {
+                                            Text(rev.targetName, style = AppTypography.bodyMedium.copy(fontWeight = FontWeight.Bold, color = Charcoal))
+                                            Row(verticalAlignment = Alignment.CenterVertically) {
                                                 for (i in 1..rev.rating) {
-                                                    Icon(Icons.Default.Star, contentDescription = null, tint = SecondaryOrange, modifier = Modifier.size(12.dp))
+                                                    Icon(Icons.Default.Star, contentDescription = null, tint = Color(0xFFEAB308), modifier = Modifier.size(14.dp))
                                                 }
                                             }
                                         }
                                         Spacer(modifier = Modifier.height(4.dp))
-                                        Text(rev.reviewText, fontSize = 12.sp, color = TextSlate500)
+                                        Text(rev.reviewText, style = AppTypography.caption.copy(color = CharcoalSecondary))
                                     }
                                 }
                             }
@@ -1451,7 +1626,10 @@ fun SellerDashboardScreen(
                     }
                 }
                 4 -> {
-                    // --- NEW SELLER PROFILE SCREEN ---
+                    // =========================================================================
+                    // --- SCREEN 4: SELLER PROFILE TAB ---
+                    // Surface: White on Warm Cream, Sav Purple actions
+                    // =========================================================================
                     var name by remember { mutableStateOf(sellerName) }
                     var phone by remember { mutableStateOf(sellerPhone) }
                     var email by remember { mutableStateOf(sellerEmail) }
@@ -1469,21 +1647,21 @@ fun SellerDashboardScreen(
                         // Profile Avatar Card
                         item {
                             Card(
-                                colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-                                shape = RoundedCornerShape(20.dp),
-                                border = BorderStroke(1.dp, BorderSlate100)
+                                colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                shape = AppShapes.card,
+                                border = BorderStroke(1.dp, CardBorderLight)
                             ) {
                                 Column(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(20.dp),
+                                        .padding(22.dp),
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     Box(
                                         modifier = Modifier
-                                            .size(72.dp)
+                                            .size(76.dp)
                                             .clip(CircleShape)
-                                            .border(1.5.dp, PrimaryGreen, CircleShape)
+                                            .border(2.dp, SavPurple, CircleShape)
                                     ) {
                                         ProfileAvatar(
                                             imageUrl = null,
@@ -1491,9 +1669,17 @@ fun SellerDashboardScreen(
                                             modifier = Modifier.fillMaxSize()
                                         )
                                     }
-                                    Spacer(modifier = Modifier.height(10.dp))
-                                    Text(sellerName, fontWeight = FontWeight.Bold, fontSize = 17.sp, color = TextSlate800)
-                                    Text("Verified Soko Merchant Partner", fontSize = 11.sp, color = TextSlate500)
+                                    Spacer(modifier = Modifier.height(12.dp))
+                                    Text(
+                                        text = sellerName,
+                                        style = AppTypography.h2.copy(fontSize = 20.sp, color = Charcoal)
+                                    )
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    AfriSavBadge(
+                                        text = "Verified Soko Merchant Partner",
+                                        type = AfriSavBadgeType.SUCCESS,
+                                        ground = SurfaceGround.LIGHT
+                                    )
                                 }
                             }
                         }
@@ -1506,48 +1692,66 @@ fun SellerDashboardScreen(
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
                                 Card(
-                                    colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-                                    shape = RoundedCornerShape(12.dp),
-                                    border = BorderStroke(1.dp, BorderSlate100),
+                                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                    shape = RoundedCornerShape(14.dp),
+                                    border = BorderStroke(1.dp, CardBorderLight),
                                     modifier = Modifier.weight(1f)
                                 ) {
                                     Column(
                                         modifier = Modifier.padding(12.dp),
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
-                                        Text("AVG RATING", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = TextSlate400)
+                                        Text("AVG RATING", style = AppTypography.label.copy(fontSize = 9.sp, color = CharcoalMuted))
                                         Spacer(modifier = Modifier.height(4.dp))
-                                        Text("★ ${String.format("%.1f", avgRating)}", fontSize = 15.sp, fontWeight = FontWeight.Bold, color = SecondaryOrange)
+                                        Text(
+                                            text = "★ ${String.format("%.1f", avgRating)}",
+                                            style = AppTypography.figureSmall.copy(
+                                                fontSize = 15.sp,
+                                                color = Charcoal
+                                            )
+                                        )
                                     }
                                 }
                                 Card(
-                                    colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-                                    shape = RoundedCornerShape(12.dp),
-                                    border = BorderStroke(1.dp, BorderSlate100),
+                                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                    shape = RoundedCornerShape(14.dp),
+                                    border = BorderStroke(1.dp, CardBorderLight),
                                     modifier = Modifier.weight(1f)
                                 ) {
                                     Column(
                                         modifier = Modifier.padding(12.dp),
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
-                                        Text("TOTAL PRODUCTS", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = TextSlate400)
+                                        Text("TOTAL PRODUCTS", style = AppTypography.label.copy(fontSize = 9.sp, color = CharcoalMuted))
                                         Spacer(modifier = Modifier.height(4.dp))
-                                        Text("${sellerItems.size} items", fontSize = 15.sp, fontWeight = FontWeight.Bold, color = PrimaryGreen)
+                                        Text(
+                                            text = "${sellerItems.size} items",
+                                            style = AppTypography.figureSmall.copy(
+                                                fontSize = 15.sp,
+                                                color = SavPurple
+                                            )
+                                        )
                                     }
                                 }
                                 Card(
-                                    colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-                                    shape = RoundedCornerShape(12.dp),
-                                    border = BorderStroke(1.dp, BorderSlate100),
+                                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                    shape = RoundedCornerShape(14.dp),
+                                    border = BorderStroke(1.dp, CardBorderLight),
                                     modifier = Modifier.weight(1f)
                                 ) {
                                     Column(
                                         modifier = Modifier.padding(12.dp),
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
-                                        Text("TOTAL SALES", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = TextSlate400)
+                                        Text("TOTAL SALES", style = AppTypography.label.copy(fontSize = 9.sp, color = CharcoalMuted))
                                         Spacer(modifier = Modifier.height(4.dp))
-                                        Text("${earnings.totalSalesCount} orders", fontSize = 15.sp, fontWeight = FontWeight.Bold, color = TextSlate800)
+                                        Text(
+                                            text = "${earnings.totalSalesCount} orders",
+                                            style = AppTypography.figureSmall.copy(
+                                                fontSize = 15.sp,
+                                                color = Charcoal
+                                            )
+                                        )
                                     }
                                 }
                             }
@@ -1556,77 +1760,64 @@ fun SellerDashboardScreen(
                         // Success Indicator
                         if (isSuccessMsgVisible) {
                             item {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .background(Color(0xFFECFDF5), RoundedCornerShape(8.dp))
-                                        .border(1.dp, Color(0xFFA7F3D0), RoundedCornerShape(8.dp))
-                                        .padding(12.dp)
-                                ) {
-                                    Text("Your Merchant Profile has been saved securely!", fontSize = 12.sp, color = Color(0xFF065F46), fontWeight = FontWeight.Bold)
-                                }
+                                AfriSavBadge(
+                                    text = "Your merchant profile has been saved securely!",
+                                    type = AfriSavBadgeType.SUCCESS,
+                                    ground = SurfaceGround.LIGHT,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
                             }
                         }
 
                         // Editable Details Card
                         item {
                             Card(
-                                colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-                                shape = RoundedCornerShape(20.dp),
-                                border = BorderStroke(1.dp, BorderSlate100)
+                                colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                shape = AppShapes.card,
+                                border = BorderStroke(1.dp, CardBorderLight)
                             ) {
-                                Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                                    Text("EDIT MERCHANT DETAILS", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = TextSlate400, letterSpacing = 1.sp)
-                                    
-                                    OutlinedTextField(
+                                Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                                    Text("EDIT MERCHANT DETAILS", style = AppTypography.label.copy(color = CharcoalMuted, letterSpacing = 1.sp))
+
+                                    SellerInputField(
                                         value = name,
                                         onValueChange = { name = it },
-                                        label = { Text("Business/Store Name") },
+                                        label = "Business/Store Name",
                                         singleLine = true,
-                                        modifier = Modifier.fillMaxWidth().testTag("seller_profile_name"),
-                                        colors = defaultTextFieldColors(),
-                                        shape = RoundedCornerShape(10.dp)
+                                        modifier = Modifier.testTag("seller_profile_name")
                                     )
 
-                                    OutlinedTextField(
+                                    SellerInputField(
                                         value = phone,
                                         onValueChange = { phone = it },
-                                        label = { Text("Contact Phone Number") },
+                                        label = "Contact Phone Number",
                                         singleLine = true,
                                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                                        modifier = Modifier.fillMaxWidth().testTag("seller_profile_phone"),
-                                        colors = defaultTextFieldColors(),
-                                        shape = RoundedCornerShape(10.dp)
+                                        modifier = Modifier.testTag("seller_profile_phone")
                                     )
 
-                                    OutlinedTextField(
+                                    SellerInputField(
                                         value = email,
                                         onValueChange = { email = it },
-                                        label = { Text("Store Email Address") },
+                                        label = "Store Email Address",
                                         singleLine = true,
                                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                                        modifier = Modifier.fillMaxWidth().testTag("seller_profile_email"),
-                                        colors = defaultTextFieldColors(),
-                                        shape = RoundedCornerShape(10.dp)
+                                        modifier = Modifier.testTag("seller_profile_email")
                                     )
 
-                                    OutlinedTextField(
+                                    SellerInputField(
                                         value = location,
                                         onValueChange = { location = it },
-                                        label = { Text("Business Location LGA") },
+                                        label = "Business Location LGA",
                                         singleLine = true,
-                                        modifier = Modifier.fillMaxWidth().testTag("seller_profile_location"),
-                                        colors = defaultTextFieldColors(),
-                                        shape = RoundedCornerShape(10.dp)
+                                        modifier = Modifier.testTag("seller_profile_location")
                                     )
 
-                                    OutlinedTextField(
+                                    SellerInputField(
                                         value = bio,
                                         onValueChange = { bio = it },
-                                        label = { Text("Merchant Store Bio") },
-                                        modifier = Modifier.fillMaxWidth().testTag("seller_profile_bio"),
-                                        colors = defaultTextFieldColors(),
-                                        shape = RoundedCornerShape(10.dp)
+                                        label = "Merchant Store Bio",
+                                        modifier = Modifier.testTag("seller_profile_bio")
                                     )
                                 }
                             }
@@ -1635,23 +1826,21 @@ fun SellerDashboardScreen(
                         // Security Card
                         item {
                             Card(
-                                colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-                                shape = RoundedCornerShape(20.dp),
-                                border = BorderStroke(1.dp, BorderSlate100)
+                                colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                                shape = AppShapes.card,
+                                border = BorderStroke(1.dp, CardBorderLight)
                             ) {
-                                Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                                    Text("ACCOUNT SECURITY & PASSWORD", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = TextSlate400, letterSpacing = 1.sp)
-                                    
-                                    OutlinedTextField(
+                                Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                                    Text("ACCOUNT SECURITY & PASSWORD", style = AppTypography.label.copy(color = CharcoalMuted, letterSpacing = 1.sp))
+
+                                    SellerInputField(
                                         value = pin,
                                         onValueChange = { pin = it },
-                                        label = { Text("Merchant Security PIN") },
+                                        label = "Merchant Security PIN",
                                         singleLine = true,
                                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
                                         visualTransformation = PasswordVisualTransformation(),
-                                        modifier = Modifier.fillMaxWidth().testTag("seller_profile_pin"),
-                                        colors = defaultTextFieldColors(),
-                                        shape = RoundedCornerShape(10.dp)
+                                        modifier = Modifier.testTag("seller_profile_pin")
                                     )
                                 }
                             }
@@ -1659,7 +1848,8 @@ fun SellerDashboardScreen(
 
                         // Submit & Logout buttons
                         item {
-                            Button(
+                            AfriSavPrimaryButton(
+                                text = "Save profile changes",
                                 onClick = {
                                     if (name.isNotEmpty() && phone.isNotEmpty()) {
                                         viewModel.updateUserProfile(name, phone, email, location, bio)
@@ -1669,23 +1859,23 @@ fun SellerDashboardScreen(
                                         isSuccessMsgVisible = true
                                     }
                                 },
-                                colors = ButtonDefaults.buttonColors(containerColor = PrimaryGreen),
-                                shape = RoundedCornerShape(12.dp),
-                                modifier = Modifier.fillMaxWidth().height(48.dp).testTag("seller_profile_save")
-                            ) {
-                                Text("Save Profile Changes", fontWeight = FontWeight.Bold, color = Color.White)
-                            }
+                                ground = SurfaceGround.LIGHT,
+                                modifier = Modifier.testTag("seller_profile_save")
+                            )
                         }
 
                         item {
                             OutlinedButton(
                                 onClick = onLogoutClick,
-                                modifier = Modifier.fillMaxWidth().height(48.dp).testTag("seller_profile_logout"),
-                                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFFEF4444)),
-                                border = BorderStroke(1.dp, Color(0xFFEF4444)),
-                                shape = RoundedCornerShape(12.dp)
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(min = 52.dp)
+                                    .testTag("seller_profile_logout"),
+                                colors = ButtonDefaults.outlinedButtonColors(contentColor = SemanticErrorLight),
+                                border = BorderStroke(1.5.dp, SemanticErrorLight),
+                                shape = AppShapes.button
                             ) {
-                                Text("Sign Out of Soko Account", fontWeight = FontWeight.Bold)
+                                Text("Sign out of Soko account", style = AppTypography.button.copy(color = SemanticErrorLight))
                             }
                         }
                     }
@@ -1694,72 +1884,81 @@ fun SellerDashboardScreen(
         }
     }
 
-    // Modal Withdrawal Dialog Triggered via available balances
+    // =========================================================================
+    // MODAL WITHDRAWAL DIALOG (White on Warm Cream form)
+    // =========================================================================
     if (showSellerWithdrawConfirmDialog) {
         AlertDialog(
             onDismissRequest = { showSellerWithdrawConfirmDialog = false },
-            title = { Text("Secure Settlement Transfer 🔐", fontSize = 16.sp, fontWeight = FontWeight.Bold) },
+            containerColor = SurfaceWhite,
+            shape = AppShapes.card,
+            title = {
+                Text(
+                    text = "Settlement Transfer",
+                    style = AppTypography.h3.copy(color = Charcoal)
+                )
+            },
             text = {
-                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     Text(
-                        text = "Transfer earnings instantly to your verified bank account.",
-                        fontSize = 12.sp,
-                        color = TextSlate500
+                        text = "Transfer your earnings instantly to your verified bank account.",
+                        style = AppTypography.caption.copy(color = CharcoalSecondary)
                     )
 
-                    OutlinedTextField(
+                    SellerInputField(
                         value = withdrawAmountStr,
                         onValueChange = { withdrawAmountStr = it },
-                        label = { Text("Withdrawal Amount (₦)") },
-                        placeholder = { Text("e.g. 10000") },
+                        label = "Withdrawal Amount (₦)",
+                        placeholder = "e.g. 10000",
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        modifier = Modifier.fillMaxWidth().testTag("seller_withdraw_amt"),
-                        colors = defaultTextFieldColors(),
-                        shape = RoundedCornerShape(8.dp)
+                        modifier = Modifier.testTag("seller_withdraw_amt")
                     )
 
-                    Text("Destination Bank", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = TextSlate500)
-                    LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        items(banks) { b ->
-                            Box(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(if (selectedBank == b) SecondaryOrange else BgSlate50)
-                                    .border(1.dp, if (selectedBank == b) SecondaryOrange else BorderSlate100, RoundedCornerShape(8.dp))
-                                    .clickable { selectedBank = b }
-                                    .padding(horizontal = 12.dp, vertical = 6.dp)
-                            ) {
-                                Text(
-                                    text = b,
-                                    fontSize = 11.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = if (selectedBank == b) Color.White else TextSlate500
-                                )
+                    Column {
+                        Text("Destination Bank", style = AppTypography.label.copy(fontWeight = FontWeight.Bold, color = CharcoalSecondary))
+                        Spacer(modifier = Modifier.height(6.dp))
+                        LazyRow(
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            items(banks) { b ->
+                                val isSelected = selectedBank == b
+                                Box(
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(if (isSelected) SavPurple else SurfaceWhite)
+                                        .border(1.dp, if (isSelected) SavPurple else CardBorderLight, RoundedCornerShape(8.dp))
+                                        .clickable { selectedBank = b }
+                                        .padding(horizontal = 12.dp, vertical = 6.dp)
+                                ) {
+                                    Text(
+                                        text = b,
+                                        style = AppTypography.bodySmall.copy(
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = if (isSelected) Color.White else CharcoalSecondary
+                                        )
+                                    )
+                                }
                             }
                         }
                     }
 
-                    OutlinedTextField(
+                    SellerInputField(
                         value = withdrawAccountStr,
                         onValueChange = { withdrawAccountStr = it },
-                        label = { Text("10-Digit Account Number") },
-                        placeholder = { Text("e.g. 0123456789") },
+                        label = "10-Digit Account Number",
+                        placeholder = "e.g. 0123456789",
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        modifier = Modifier.fillMaxWidth().testTag("seller_withdraw_account"),
-                        colors = defaultTextFieldColors(),
-                        shape = RoundedCornerShape(8.dp)
+                        modifier = Modifier.testTag("seller_withdraw_account")
                     )
 
                     if (withdrawErrorText.isNotEmpty()) {
                         Text(
                             text = withdrawErrorText,
-                            color = MaterialTheme.colorScheme.error,
-                            fontSize = 11.sp
+                            color = SemanticErrorLight,
+                            style = AppTypography.caption.copy(fontWeight = FontWeight.SemiBold)
                         )
                     }
                 }
@@ -1776,26 +1975,159 @@ fun SellerDashboardScreen(
                             withdrawErrorText = "Please enter a valid 10-digit NUBAN account number"
                         } else {
                             viewModel.sellerWithdraw(amt, selectedBank, withdrawAccountStr)
+                            lastWithdrawalAmount = amt
+                            lastWithdrawalAccount = withdrawAccountStr
+                            lastWithdrawalBank = selectedBank
                             withdrawAmountStr = ""
                             withdrawAccountStr = ""
                             withdrawErrorText = ""
                             showSellerWithdrawConfirmDialog = false
-                            Toast.makeText(context, "Withdrawal Transfer Executed!", Toast.LENGTH_SHORT).show()
+                            showWithdrawalCelebrationDialog = true
                         }
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = SecondaryOrange)
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = SavPurple,
+                        contentColor = Color.White
+                    ),
+                    shape = AppShapes.button
                 ) {
-                    Text("Confirm Transfer", color = Color.White)
+                    Text("Confirm transfer", style = AppTypography.button.copy(color = Color.White))
                 }
             },
             dismissButton = {
-                TextButton(onClick = { 
-                    showSellerWithdrawConfirmDialog = false 
+                TextButton(onClick = {
+                    showSellerWithdrawConfirmDialog = false
                     withdrawErrorText = ""
                 }) {
-                    Text("Cancel")
+                    Text("Cancel", style = AppTypography.button.copy(color = CharcoalSecondary))
                 }
             }
+        )
+    }
+
+    // =========================================================================
+    // CELEBRATORY MOMENT DIALOG (Per Brand Bible rule:
+    // "Any celebratory moment on the Seller side (e.g. a withdrawal success
+    // confirmation, hitting a sales milestone) may use the Purple/Plum ground +
+    // Lime action treatment, consistent with how celebration moments are
+    // handled on the Buyer side.")
+    // =========================================================================
+    if (showWithdrawalCelebrationDialog) {
+        AlertDialog(
+            onDismissRequest = { showWithdrawalCelebrationDialog = false },
+            containerColor = DeepPlumCard,
+            shape = AppShapes.card,
+            modifier = Modifier.border(BorderStroke(1.5.dp, DeepPlumBorder), AppShapes.card),
+            title = {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(56.dp)
+                            .clip(CircleShape)
+                            .background(SavPurple)
+                            .border(1.5.dp, HarvestLime, CircleShape),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.CheckCircle,
+                            contentDescription = "Success",
+                            tint = HarvestLime,
+                            modifier = Modifier.size(34.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = "Transfer Executed!",
+                        style = AppTypography.h2.copy(color = Color.White, textAlign = TextAlign.Center)
+                    )
+                }
+            },
+            text = {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = AppFormatters.formatNaira(lastWithdrawalAmount),
+                        style = AppTypography.figureLarge.copy(
+                            fontSize = 32.sp,
+                            color = HarvestLime,
+                            textAlign = TextAlign.Center
+                        )
+                    )
+                    Text(
+                        text = "Your settlement payout has been dispatched to $lastWithdrawalBank ($lastWithdrawalAccount).",
+                        style = AppTypography.bodySmall.copy(color = Purple200, textAlign = TextAlign.Center)
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    AfriSavBadge(
+                        text = "Settlement Confirmed",
+                        type = AfriSavBadgeType.SUCCESS,
+                        ground = SurfaceGround.DARK
+                    )
+                }
+            },
+            confirmButton = {
+                AfriSavPrimaryButton(
+                    text = "Done",
+                    onClick = { showWithdrawalCelebrationDialog = false },
+                    ground = SurfaceGround.DARK, // Purple/Plum ground + Lime action treatment
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        )
+    }
+}
+
+/**
+ * Standardized Input Field for Seller Screens, enforcing 52px height, 12px radius,
+ * label always visible above the field, and SavPurple focus outline on light ground.
+ */
+@Composable
+fun SellerInputField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    modifier: Modifier = Modifier,
+    placeholder: String? = null,
+    singleLine: Boolean = false,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    isError: Boolean = false
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = label,
+            style = AppTypography.label.copy(fontWeight = FontWeight.Bold, color = CharcoalSecondary),
+            modifier = Modifier.padding(bottom = 6.dp)
+        )
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            placeholder = if (placeholder != null) {
+                { Text(placeholder, style = AppTypography.body.copy(color = CharcoalMuted)) }
+            } else null,
+            singleLine = singleLine,
+            keyboardOptions = keyboardOptions,
+            visualTransformation = visualTransformation,
+            isError = isError,
+            modifier = modifier
+                .fillMaxWidth()
+                .heightIn(min = 52.dp),
+            textStyle = AppTypography.body.copy(color = Charcoal),
+            shape = AppShapes.input,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = SurfaceWhite,
+                unfocusedContainerColor = SurfaceWhite,
+                focusedBorderColor = SavPurple,
+                unfocusedBorderColor = CardBorderLight,
+                errorBorderColor = SemanticErrorLight,
+                cursorColor = SavPurple
+            )
         )
     }
 }

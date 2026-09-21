@@ -12,58 +12,56 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme =
-  darkColorScheme(
-    primary = PrimaryGreen,
-    secondary = SecondaryOrange,
-    tertiary = AccentGold,
-    background = Color(0xFF0F172A),
-    surface = Color(0xFF1E293B),
-    surfaceVariant = Color(0xFF334155),
-    outline = Color(0xFF334155),
-    outlineVariant = Color(0xFF1E293B),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.DarkGray,
-    onBackground = Color(0xFFF8FAFC),
-    onSurface = Color(0xFFF1F5F9),
-    onSurfaceVariant = Color(0xFF94A3B8)
-  )
+    darkColorScheme(
+        primary = HarvestLime,         // Lime action colour on plum/purple ground
+        secondary = Purple300,        // Safe secondary on plum
+        tertiary = Purple200,
+        background = DeepPlum,        // Dark ground (Deep Plum #32105F)
+        surface = Color(0xFF260D4A),  // Deep tinted plum surface
+        surfaceVariant = Purple900,
+        outline = Purple700,
+        outlineVariant = Purple800,
+        onPrimary = Charcoal,         // Charcoal on Lime (11.89:1)
+        onSecondary = DeepPlum,
+        onTertiary = DeepPlum,
+        onBackground = White,
+        onSurface = White,
+        onSurfaceVariant = Purple300
+    )
 
 private val LightColorScheme =
-  lightColorScheme(
-    primary = PrimaryGreen,
-    secondary = SecondaryOrange,
-    tertiary = AccentGold,
-    background = Color(0xFFF8FAFC), // Soft slate-50 neutral base
-    surface = Color.White,
-    surfaceVariant = Color(0xFFF1F5F9),
-    outline = Color(0xFFE2E8F0),
-    outlineVariant = Color(0xFFCBD5E1),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.DarkGray,
-    onBackground = Color(0xFF0F172A), // TextDark
-    onSurface = Color(0xFF0F172A),
-    onSurfaceVariant = Color(0xFF64748B)
-  )
+    lightColorScheme(
+        primary = SavPurple,          // Sav Purple (#5B21B6) action colour on light ground
+        secondary = DeepPlum,
+        tertiary = HarvestLime,
+        background = WarmCream,       // Warm Cream (#FFF8EA)
+        surface = White,              // White surface (#FFFFFF)
+        surfaceVariant = Purple50,
+        outline = CardBorderLight,    // 1px #E8DCC6 border
+        outlineVariant = Purple200,
+        onPrimary = White,            // White on Sav Purple (8.98:1)
+        onSecondary = White,
+        onTertiary = Charcoal,
+        onBackground = Charcoal,      // Charcoal ink (#171717)
+        onSurface = Charcoal,
+        onSurfaceVariant = Color(0xFF525252)
+    )
 
 @Composable
 fun AfriSavTheme(
-  darkTheme: Boolean = isSystemInDarkTheme(),
-  dynamicColor: Boolean = false, // Set to false to preserve AfriSav premium branding
-  content: @Composable () -> Unit,
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    dynamicColor: Boolean = false, // Set to false to strictly preserve AfriSav Brand Bible colors
+    content: @Composable () -> Unit,
 ) {
-  val colorScheme =
-    when {
-      dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-        val context = LocalContext.current
-        if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-      }
+    val colorScheme =
+        when {
+            dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+                val context = LocalContext.current
+                if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            }
+            darkTheme -> DarkColorScheme
+            else -> LightColorScheme
+        }
 
-      darkTheme -> DarkColorScheme
-      else -> LightColorScheme
-    }
-
-  MaterialTheme(colorScheme = colorScheme, typography = Typography, content = content)
+    MaterialTheme(colorScheme = colorScheme, typography = Typography, content = content)
 }
-

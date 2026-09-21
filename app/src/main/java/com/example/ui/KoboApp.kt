@@ -2609,16 +2609,16 @@ fun HomeScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SoftBackground)
+            .background(DeepPlum)
     ) {
         // --- STICKY APP BAR HEADER ---
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(SurfaceBg)
+                .background(DeepPlum)
                 .statusBarsPadding()
                 .padding(horizontal = AppSpacing.lg, vertical = AppSpacing.md)
-                .border(width = 1.dp, color = BorderSlate100),
+                .border(width = 1.dp, color = CardBorderDark),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -2633,7 +2633,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .size(46.dp)
                         .clip(CircleShape)
-                        .border(1.5.dp, PrimaryGreen.copy(alpha = 0.4f), CircleShape),
+                        .border(1.5.dp, HarvestLime.copy(alpha = 0.6f), CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
                     ProfileAvatar(
@@ -2648,21 +2648,21 @@ fun HomeScreen(
                         Text(
                             text = "WELCOME BACK",
                             style = AppTypography.caption.copy(fontWeight = FontWeight.Bold),
-                            color = TextSlate400,
+                            color = Purple300,
                             letterSpacing = 1.sp
                         )
                         Spacer(modifier = Modifier.width(AppSpacing.xs))
                         Icon(
                             imageVector = Icons.Default.Edit,
                             contentDescription = "Edit Profile",
-                            tint = PrimaryGreen,
+                            tint = HarvestLime,
                             modifier = Modifier.size(11.dp)
                         )
                     }
                     Text(
                         text = currentUserName.ifEmpty { "Adebayo Alao" },
-                        style = AppTypography.sectionHeader.copy(fontWeight = FontWeight.Bold),
-                        color = TextDark
+                        style = AppTypography.sectionHeader.copy(fontWeight = FontWeight.Bold, fontFamily = SoraFamily),
+                        color = White
                     )
                 }
             }
@@ -2679,13 +2679,13 @@ fun HomeScreen(
                     onClick = { viewModel.setActiveTab("assistant") },
                     modifier = Modifier
                         .size(40.dp)
-                        .background(SurfaceBg, CircleShape)
-                        .border(1.dp, BorderSlate100, CircleShape)
+                        .background(Purple900, CircleShape)
+                        .border(1.dp, CardBorderDark, CircleShape)
                 ) {
                     Icon(
                         imageVector = Icons.Default.SmartToy,
                         contentDescription = "Ask Mama Olufunke AI",
-                        tint = SecondaryOrange,
+                        tint = HarvestLime,
                         modifier = Modifier.size(AppIconSize.md)
                     )
                 }
@@ -2695,39 +2695,39 @@ fun HomeScreen(
                     onClick = onStartTourClick,
                     modifier = Modifier
                         .size(40.dp)
-                        .background(SurfaceBg, CircleShape)
-                        .border(1.dp, BorderSlate100, CircleShape)
+                        .background(Purple900, CircleShape)
+                        .border(1.dp, CardBorderDark, CircleShape)
                         .testTag("home_tour_btn")
                 ) {
                     Icon(
                         imageVector = Icons.Default.Explore,
                         contentDescription = "Take Guided Tour",
-                        tint = PrimaryGreen,
+                        tint = HarvestLime,
                         modifier = Modifier.size(AppIconSize.md)
                     )
                 }
                 
-                // Notification Button with Orange Dot
+                // Notification Button with Lime Dot
                 Box(
                     modifier = Modifier
                         .size(40.dp)
-                        .background(SurfaceBg, CircleShape)
-                        .border(1.dp, BorderSlate100, CircleShape)
+                        .background(Purple900, CircleShape)
+                        .border(1.dp, CardBorderDark, CircleShape)
                         .clickable { showNotificationCenter = true },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = Icons.Default.Notifications,
                         contentDescription = "Notifications",
-                        tint = TextSlate500,
+                        tint = White,
                         modifier = Modifier.size(AppIconSize.md)
                     )
                     if (appNotifications.any { !it.isRead }) {
                         Box(
                             modifier = Modifier
                                 .size(10.dp)
-                                .background(SecondaryOrange, CircleShape)
-                                .border(2.dp, SurfaceBg, CircleShape)
+                                .background(HarvestLime, CircleShape)
+                                .border(2.dp, DeepPlum, CircleShape)
                                 .align(Alignment.TopEnd)
                                 .offset(x = (-4).dp, y = 4.dp)
                         )
@@ -2739,13 +2739,13 @@ fun HomeScreen(
                     onClick = onLogoutClick,
                     modifier = Modifier
                         .size(40.dp)
-                        .background(SurfaceBg, CircleShape)
-                        .border(1.dp, BorderSlate100, CircleShape)
+                        .background(Purple900, CircleShape)
+                        .border(1.dp, CardBorderDark, CircleShape)
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.Logout,
                         contentDescription = "Logout",
-                        tint = AppColors.error,
+                        tint = SemanticErrorPlum,
                         modifier = Modifier.size(AppIconSize.md)
                     )
                 }
@@ -2768,10 +2768,11 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = AppSpacing.lg, vertical = AppSpacing.xs),
-                    containerColor = if (currentBal <= 0.0) AppColors.errorBgLight else AppColors.warningBgLight,
-                    borderColor = if (currentBal <= 0.0) AppColors.error.copy(alpha = 0.3f) else AppColors.warning.copy(alpha = 0.3f),
+                    containerColor = if (currentBal <= 0.0) SemanticErrorPlum.copy(alpha = 0.15f) else SemanticWarningPlum.copy(alpha = 0.15f),
+                    borderColor = if (currentBal <= 0.0) SemanticErrorPlum.copy(alpha = 0.5f) else SemanticWarningPlum.copy(alpha = 0.5f),
                     shape = AppShapes.card,
-                    contentPadding = PaddingValues(AppSpacing.md)
+                    contentPadding = PaddingValues(AppSpacing.md),
+                    ground = SurfaceGround.DARK
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
@@ -2779,15 +2780,15 @@ fun HomeScreen(
                         Icon(
                             imageVector = Icons.Default.Warning,
                             contentDescription = "Low Funds Alert",
-                            tint = if (currentBal <= 0.0) AppColors.error else AppColors.warning,
+                            tint = if (currentBal <= 0.0) SemanticErrorPlum else SemanticWarningPlum,
                             modifier = Modifier.size(AppIconSize.lg)
                         )
                         Spacer(modifier = Modifier.width(AppSpacing.md))
                         Column {
                             Text(
-                                text = if (currentBal <= 0.0) "Your Spendable Wallet is Empty" else "Low Spendable Wallet Balance",
+                                text = if (currentBal <= 0.0) "Your spendable wallet is empty" else "Low spendable wallet balance",
                                 style = AppTypography.label.copy(fontWeight = FontWeight.Bold),
-                                color = if (currentBal <= 0.0) AppColors.error else AppColors.warning
+                                color = if (currentBal <= 0.0) SemanticErrorPlum else SemanticWarningPlum
                             )
                             Spacer(modifier = Modifier.height(2.dp))
                             Text(
@@ -2796,7 +2797,7 @@ fun HomeScreen(
                                 else
                                     "Your wallet has only ₦${String.format("%,.2f", currentBal)} left. Add funds soon to ensure your daily auto-saving runs smoothly.",
                                 style = AppTypography.caption,
-                                color = if (currentBal <= 0.0) AppColors.error else AppColors.warning
+                                color = White.copy(alpha = 0.9f)
                             )
                         }
                     }
@@ -2808,10 +2809,11 @@ fun HomeScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = AppSpacing.lg, vertical = AppSpacing.sm),
-                containerColor = SurfaceBg,
-                borderColor = BorderSlate100,
+                containerColor = Purple950,
+                borderColor = CardBorderDark,
                 shape = AppShapes.card,
-                contentPadding = PaddingValues(AppSpacing.lg)
+                contentPadding = PaddingValues(AppSpacing.lg),
+                ground = SurfaceGround.DARK
             ) {
                 // Headline Net Worth Container
                 Box(
@@ -2820,7 +2822,7 @@ fun HomeScreen(
                         .clip(AppShapes.card)
                         .background(
                             Brush.linearGradient(
-                                colors = listOf(PrimaryGreen, DarkGreen)
+                                colors = listOf(SavPurple, Purple900)
                             )
                         )
                         .padding(AppSpacing.lg)
@@ -2833,8 +2835,8 @@ fun HomeScreen(
                         ) {
                             Text(
                                 text = "TOTAL FOOD NET WORTH",
-                                style = AppTypography.caption.copy(fontWeight = FontWeight.Bold),
-                                color = Color.White.copy(alpha = 0.85f),
+                                style = AppTypography.caption.copy(fontWeight = FontWeight.Bold, fontFamily = SoraFamily),
+                                color = Purple200,
                                 letterSpacing = 1.2.sp
                             )
                             
@@ -2843,20 +2845,20 @@ fun HomeScreen(
                             Box(
                                 modifier = Modifier
                                     .clip(AppShapes.sm)
-                                    .background(Color.White.copy(alpha = 0.2f))
+                                    .background(Purple900.copy(alpha = 0.6f))
                                     .padding(horizontal = AppSpacing.sm, vertical = AppSpacing.xs)
                             ) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Icon(
                                         imageVector = Icons.Default.Star,
                                         contentDescription = "Points",
-                                        tint = AccentGold,
+                                        tint = HarvestLime,
                                         modifier = Modifier.size(AppIconSize.xs)
                                     )
                                     Spacer(modifier = Modifier.width(AppSpacing.xs))
                                     Text(
                                         text = "$koboPoints pts",
-                                        color = Color.White,
+                                        color = White,
                                         style = AppTypography.labelSmall
                                     )
                                 }
@@ -2864,15 +2866,15 @@ fun HomeScreen(
                         }
                         Spacer(modifier = Modifier.height(AppSpacing.xs))
                         Text(
-                            text = "₦${String.format("%,.2f", (wallet?.availableBalance ?: 0.0) + (wallet?.savingsBalance ?: 0.0) + totalGoalsBalance)}",
-                            style = AppTypography.balanceLarge,
-                            color = Color.White
+                            text = AppFormatters.formatNaira((wallet?.availableBalance ?: 0.0) + (wallet?.savingsBalance ?: 0.0) + totalGoalsBalance),
+                            style = AppTypography.displayLarge.copy(fontFamily = SoraFamily, fontFeatureSettings = "tnum"),
+                            color = White
                         )
                         Spacer(modifier = Modifier.height(AppSpacing.xs))
                         Text(
                             text = "Combines wallet, goals and emergency savings",
                             style = AppTypography.caption,
-                            color = Color.White.copy(alpha = 0.75f)
+                            color = Purple300
                         )
                     }
                 }
@@ -2889,8 +2891,8 @@ fun HomeScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clip(AppShapes.card)
-                            .background(SurfaceSubtle)
-                            .border(1.dp, BorderSlate100, AppShapes.card)
+                            .background(Purple900.copy(alpha = 0.5f))
+                            .border(1.dp, CardBorderDark, AppShapes.card)
                             .padding(AppSpacing.md)
                     ) {
                         Column {
@@ -2898,27 +2900,27 @@ fun HomeScreen(
                                 Icon(
                                     imageVector = Icons.Default.AccountBalanceWallet,
                                     contentDescription = null,
-                                    tint = PrimaryGreen,
+                                    tint = HarvestLime,
                                     modifier = Modifier.size(AppIconSize.sm)
                                 )
                                 Spacer(modifier = Modifier.width(AppSpacing.xs))
                                 Text(
                                     text = "SPENDABLE",
                                     style = AppTypography.labelSmall,
-                                    color = TextSlate500
+                                    color = Purple300
                                 )
                             }
                             Spacer(modifier = Modifier.height(AppSpacing.xs))
                             Text(
-                                text = "₦${String.format("%,.2f", wallet?.availableBalance ?: 0.0)}",
-                                style = AppTypography.sectionHeader.copy(fontWeight = FontWeight.Bold),
-                                color = TextDark
+                                text = AppFormatters.formatNaira(wallet?.availableBalance ?: 0.0),
+                                style = AppTypography.sectionHeader.copy(fontWeight = FontWeight.Bold, fontFamily = SoraFamily, fontFeatureSettings = "tnum"),
+                                color = White
                             )
                             Spacer(modifier = Modifier.height(2.dp))
                             Text(
                                 text = "For instant shopping",
                                 style = AppTypography.caption,
-                                color = TextSlate400
+                                color = Purple300
                             )
                         }
                     }
@@ -2928,36 +2930,36 @@ fun HomeScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clip(AppShapes.card)
-                            .background(AppColors.brandOrangeBgLight)
-                            .border(1.dp, SecondaryOrange.copy(alpha = 0.2f), AppShapes.card)
+                            .background(Purple900.copy(alpha = 0.5f))
+                            .border(1.dp, CardBorderDark, AppShapes.card)
                             .padding(AppSpacing.md)
                     ) {
                         Column {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
-                                    imageVector = Icons.Default.Savings,
+                                    imageVector = Icons.Default.TrendingUp,
                                     contentDescription = null,
-                                    tint = SecondaryOrange,
+                                    tint = HarvestLime,
                                     modifier = Modifier.size(AppIconSize.sm)
                                 )
                                 Spacer(modifier = Modifier.width(AppSpacing.xs))
                                 Text(
                                     text = "SAVED KOBO",
                                     style = AppTypography.labelSmall,
-                                    color = SecondaryOrange
+                                    color = HarvestLime
                                 )
                             }
                             Spacer(modifier = Modifier.height(AppSpacing.xs))
                             Text(
-                                text = "₦${String.format("%,.2f", wallet?.savingsBalance ?: 0.0)}",
-                                style = AppTypography.sectionHeader.copy(fontWeight = FontWeight.Bold),
-                                color = TextDark
+                                text = AppFormatters.formatNaira(wallet?.savingsBalance ?: 0.0),
+                                style = AppTypography.sectionHeader.copy(fontWeight = FontWeight.Bold, fontFamily = SoraFamily, fontFeatureSettings = "tnum"),
+                                color = White
                             )
                             Spacer(modifier = Modifier.height(2.dp))
                             Text(
-                                text = "Emergency Reserve",
+                                text = "Emergency reserve",
                                 style = AppTypography.caption,
-                                color = TextSlate500
+                                color = Purple300
                             )
                         }
                     }
@@ -2970,8 +2972,8 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(AppShapes.md)
-                        .background(SurfaceSubtle)
-                        .border(1.dp, BorderSlate100, AppShapes.md)
+                        .background(Purple900.copy(alpha = 0.35f))
+                        .border(1.dp, CardBorderDark, AppShapes.md)
                         .padding(horizontal = AppSpacing.md, vertical = AppSpacing.sm),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
@@ -2980,20 +2982,20 @@ fun HomeScreen(
                         Icon(
                             imageVector = Icons.Default.Lock,
                             contentDescription = "Locked Goal Funds",
-                            tint = PrimaryGreen,
+                            tint = HarvestLime,
                             modifier = Modifier.size(AppIconSize.sm)
                         )
                         Spacer(modifier = Modifier.width(AppSpacing.sm))
                         Text(
-                            text = "Locked in Active Food Goals",
+                            text = "Locked in active food goals",
                             style = AppTypography.labelSmall,
-                            color = TextDark
+                            color = White
                         )
                     }
                     Text(
-                        text = "₦${String.format("%,.2f", totalGoalsBalance)}",
-                        style = AppTypography.label.copy(fontWeight = FontWeight.Bold),
-                        color = PrimaryGreen
+                        text = AppFormatters.formatNaira(totalGoalsBalance),
+                        style = AppTypography.label.copy(fontWeight = FontWeight.Bold, fontFamily = SoraFamily, fontFeatureSettings = "tnum"),
+                        color = HarvestLime
                     )
                 }
             }
@@ -3005,10 +3007,11 @@ fun HomeScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = AppSpacing.lg, vertical = AppSpacing.xs),
-                containerColor = SurfaceBg,
-                borderColor = BorderSlate100,
+                containerColor = Purple950,
+                borderColor = CardBorderDark,
                 shape = AppShapes.card,
-                contentPadding = PaddingValues(vertical = AppSpacing.md, horizontal = AppSpacing.xs)
+                contentPadding = PaddingValues(vertical = AppSpacing.md, horizontal = AppSpacing.xs),
+                ground = SurfaceGround.DARK
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -3026,22 +3029,22 @@ fun HomeScreen(
                         Box(
                             modifier = Modifier
                                 .size(50.dp)
-                                .background(PrimaryGreen.copy(alpha = 0.1f), AppShapes.md)
-                                .border(1.dp, PrimaryGreen.copy(alpha = 0.2f), AppShapes.md),
+                                .background(Purple900, AppShapes.md)
+                                .border(1.dp, CardBorderDark, AppShapes.md),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = Icons.Default.AccountBalanceWallet,
                                 contentDescription = "Fund Wallet",
-                                tint = PrimaryGreen,
+                                tint = HarvestLime,
                                 modifier = Modifier.size(AppIconSize.lg)
                             )
                         }
                         Spacer(modifier = Modifier.height(AppSpacing.xs))
                         Text(
-                            text = "Fund Wallet",
+                            text = "Fund wallet",
                             style = AppTypography.labelSmall,
-                            color = TextDark
+                            color = White
                         )
                     }
 
@@ -3056,14 +3059,14 @@ fun HomeScreen(
                         Box(
                             modifier = Modifier
                                 .size(50.dp)
-                                .background(SecondaryOrange.copy(alpha = 0.1f), AppShapes.md)
-                                .border(1.dp, SecondaryOrange.copy(alpha = 0.2f), AppShapes.md),
+                                .background(Purple900, AppShapes.md)
+                                .border(1.dp, CardBorderDark, AppShapes.md),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.Send,
                                 contentDescription = "Transfer Funds",
-                                tint = SecondaryOrange,
+                                tint = HarvestLime,
                                 modifier = Modifier.size(AppIconSize.lg)
                             )
                         }
@@ -3071,7 +3074,7 @@ fun HomeScreen(
                         Text(
                             text = "Transfer",
                             style = AppTypography.labelSmall,
-                            color = TextDark
+                            color = White
                         )
                     }
 
@@ -3086,22 +3089,22 @@ fun HomeScreen(
                         Box(
                             modifier = Modifier
                                 .size(50.dp)
-                                .background(AccentGold.copy(alpha = 0.15f), AppShapes.md)
-                                .border(1.dp, AccentGold.copy(alpha = 0.3f), AppShapes.md),
+                                .background(Purple900, AppShapes.md)
+                                .border(1.dp, CardBorderDark, AppShapes.md),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Savings,
+                                imageVector = Icons.Default.TrendingUp,
                                 contentDescription = "View All Goals",
-                                tint = Color(0xFFD97706),
+                                tint = HarvestLime,
                                 modifier = Modifier.size(AppIconSize.lg)
                             )
                         }
                         Spacer(modifier = Modifier.height(AppSpacing.xs))
                         Text(
-                            text = "View Goals",
+                            text = "View goals",
                             style = AppTypography.labelSmall,
-                            color = TextDark
+                            color = White
                         )
                     }
 
@@ -3116,14 +3119,14 @@ fun HomeScreen(
                         Box(
                             modifier = Modifier
                                 .size(50.dp)
-                                .background(Color(0xFF3B82F6).copy(alpha = 0.12f), AppShapes.md)
-                                .border(1.dp, Color(0xFF3B82F6).copy(alpha = 0.25f), AppShapes.md),
+                                .background(Purple900, AppShapes.md)
+                                .border(1.dp, CardBorderDark, AppShapes.md),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = Icons.Default.History,
                                 contentDescription = "Transaction History",
-                                tint = Color(0xFF2563EB),
+                                tint = HarvestLime,
                                 modifier = Modifier.size(AppIconSize.lg)
                             )
                         }
@@ -3131,7 +3134,7 @@ fun HomeScreen(
                         Text(
                             text = "History",
                             style = AppTypography.labelSmall,
-                            color = TextDark
+                            color = White
                         )
                     }
                 }
@@ -3146,10 +3149,11 @@ fun HomeScreen(
                     .padding(horizontal = AppSpacing.lg, vertical = AppSpacing.xs)
                     .testTag("track_food_orders_card")
                     .clickable { viewModel.setActiveTab("orders") },
-                containerColor = SurfaceBg,
-                borderColor = BorderSlate100,
+                containerColor = Purple950,
+                borderColor = CardBorderDark,
                 shape = AppShapes.card,
-                contentPadding = PaddingValues(AppSpacing.md)
+                contentPadding = PaddingValues(AppSpacing.md),
+                ground = SurfaceGround.DARK
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -3157,34 +3161,34 @@ fun HomeScreen(
                     Box(
                         modifier = Modifier
                             .size(44.dp)
-                            .background(PrimaryGreen.copy(alpha = 0.1f), CircleShape),
+                            .background(Purple900, CircleShape),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             imageVector = Icons.Default.LocalShipping,
                             contentDescription = "Track Orders",
-                            tint = PrimaryGreen,
+                            tint = HarvestLime,
                             modifier = Modifier.size(AppIconSize.lg)
                         )
                     }
                     Spacer(modifier = Modifier.width(AppSpacing.md))
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = "Track Food Orders 📦",
-                            style = AppTypography.label.copy(fontWeight = FontWeight.Bold),
-                            color = TextDark
+                            text = "Track Food Orders",
+                            style = AppTypography.label.copy(fontWeight = FontWeight.Bold, fontFamily = SoraFamily),
+                            color = White
                         )
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
                             text = "Track dispatch riders & wholesale grocery distribution",
                             style = AppTypography.caption,
-                            color = TextSlate500
+                            color = Purple300
                         )
                     }
                     Icon(
                         imageVector = Icons.Default.ChevronRight,
                         contentDescription = null,
-                        tint = TextSlate400,
+                        tint = Purple300,
                         modifier = Modifier.size(AppIconSize.md)
                     )
                 }
@@ -3196,18 +3200,19 @@ fun HomeScreen(
             Column(modifier = Modifier.padding(horizontal = AppSpacing.lg)) {
                 AfriSavSectionHeader(
                     title = "Active Food Goals",
-                    actionText = "See All",
-                    onActionClick = { viewModel.setActiveTab("goals") }
+                    actionText = "See all",
+                    onActionClick = { viewModel.setActiveTab("goals") },
+                    ground = SurfaceGround.DARK
                 )
 
                 if (goals.isEmpty()) {
                     EmptyStateCard(
                         message = "No Active Food Savings Goals Yet",
                         subMessage = "Start saving towards wholesale food staples and lock in cheap prices!",
-                        btnText = "Create Savings Goal",
+                        btnText = "Create savings goal",
                         onClick = onCreateGoalClick,
-                        icon = Icons.Default.Savings,
-                        iconColor = PrimaryGreen
+                        icon = Icons.Default.TrendingUp,
+                        iconColor = HarvestLime
                     )
                 } else {
                     goals.take(1).forEach { goal ->
@@ -3224,8 +3229,8 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(AppShapes.card)
-                        .background(AppColors.brandOrangeBgLight)
-                        .border(1.dp, SecondaryOrange.copy(alpha = 0.25f), AppShapes.card)
+                        .background(Purple900.copy(alpha = 0.5f))
+                        .border(1.dp, CardBorderDark, AppShapes.card)
                         .padding(AppSpacing.md),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(AppSpacing.md)
@@ -3233,20 +3238,20 @@ fun HomeScreen(
                     Box(
                         modifier = Modifier
                             .size(34.dp)
-                            .background(SecondaryOrange, CircleShape),
+                            .background(SavPurple, CircleShape),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             imageVector = Icons.Default.SmartToy,
                             contentDescription = "Mama Olufunke AI Advice",
-                            tint = Color.White,
+                            tint = HarvestLime,
                             modifier = Modifier.size(AppIconSize.sm)
                         )
                     }
                     Text(
                         text = "Mama Olufunke: Rice prices dropped by 4% at Mushin Market. Lock in this discount with your active Rice Goal today!",
                         style = AppTypography.caption.copy(fontWeight = FontWeight.Medium),
-                        color = Color(0xFF8B4D00),
+                        color = Purple200,
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -3259,20 +3264,21 @@ fun HomeScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = AppSpacing.lg, vertical = AppSpacing.xs),
-                containerColor = SurfaceBg,
-                borderColor = BorderSlate100,
+                containerColor = Purple950,
+                borderColor = CardBorderDark,
                 shape = AppShapes.card,
-                contentPadding = PaddingValues(AppSpacing.lg)
+                contentPadding = PaddingValues(AppSpacing.lg),
+                ground = SurfaceGround.DARK
             ) {
                 Text(
                     text = "My Savings Trend",
-                    style = AppTypography.cardTitle,
-                    color = TextDark
+                    style = AppTypography.cardTitle.copy(fontFamily = SoraFamily),
+                    color = White
                 )
                 Text(
                     text = "Your weekly savings deposits and group goal contributions",
                     style = AppTypography.caption,
-                    color = TextSlate500
+                    color = Purple300
                 )
 
                 Spacer(modifier = Modifier.height(AppSpacing.lg))
@@ -3288,7 +3294,7 @@ fun HomeScreen(
 
                     // Draw background reference grid
                     drawLine(
-                        color = Color.LightGray.copy(alpha = 0.25f),
+                        color = Purple800.copy(alpha = 0.5f),
                         start = androidx.compose.ui.geometry.Offset(0f, height * 0.5f),
                         end = androidx.compose.ui.geometry.Offset(width, height * 0.5f),
                         strokeWidth = 2f
@@ -3309,7 +3315,7 @@ fun HomeScreen(
                         }
                     }
 
-                    // Draw beautiful savings gradient path fill
+                    // Draw savings gradient path fill
                     val fillPath = Path().apply {
                         addPath(path)
                         lineTo(width, height)
@@ -3319,27 +3325,27 @@ fun HomeScreen(
                     drawPath(
                         path = fillPath,
                         brush = Brush.verticalGradient(
-                            colors = listOf(PrimaryGreen.copy(alpha = 0.25f), Color.Transparent)
+                            colors = listOf(HarvestLime.copy(alpha = 0.25f), Color.Transparent)
                         )
                     )
 
                     // Draw spline line
                     drawPath(
                         path = path,
-                        color = PrimaryGreen,
-                        style = Stroke(width = 8f, cap = StrokeCap.Round)
+                        color = HarvestLime,
+                        style = Stroke(width = 6f, cap = StrokeCap.Round)
                     )
 
                     // Draw dots at junctions
                     points.forEach { (xPercent, yPercent) ->
                         drawCircle(
-                            color = SecondaryOrange,
-                            radius = 7f,
+                            color = HarvestLime,
+                            radius = 6f,
                             center = androidx.compose.ui.geometry.Offset(width * xPercent, height * yPercent)
                         )
                         drawCircle(
-                            color = Color.White,
-                            radius = 3f,
+                            color = White,
+                            radius = 2.5f,
                             center = androidx.compose.ui.geometry.Offset(width * xPercent, height * yPercent)
                         )
                     }
@@ -3351,12 +3357,12 @@ fun HomeScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text("Mon", style = AppTypography.caption, color = TextSlate400)
-                    Text("Tue", style = AppTypography.caption, color = TextSlate400)
-                    Text("Wed", style = AppTypography.caption, color = TextSlate400)
-                    Text("Thu", style = AppTypography.caption, color = TextSlate400)
-                    Text("Fri", style = AppTypography.caption, color = TextSlate400)
-                    Text("Sat", style = AppTypography.caption, color = TextSlate400)
+                    Text("Mon", style = AppTypography.caption, color = Purple300)
+                    Text("Tue", style = AppTypography.caption, color = Purple300)
+                    Text("Wed", style = AppTypography.caption, color = Purple300)
+                    Text("Thu", style = AppTypography.caption, color = Purple300)
+                    Text("Fri", style = AppTypography.caption, color = Purple300)
+                    Text("Sat", style = AppTypography.caption, color = Purple300)
                 }
             }
 
@@ -3366,8 +3372,9 @@ fun HomeScreen(
             Column(modifier = Modifier.padding(horizontal = AppSpacing.lg, vertical = AppSpacing.xs)) {
                 AfriSavSectionHeader(
                     title = "Nearby Food Sellers",
-                    actionText = "View Marketplace",
-                    onActionClick = onViewVendorsClick
+                    actionText = "View marketplace",
+                    onActionClick = onViewVendorsClick,
+                    ground = SurfaceGround.DARK
                 )
 
                 val sortedNearbySellers = remember(marketItems, currentUserLocation) {
@@ -3396,13 +3403,14 @@ fun HomeScreen(
             Column(modifier = Modifier.padding(horizontal = AppSpacing.lg, vertical = AppSpacing.xs)) {
                 AfriSavSectionHeader(
                     title = "Recent Transactions",
-                    actionText = "See All",
-                    onActionClick = { viewModel.setActiveTab("wallet") }
+                    actionText = "See all",
+                    onActionClick = { viewModel.setActiveTab("wallet") },
+                    ground = SurfaceGround.DARK
                 )
                 Text(
                     text = "Track your recent savings deposits, wallet loads, and purchases.",
                     style = AppTypography.caption,
-                    color = TextSlate500,
+                    color = Purple300,
                     modifier = Modifier.padding(bottom = AppSpacing.sm)
                 )
 
@@ -3412,20 +3420,21 @@ fun HomeScreen(
                     EmptyStateCard(
                         message = "No Transaction History Yet",
                         subMessage = "Your savings deposits, wallet transfers, and checkout transactions will show up here.",
-                        btnText = "Fund Wallet",
+                        btnText = "Fund wallet",
                         onClick = onFundWalletClick,
                         icon = Icons.Default.AccountBalanceWallet,
-                        iconColor = Color(0xFF0F766E)
+                        iconColor = HarvestLime
                     )
                 } else {
                     AfriSavCard(
-                        containerColor = SurfaceBg,
-                        borderColor = BorderSlate100,
+                        containerColor = Purple950,
+                        borderColor = CardBorderDark,
                         shape = AppShapes.card,
                         modifier = Modifier
                             .fillMaxWidth()
                             .testTag("dashboard_transaction_history"),
-                        contentPadding = PaddingValues(AppSpacing.md)
+                        contentPadding = PaddingValues(AppSpacing.md),
+                        ground = SurfaceGround.DARK
                     ) {
                         Column(
                             verticalArrangement = Arrangement.spacedBy(AppSpacing.sm)
@@ -4160,7 +4169,10 @@ fun GoalSummaryCard(goal: SavingsGoal, onSaveClick: () -> Unit) {
     AfriSavCard(
         modifier = Modifier.fillMaxWidth(),
         shape = AppShapes.card,
-        contentPadding = PaddingValues(AppSpacing.lg)
+        contentPadding = PaddingValues(AppSpacing.lg),
+        containerColor = Purple950,
+        borderColor = CardBorderDark,
+        ground = SurfaceGround.DARK
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -4172,22 +4184,28 @@ fun GoalSummaryCard(goal: SavingsGoal, onSaveClick: () -> Unit) {
                     modifier = Modifier
                         .size(44.dp)
                         .clip(AppShapes.md)
-                        .background(AppColors.brandOrangeBgLight),
+                        .background(Purple900)
+                        .border(1.dp, CardBorderDark, AppShapes.md),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(getCategoryEmoji(goal.category), fontSize = 22.sp)
+                    Icon(
+                        imageVector = Icons.Default.Restaurant,
+                        contentDescription = goal.title,
+                        tint = HarvestLime,
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
                 Spacer(modifier = Modifier.width(AppSpacing.md))
                 Column {
                     Text(
                         text = goal.title,
-                        style = AppTypography.cardTitle,
-                        color = TextDark
+                        style = AppTypography.cardTitle.copy(fontFamily = SoraFamily),
+                        color = White
                     )
                     Text(
-                        text = "Target: ₦${String.format("%,.0f", goal.targetAmount)}",
+                        text = "Target: ${AppFormatters.formatNaira(goal.targetAmount)}",
                         style = AppTypography.caption,
-                        color = TextSlate500
+                        color = Purple300
                     )
                 }
             }
@@ -4195,17 +4213,18 @@ fun GoalSummaryCard(goal: SavingsGoal, onSaveClick: () -> Unit) {
                 AfriSavBadge(
                     text = "Locked",
                     type = AfriSavBadgeType.ERROR,
-                    icon = Icons.Default.Lock
+                    icon = Icons.Default.Lock,
+                    ground = SurfaceGround.DARK
                 )
             }
         }
 
         Spacer(modifier = Modifier.height(AppSpacing.md))
 
-        BasketSavingsProgressBar(
-            savedAmount = goal.savedAmount,
-            targetAmount = goal.targetAmount,
-            modifier = Modifier.fillMaxWidth()
+        AfriSavProgressBar(
+            progress = if (goal.targetAmount > 0) (goal.savedAmount / goal.targetAmount).toFloat().coerceIn(0f, 1f) else 0f,
+            modifier = Modifier.fillMaxWidth(),
+            ground = SurfaceGround.DARK
         )
 
         Spacer(modifier = Modifier.height(AppSpacing.md))
@@ -4214,8 +4233,8 @@ fun GoalSummaryCard(goal: SavingsGoal, onSaveClick: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(AppShapes.md)
-                .background(SurfaceSubtle)
-                .border(1.dp, BorderSlate100, AppShapes.md)
+                .background(Purple900.copy(alpha = 0.5f))
+                .border(1.dp, CardBorderDark, AppShapes.md)
                 .padding(AppSpacing.md),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
@@ -4224,19 +4243,20 @@ fun GoalSummaryCard(goal: SavingsGoal, onSaveClick: () -> Unit) {
                 Text(
                     text = "SAVED SO FAR",
                     style = AppTypography.labelSmall,
-                    color = TextSlate400
+                    color = Purple300
                 )
                 Text(
-                    text = "₦${String.format("%,.0f", goal.savedAmount)}",
-                    style = AppTypography.sectionHeader.copy(fontWeight = FontWeight.Bold),
-                    color = TextDark
+                    text = AppFormatters.formatNaira(goal.savedAmount),
+                    style = AppTypography.sectionHeader.copy(fontWeight = FontWeight.Bold, fontFamily = SoraFamily, fontFeatureSettings = "tnum"),
+                    color = White
                 )
             }
             AfriSavPrimaryButton(
-                text = "Top Up",
+                text = "Top up",
                 onClick = onSaveClick,
+                ground = SurfaceGround.DARK,
                 fullWidth = false,
-                modifier = Modifier.height(38.dp)
+                modifier = Modifier.height(44.dp)
             )
         }
     }
@@ -4253,30 +4273,31 @@ fun VendorPreviewRow(
             .fillMaxWidth()
             .clickable(onClick = onClick)
             .testTag("vendor_row_${item.id}"),
-        containerColor = if (isHighlight) AppColors.brandGreenBgLight else SurfaceBg,
-        borderColor = if (isHighlight) PrimaryGreen.copy(alpha = 0.4f) else BorderSlate100,
+        containerColor = Purple950,
+        borderColor = if (isHighlight) HarvestLime.copy(alpha = 0.5f) else CardBorderDark,
         shape = AppShapes.card,
-        contentPadding = PaddingValues(0.dp)
+        contentPadding = PaddingValues(0.dp),
+        ground = SurfaceGround.DARK
     ) {
         Column {
             if (isHighlight) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(PrimaryGreen)
+                        .background(Purple900)
                         .padding(horizontal = AppSpacing.md, vertical = AppSpacing.xs),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
                         imageVector = Icons.Default.Explore,
                         contentDescription = null,
-                        tint = Color.White,
+                        tint = HarvestLime,
                         modifier = Modifier.size(AppIconSize.xs)
                     )
                     Spacer(modifier = Modifier.width(AppSpacing.xs))
                     Text(
                         text = "CLOSEST TO YOUR LOCATION",
-                        color = Color.White,
+                        color = HarvestLime,
                         style = AppTypography.labelSmall,
                         maxLines = 1,
                         softWrap = false
@@ -4292,7 +4313,7 @@ fun VendorPreviewRow(
                     modifier = Modifier
                         .size(44.dp)
                         .clip(CircleShape)
-                        .background(PrimaryGreen.copy(alpha = 0.08f)),
+                        .background(Purple900),
                     contentAlignment = Alignment.Center
                 ) {
                     FoodItemImage(
@@ -4311,7 +4332,7 @@ fun VendorPreviewRow(
                         Text(
                             text = item.vendorName,
                             style = AppTypography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-                            color = TextDark,
+                            color = White,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.weight(1f, fill = false)
@@ -4320,31 +4341,31 @@ fun VendorPreviewRow(
                             Spacer(modifier = Modifier.width(AppSpacing.xs))
                             AfriSavBadge(
                                 text = "Nearest",
-                                type = AfriSavBadgeType.SUCCESS
+                                type = AfriSavBadgeType.SUCCESS,
+                                ground = SurfaceGround.DARK
                             )
                         }
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.Star, contentDescription = null, tint = AccentGold, modifier = Modifier.size(14.dp))
+                        Icon(Icons.Default.Star, contentDescription = null, tint = HarvestLime, modifier = Modifier.size(14.dp))
                         Text(
                             text = " ${item.rating} • ${item.distance} km away",
                             style = AppTypography.caption,
-                            color = TextSlate500
+                            color = Purple300
                         )
                     }
                 }
                 Spacer(modifier = Modifier.width(AppSpacing.sm))
                 Column(horizontalAlignment = Alignment.End) {
-                    PriceDisplay(
-                        price = item.price,
-                        originalPrice = item.originalPrice,
-                        priceFontSize = 14.sp,
-                        fontWeight = FontWeight.Bold
+                    Text(
+                        text = AppFormatters.formatNaira(item.price),
+                        style = AppTypography.labelLarge.copy(fontWeight = FontWeight.Bold, fontFamily = SoraFamily, fontFeatureSettings = "tnum"),
+                        color = HarvestLime
                     )
                     Text(
                         text = item.name.split(" ").take(2).joinToString(" "),
                         style = AppTypography.caption,
-                        color = TextSlate500
+                        color = Purple300
                     )
                 }
             }
@@ -4479,7 +4500,7 @@ fun WalletScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(SoftBackground)
+                .background(WarmCream)
                 .verticalScroll(rememberScrollState())
                 .statusBarsPadding()
                 .padding(horizontal = AppSpacing.lg, vertical = AppSpacing.lg)
@@ -4487,7 +4508,8 @@ fun WalletScreen(
             // Screen Title & Subtitle using standardized Page Header
             AfriSavPageHeader(
                 title = "Digital Food Wallet",
-                subtitle = "Manage your food capital, emergency savings, and automated funding"
+                subtitle = "Manage your food capital, emergency savings, and automated funding",
+                ground = SurfaceGround.LIGHT
             )
 
             Spacer(modifier = Modifier.height(AppSpacing.lg))
@@ -4498,17 +4520,18 @@ fun WalletScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .testTag("wallet_balance_card"),
-                containerColor = SurfaceBg,
-                borderColor = BorderSlate100,
+                containerColor = SurfaceWhite,
+                borderColor = CardBorderLight,
                 shape = AppShapes.card,
-                contentPadding = PaddingValues(0.dp)
+                contentPadding = PaddingValues(0.dp),
+                ground = SurfaceGround.LIGHT
             ) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(
                             Brush.linearGradient(
-                                colors = listOf(PrimaryGreen, DarkGreen)
+                                colors = listOf(SavPurple, DeepPlum)
                             )
                         )
                         .padding(AppSpacing.lg)
@@ -4522,15 +4545,15 @@ fun WalletScreen(
                             Column {
                                 Text(
                                     text = "COMBINED CAPITAL SUMMARY",
-                                    style = AppTypography.caption.copy(fontWeight = FontWeight.Bold),
-                                    color = Color.White.copy(alpha = 0.75f),
+                                    style = AppTypography.caption.copy(fontWeight = FontWeight.Bold, fontFamily = SoraFamily),
+                                    color = Purple200,
                                     letterSpacing = 1.2.sp
                                 )
                                 Spacer(modifier = Modifier.height(2.dp))
                                 Text(
-                                    text = "AfriSav Smart Wallet 🛡️",
-                                    style = AppTypography.cardTitle,
-                                    color = Color.White
+                                    text = "AfriSav Smart Wallet",
+                                    style = AppTypography.cardTitle.copy(fontFamily = SoraFamily),
+                                    color = White
                                 )
                             }
                             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -4541,7 +4564,7 @@ fun WalletScreen(
                                     Icon(
                                         imageVector = if (isBalanceVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                                         contentDescription = "Toggle Balance Visibility",
-                                        tint = Color.White.copy(alpha = 0.85f),
+                                        tint = White.copy(alpha = 0.85f),
                                         modifier = Modifier.size(AppIconSize.md)
                                     )
                                 }
@@ -4549,7 +4572,7 @@ fun WalletScreen(
                                 Icon(
                                     imageVector = Icons.Default.AccountBalanceWallet,
                                     contentDescription = null,
-                                    tint = AccentGold,
+                                    tint = HarvestLime,
                                     modifier = Modifier.size(26.dp)
                                 )
                             }
@@ -4560,22 +4583,22 @@ fun WalletScreen(
                         Text(
                             text = "Total Combined Balance (Spendable + Saved)",
                             style = AppTypography.bodySmall,
-                            color = Color.White.copy(alpha = 0.85f)
+                            color = Purple200
                         )
                         Spacer(modifier = Modifier.height(AppSpacing.xs))
                         Text(
                             text = if (isBalanceVisible) {
-                                "₦${String.format("%,.2f", totalBalance)}"
+                                AppFormatters.formatNaira(totalBalance)
                             } else {
                                 "₦ ••••.••"
                             },
-                            style = AppTypography.balanceLarge,
-                            color = Color.White,
+                            style = AppTypography.balanceLarge.copy(fontFamily = SoraFamily, fontFeatureSettings = "tnum"),
+                            color = White,
                             letterSpacing = if (isBalanceVisible) (-0.5).sp else 1.5.sp
                         )
 
                         Spacer(modifier = Modifier.height(AppSpacing.md))
-                        HorizontalDivider(color = Color.White.copy(alpha = 0.2f))
+                        HorizontalDivider(color = White.copy(alpha = 0.2f))
                         Spacer(modifier = Modifier.height(AppSpacing.sm))
 
                         // Account number with copy functionality (Clean, highly legible card overlay)
@@ -4583,7 +4606,8 @@ fun WalletScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clip(AppShapes.md)
-                                .background(Color.White.copy(alpha = 0.12f))
+                                .background(Purple900.copy(alpha = 0.4f))
+                                .border(1.dp, CardBorderDark, AppShapes.md)
                                 .padding(horizontal = AppSpacing.md, vertical = AppSpacing.sm)
                         ) {
                             Row(
@@ -4595,26 +4619,26 @@ fun WalletScreen(
                                     Text(
                                         text = "DEDICATED ACCOUNT (OPAY PARTNER)",
                                         style = AppTypography.caption.copy(fontWeight = FontWeight.Bold),
-                                        color = Color.White.copy(alpha = 0.8f)
+                                        color = Purple200
                                     )
                                     Spacer(modifier = Modifier.height(2.dp))
                                     Row(verticalAlignment = Alignment.CenterVertically) {
                                         Text(
                                             text = "1215543001",
-                                            style = AppTypography.sectionHeader.copy(fontWeight = FontWeight.Bold),
-                                            color = Color.White,
+                                            style = AppTypography.sectionHeader.copy(fontWeight = FontWeight.Bold, fontFamily = SoraFamily, fontFeatureSettings = "tnum"),
+                                            color = White,
                                             letterSpacing = 0.5.sp
                                         )
                                         Spacer(modifier = Modifier.width(AppSpacing.sm))
                                         Icon(
                                             imageVector = Icons.Default.ContentCopy,
                                             contentDescription = "Copy Account Number",
-                                            tint = Color.White,
+                                            tint = HarvestLime,
                                             modifier = Modifier
                                                 .size(AppIconSize.sm)
                                                 .clickable {
                                                     clipboardManager.setText(androidx.compose.ui.text.AnnotatedString("1215543001"))
-                                                    android.widget.Toast.makeText(context, "Account number copied! 📋", android.widget.Toast.LENGTH_SHORT).show()
+                                                    android.widget.Toast.makeText(context, "Account number copied", android.widget.Toast.LENGTH_SHORT).show()
                                                 }
                                         )
                                     }
@@ -4622,13 +4646,14 @@ fun WalletScreen(
                                 Box(
                                     modifier = Modifier
                                         .clip(AppShapes.sm)
-                                        .background(Color.White.copy(alpha = 0.2f))
+                                        .background(Purple900)
+                                        .border(1.dp, CardBorderDark, AppShapes.sm)
                                         .padding(horizontal = AppSpacing.sm, vertical = AppSpacing.xs)
                                 ) {
                                     Text(
                                         text = "Tier 1 Limit",
                                         style = AppTypography.labelSmall,
-                                        color = AccentGold
+                                        color = HarvestLime
                                     )
                                 }
                             }
@@ -4647,118 +4672,121 @@ fun WalletScreen(
                 // Spendable Card
                 AfriSavCard(
                     modifier = Modifier.weight(1f),
-                    containerColor = SurfaceBg,
-                    borderColor = BorderSlate100,
+                    containerColor = SurfaceWhite,
+                    borderColor = CardBorderLight,
                     shape = AppShapes.card,
-                    contentPadding = PaddingValues(AppSpacing.md)
+                    contentPadding = PaddingValues(AppSpacing.md),
+                    ground = SurfaceGround.LIGHT
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Box(
                             modifier = Modifier
                                 .size(32.dp)
-                                .background(PrimaryGreen.copy(alpha = 0.1f), CircleShape),
+                                .background(Purple100, CircleShape),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = Icons.Default.AccountBalanceWallet,
                                 contentDescription = null,
-                                tint = PrimaryGreen,
+                                tint = SavPurple,
                                 modifier = Modifier.size(AppIconSize.sm)
                             )
                         }
                         Spacer(modifier = Modifier.width(AppSpacing.sm))
                         Text(
-                            text = "Spendable 💳",
+                            text = "Spendable",
                             style = AppTypography.label.copy(fontWeight = FontWeight.Bold),
-                            color = TextDark
+                            color = Charcoal
                         )
                     }
                     Spacer(modifier = Modifier.height(AppSpacing.sm))
                     Text(
                         text = if (isBalanceVisible) {
-                            "₦${String.format("%,.2f", wallet?.availableBalance ?: 0.0)}"
+                            AppFormatters.formatNaira(wallet?.availableBalance ?: 0.0)
                         } else {
                             "₦ ••••"
                         },
-                        style = AppTypography.cardTitle.copy(fontWeight = FontWeight.Bold),
-                        color = PrimaryGreen
+                        style = AppTypography.cardTitle.copy(fontWeight = FontWeight.Bold, fontFamily = SoraFamily, fontFeatureSettings = "tnum"),
+                        color = SavPurple
                     )
                     Spacer(modifier = Modifier.height(AppSpacing.xs))
                     Text(
                         text = "Instant shopping buffer",
                         style = AppTypography.caption,
-                        color = TextSlate500
+                        color = TextMuted
                     )
                 }
 
                 // Locked Savings Card
                 AfriSavCard(
                     modifier = Modifier.weight(1f),
-                    containerColor = SurfaceBg,
-                    borderColor = BorderSlate100,
+                    containerColor = SurfaceWhite,
+                    borderColor = CardBorderLight,
                     shape = AppShapes.card,
-                    contentPadding = PaddingValues(AppSpacing.md)
+                    contentPadding = PaddingValues(AppSpacing.md),
+                    ground = SurfaceGround.LIGHT
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Box(
                             modifier = Modifier
                                 .size(32.dp)
-                                .background(SecondaryOrange.copy(alpha = 0.12f), CircleShape),
+                                .background(Purple100, CircleShape),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Savings,
+                                imageVector = Icons.Default.TrendingUp,
                                 contentDescription = null,
-                                tint = SecondaryOrange,
+                                tint = SavPurple,
                                 modifier = Modifier.size(AppIconSize.sm)
                             )
                         }
                         Spacer(modifier = Modifier.width(AppSpacing.sm))
                         Text(
-                            text = "Savings 🔒",
+                            text = "Savings",
                             style = AppTypography.label.copy(fontWeight = FontWeight.Bold),
-                            color = TextDark
+                            color = Charcoal
                         )
                     }
                     Spacer(modifier = Modifier.height(AppSpacing.sm))
                     Text(
                         text = if (isBalanceVisible) {
-                            "₦${String.format("%,.2f", wallet?.savingsBalance ?: 0.0)}"
+                            AppFormatters.formatNaira(wallet?.savingsBalance ?: 0.0)
                         } else {
                             "₦ ••••"
                         },
-                        style = AppTypography.cardTitle.copy(fontWeight = FontWeight.Bold),
-                        color = SecondaryOrange
+                        style = AppTypography.cardTitle.copy(fontWeight = FontWeight.Bold, fontFamily = SoraFamily, fontFeatureSettings = "tnum"),
+                        color = Charcoal
                     )
                     Spacer(modifier = Modifier.height(AppSpacing.xs))
                     Text(
                         text = "Secured target funds",
                         style = AppTypography.caption,
-                        color = TextSlate500
+                        color = TextMuted
                     )
                 }
             }
 
             Spacer(modifier = Modifier.height(AppSpacing.md))
 
-            // Quick Actions: Fund Wallet & Transfer (High Touch-Target Buttons)
+            // Quick Actions: Fund Wallet & Transfer (High Touch-Target Buttons per Brand Bible)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(AppSpacing.md)
             ) {
                 AfriSavPrimaryButton(
-                    text = "Fund Wallet",
+                    text = "Fund wallet",
                     onClick = onFundClick,
                     leadingIcon = Icons.Default.Add,
+                    ground = SurfaceGround.LIGHT,
                     modifier = Modifier
                         .weight(1f)
                         .testTag("wallet_fund_button")
                 )
-                AfriSavPrimaryButton(
-                    text = "Transfer Out",
+                AfriSavSecondaryButton(
+                    text = "Transfer out",
                     onClick = onTransferClick,
-                    leadingIcon = Icons.Default.Send,
-                    containerColor = SecondaryOrange,
+                    leadingIcon = Icons.AutoMirrored.Filled.Send,
+                    ground = SurfaceGround.LIGHT,
                     modifier = Modifier
                         .weight(1f)
                         .testTag("wallet_transfer_button")
@@ -4772,10 +4800,11 @@ fun WalletScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .testTag("kobo_smart_wallet_card"),
-                containerColor = SurfaceBg,
-                borderColor = BorderSlate100,
+                containerColor = SurfaceWhite,
+                borderColor = CardBorderLight,
                 shape = AppShapes.card,
-                contentPadding = PaddingValues(AppSpacing.lg)
+                contentPadding = PaddingValues(AppSpacing.lg),
+                ground = SurfaceGround.LIGHT
             ) {
                 // Header
                 Row(
@@ -4787,27 +4816,27 @@ fun WalletScreen(
                         Box(
                             modifier = Modifier
                                 .size(44.dp)
-                                .background(PrimaryGreen.copy(alpha = 0.1f), CircleShape),
+                                .background(Purple100, CircleShape),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = Icons.Default.TrendingUp,
                                 contentDescription = null,
-                                tint = PrimaryGreen,
+                                tint = SavPurple,
                                 modifier = Modifier.size(AppIconSize.lg)
                             )
                         }
                         Spacer(modifier = Modifier.width(AppSpacing.md))
                         Column {
                             Text(
-                                text = "Smart Naira Saver 🎯",
-                                style = AppTypography.cardTitle,
-                                color = TextDark
+                                text = "Smart Naira Saver",
+                                style = AppTypography.cardTitle.copy(fontFamily = SoraFamily),
+                                color = Charcoal
                             )
                             Text(
                                 text = "Automated piggybank & food goals",
                                 style = AppTypography.caption,
-                                color = TextSlate500
+                                color = TextMuted
                             )
                         }
                     }
@@ -4816,14 +4845,15 @@ fun WalletScreen(
                     IconButton(
                         onClick = { showSetKoboGoalDialog = true },
                         modifier = Modifier
-                            .background(BorderSlate100, CircleShape)
+                            .background(WarmCream, CircleShape)
+                            .border(1.dp, CardBorderLight, CircleShape)
                             .size(36.dp)
                             .testTag("edit_kobo_goal_button")
                     ) {
                         Icon(
                             imageVector = Icons.Default.Edit,
                             contentDescription = "Edit Naira Goal",
-                            tint = TextDark,
+                            tint = Charcoal,
                             modifier = Modifier.size(AppIconSize.sm)
                         )
                     }
@@ -4836,18 +4866,18 @@ fun WalletScreen(
                 Text(
                     text = "YOUR SAVINGS BALANCE",
                     style = AppTypography.caption.copy(fontWeight = FontWeight.Bold),
-                    color = TextSlate400,
+                    color = TextMuted,
                     letterSpacing = 0.8.sp
                 )
                 Spacer(modifier = Modifier.height(AppSpacing.xs))
                 Text(
-                    text = "₦${String.format("%,.2f", savingsBalanceInNaira)}",
-                    style = AppTypography.balanceLarge,
-                    color = PrimaryGreen
+                    text = AppFormatters.formatNaira(savingsBalanceInNaira),
+                    style = AppTypography.balanceLarge.copy(fontFamily = SoraFamily, fontFeatureSettings = "tnum"),
+                    color = SavPurple
                 )
 
                 Spacer(modifier = Modifier.height(AppSpacing.md))
-                HorizontalDivider(color = BorderSlate100)
+                HorizontalDivider(color = CardBorderLight)
                 Spacer(modifier = Modifier.height(AppSpacing.md))
 
                 // Contribution Goal Details
@@ -4862,39 +4892,24 @@ fun WalletScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "$frequency Savings Target",
+                        text = "$frequency savings target",
                         style = AppTypography.label.copy(fontWeight = FontWeight.Bold),
-                        color = TextDark
+                        color = Charcoal
                     )
                     Text(
-                        text = "₦${String.format("%,.0f", currentContribution)} / ₦${String.format("%,.0f", goalAmount)}",
-                        style = AppTypography.label.copy(fontWeight = FontWeight.Bold),
-                        color = PrimaryGreen
+                        text = "${AppFormatters.formatNaira(currentContribution)} / ${AppFormatters.formatNaira(goalAmount)}",
+                        style = AppTypography.label.copy(fontWeight = FontWeight.Bold, fontFamily = SoraFamily, fontFeatureSettings = "tnum"),
+                        color = SavPurple
                     )
                 }
 
                 Spacer(modifier = Modifier.height(AppSpacing.sm))
 
-                // Customized Gradient Progress Bar
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(8.dp)
-                        .clip(AppShapes.pill)
-                        .background(BorderSlate100)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .fillMaxWidth(progress)
-                            .clip(AppShapes.pill)
-                            .background(
-                                Brush.horizontalGradient(
-                                    colors = listOf(PrimaryGreen, DarkGreen)
-                                )
-                            )
-                    )
-                }
+                AfriSavProgressBar(
+                    progress = progress,
+                    modifier = Modifier.fillMaxWidth(),
+                    ground = SurfaceGround.LIGHT
+                )
 
                 Spacer(modifier = Modifier.height(AppSpacing.sm))
 
@@ -4905,13 +4920,13 @@ fun WalletScreen(
                     Icon(
                         imageVector = if (progress >= 1f) Icons.Default.Stars else Icons.Default.OfflineBolt,
                         contentDescription = null,
-                        tint = if (progress >= 1f) AccentGold else PrimaryGreen,
+                        tint = if (progress >= 1f) SemanticSuccessLight else SavPurple,
                         modifier = Modifier.size(AppIconSize.sm)
                     )
                     Text(
-                        text = if (progress >= 1f) "Goal achieved! Pure star behavior! ⭐" else "${String.format("%.0f", progress * 100)}% of your $frequency goal completed",
+                        text = if (progress >= 1f) "Goal achieved! Excellent progress." else "${String.format("%.0f", progress * 100)}% of your $frequency goal completed",
                         style = AppTypography.caption.copy(fontWeight = FontWeight.Bold),
-                        color = if (progress >= 1f) PrimaryGreen else TextSlate500
+                        color = if (progress >= 1f) SemanticSuccessLight else TextMuted
                     )
                 }
 
@@ -4923,18 +4938,20 @@ fun WalletScreen(
                     horizontalArrangement = Arrangement.spacedBy(AppSpacing.sm)
                 ) {
                     AfriSavPrimaryButton(
-                        text = "Save Naira",
+                        text = "Save naira",
                         onClick = { showKoboContributeDialog = true },
                         leadingIcon = Icons.Default.AddCircle,
+                        ground = SurfaceGround.LIGHT,
                         modifier = Modifier
                             .weight(1f)
                             .testTag("kobo_contribute_button")
                     )
 
-                    AfriSavOutlinedButton(
-                        text = "Reset Goal",
+                    AfriSavSecondaryButton(
+                        text = "Reset goal",
                         onClick = { viewModel.resetKoboContribution() },
                         leadingIcon = Icons.Default.Refresh,
+                        ground = SurfaceGround.LIGHT,
                         modifier = Modifier
                             .weight(1f)
                             .testTag("kobo_reset_button")
@@ -4949,10 +4966,11 @@ fun WalletScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .testTag("auto_monthly_deposit_card"),
-                containerColor = SurfaceBg,
-                borderColor = BorderSlate100,
+                containerColor = SurfaceWhite,
+                borderColor = CardBorderLight,
                 shape = AppShapes.card,
-                contentPadding = PaddingValues(AppSpacing.lg)
+                contentPadding = PaddingValues(AppSpacing.lg),
+                ground = SurfaceGround.LIGHT
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -4966,27 +4984,27 @@ fun WalletScreen(
                         Box(
                             modifier = Modifier
                                 .size(44.dp)
-                                .background(Color(0xFFF3E8FF), CircleShape),
+                                .background(Purple100, CircleShape),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Autorenew,
                                 contentDescription = null,
-                                tint = Color(0xFF8B5CF6),
+                                tint = SavPurple,
                                 modifier = Modifier.size(AppIconSize.lg)
                             )
                         }
                         Spacer(modifier = Modifier.width(AppSpacing.md))
                         Column {
                             Text(
-                                text = "Auto Savings 🔄",
-                                style = AppTypography.cardTitle,
-                                color = TextDark
+                                text = "Auto Savings",
+                                style = AppTypography.cardTitle.copy(fontFamily = SoraFamily),
+                                color = Charcoal
                             )
                             Text(
                                 text = "Automated food savings at selected frequency",
                                 style = AppTypography.caption,
-                                color = TextSlate500
+                                color = TextMuted
                             )
                         }
                     }
@@ -5003,15 +5021,15 @@ fun WalletScreen(
                             viewModel.updateAutoDepositSettings(enabled, currentAutoAmount, currentFrequency)
                         },
                         colors = SwitchDefaults.colors(
-                            checkedThumbColor = Color.White,
-                            checkedTrackColor = Color(0xFF8B5CF6)
+                            checkedThumbColor = White,
+                            checkedTrackColor = SavPurple
                         ),
                         modifier = Modifier.testTag("auto_monthly_deposit_switch")
                     )
                 }
 
                 Spacer(modifier = Modifier.height(AppSpacing.md))
-                HorizontalDivider(color = BorderSlate100)
+                HorizontalDivider(color = CardBorderLight)
                 Spacer(modifier = Modifier.height(AppSpacing.md))
 
                 val isAutoEnabled = wallet?.isAutoMonthlyDepositEnabled ?: false
@@ -5023,7 +5041,7 @@ fun WalletScreen(
                     Text(
                         text = "SAVINGS FREQUENCY",
                         style = AppTypography.caption.copy(fontWeight = FontWeight.Bold),
-                        color = TextSlate400,
+                        color = TextMuted,
                         letterSpacing = 0.8.sp
                     )
 
@@ -5040,11 +5058,11 @@ fun WalletScreen(
                                     .weight(1f)
                                     .clip(AppShapes.sm)
                                     .background(
-                                        color = if (isSelected) Color(0xFFF3E8FF) else BorderSlate100
+                                        color = if (isSelected) Purple100 else WarmCream
                                     )
                                     .border(
                                         width = if (isSelected) 1.5.dp else 1.dp,
-                                        color = if (isSelected) Color(0xFF8B5CF6) else Color.Transparent,
+                                        color = if (isSelected) SavPurple else CardBorderLight,
                                         shape = AppShapes.sm
                                     )
                                     .clickable {
@@ -5056,7 +5074,7 @@ fun WalletScreen(
                                 Text(
                                     text = freq,
                                     style = AppTypography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                                    color = if (isSelected) Color(0xFF8B5CF6) else TextSlate500
+                                    color = if (isSelected) SavPurple else TextMuted
                                 )
                             }
                         }
@@ -5067,16 +5085,16 @@ fun WalletScreen(
                     Text(
                         text = "${currentFrequency.uppercase()} TRANSFER AMOUNT",
                         style = AppTypography.caption.copy(fontWeight = FontWeight.Bold),
-                        color = TextSlate400,
+                        color = TextMuted,
                         letterSpacing = 0.8.sp
                     )
 
                     Spacer(modifier = Modifier.height(AppSpacing.xs))
 
                     Text(
-                        text = "₦${String.format("%,.0f", currentAutoAmount)}",
-                        style = AppTypography.balanceLarge,
-                        color = Color(0xFF8B5CF6)
+                        text = AppFormatters.formatNaira(currentAutoAmount),
+                        style = AppTypography.balanceLarge.copy(fontFamily = SoraFamily, fontFeatureSettings = "tnum"),
+                        color = SavPurple
                     )
 
                     Spacer(modifier = Modifier.height(AppSpacing.md))
@@ -5085,7 +5103,7 @@ fun WalletScreen(
                     Text(
                         text = "Quick Select Amount",
                         style = AppTypography.label.copy(fontWeight = FontWeight.Bold),
-                        color = TextDark
+                        color = Charcoal
                     )
 
                     Spacer(modifier = Modifier.height(AppSpacing.sm))
@@ -5100,12 +5118,12 @@ fun WalletScreen(
                                 modifier = Modifier
                                     .weight(1f)
                                     .background(
-                                        color = if (isSelected) Color(0xFFF3E8FF) else BorderSlate100,
+                                        color = if (isSelected) Purple100 else WarmCream,
                                         shape = AppShapes.sm
                                     )
                                     .border(
                                         width = if (isSelected) 1.5.dp else 1.dp,
-                                        color = if (isSelected) Color(0xFF8B5CF6) else Color.Transparent,
+                                        color = if (isSelected) SavPurple else CardBorderLight,
                                         shape = AppShapes.sm
                                     )
                                     .clickable {
@@ -5116,8 +5134,8 @@ fun WalletScreen(
                             ) {
                                 Text(
                                     text = "₦${String.format("%,.0f", amount / 1000)}k",
-                                    style = AppTypography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                                    color = if (isSelected) Color(0xFF8B5CF6) else TextSlate500
+                                    style = AppTypography.labelSmall.copy(fontWeight = FontWeight.Bold, fontFamily = SoraFamily),
+                                    color = if (isSelected) SavPurple else TextMuted
                                 )
                             }
                         }
@@ -5135,15 +5153,16 @@ fun WalletScreen(
                         AfriSavTextField(
                             value = customAutoInputVal,
                             onValueChange = { customAutoInputVal = it.filter { char -> char.isDigit() } },
-                            label = "Custom Amount (₦)",
+                            label = "Custom amount (₦)",
                             placeholder = "e.g. 15000",
+                            ground = SurfaceGround.LIGHT,
                             modifier = Modifier
                                 .weight(1.5f)
                                 .testTag("custom_auto_deposit_input")
                         )
 
                         AfriSavPrimaryButton(
-                            text = "Set Value",
+                            text = "Set value",
                             onClick = {
                                 val amount = customAutoInputVal.toDoubleOrNull()
                                 if (amount != null && amount > 0) {
@@ -5151,7 +5170,7 @@ fun WalletScreen(
                                     customAutoInputVal = ""
                                 }
                             },
-                            containerColor = Color(0xFF8B5CF6),
+                            ground = SurfaceGround.LIGHT,
                             modifier = Modifier
                                 .weight(1f)
                                 .testTag("set_custom_auto_deposit_button")
@@ -5164,8 +5183,8 @@ fun WalletScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color(0xFFF9F5FF), AppShapes.md)
-                            .border(1.dp, Color(0xFFE9D5FF), AppShapes.md)
+                            .background(Purple100, AppShapes.md)
+                            .border(1.dp, CardBorderLight, AppShapes.md)
                             .padding(AppSpacing.md)
                     ) {
                         Column {
@@ -5173,28 +5192,28 @@ fun WalletScreen(
                                 Icon(
                                     imageVector = Icons.Default.Info,
                                     contentDescription = null,
-                                    tint = Color(0xFF7C3AED),
+                                    tint = SavPurple,
                                     modifier = Modifier.size(AppIconSize.sm)
                                 )
                                 Spacer(modifier = Modifier.width(AppSpacing.sm))
                                 Text(
                                     text = "Simulation Mode Available",
                                     style = AppTypography.label.copy(fontWeight = FontWeight.Bold),
-                                    color = Color(0xFF5B21B6)
+                                    color = SavPurple
                                 )
                             }
                             Spacer(modifier = Modifier.height(AppSpacing.xs))
                             Text(
                                 text = "Click below to simulate an immediate ${currentFrequency.lowercase()} deposit check. This transfers your specified amount from Available Balance into Savings.",
                                 style = AppTypography.caption,
-                                color = Color(0xFF6B21A8),
+                                color = DeepPlum,
                                 lineHeight = 16.sp
                             )
                             Spacer(modifier = Modifier.height(AppSpacing.md))
                             AfriSavPrimaryButton(
-                                text = "Simulate Auto-Deposit Now 🚀",
+                                text = "Simulate auto-deposit now",
                                 onClick = { viewModel.triggerSimulationAutoDeposit() },
-                                containerColor = Color(0xFF7C3AED),
+                                ground = SurfaceGround.LIGHT,
                                 modifier = Modifier.fillMaxWidth()
                             )
                         }
@@ -5203,22 +5222,22 @@ fun WalletScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(AppColors.warningBgLight, AppShapes.md)
-                            .border(1.dp, AppColors.warning.copy(alpha = 0.3f), AppShapes.md)
+                            .background(SemanticWarningLight.copy(alpha = 0.1f), AppShapes.md)
+                            .border(1.dp, SemanticWarningLight.copy(alpha = 0.3f), AppShapes.md)
                             .padding(AppSpacing.md)
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
                                 imageVector = Icons.Default.Info,
                                 contentDescription = null,
-                                tint = AppColors.warning,
+                                tint = SemanticWarningLight,
                                 modifier = Modifier.size(AppIconSize.md)
                             )
                             Spacer(modifier = Modifier.width(AppSpacing.sm))
                             Text(
                                 text = "Auto Savings is currently disabled. Toggle to automatically lock away savings regularly towards your food secure target.",
                                 style = AppTypography.caption,
-                                color = Color(0xFF78350F),
+                                color = SemanticWarningLight,
                                 lineHeight = 16.sp
                             )
                         }
@@ -5228,9 +5247,9 @@ fun WalletScreen(
                 Spacer(modifier = Modifier.height(AppSpacing.md))
 
                 Text(
-                    text = "💡 Pro Tip: Configuring auto-deposits helps you maintain a healthy buffer of food capital to buy bulk items and secure heavy group discounts effortlessly.",
+                    text = "Pro Tip: Configuring auto-deposits helps you maintain a healthy buffer of food capital to buy bulk items and secure heavy group discounts effortlessly.",
                     style = AppTypography.caption,
-                    color = TextSlate500,
+                    color = TextMuted,
                     lineHeight = 16.sp
                 )
             }
@@ -5239,13 +5258,14 @@ fun WalletScreen(
 
             // Transaction History Section
             AfriSavSectionHeader(
-                title = "Transaction History 💸",
+                title = "Transaction History",
                 actionText = if (txs.size > 3) {
-                    if (showAllTransactions) "Show Less" else "View All (${txs.size})"
+                    if (showAllTransactions) "Show less" else "View all (${txs.size})"
                 } else null,
                 onActionClick = if (txs.size > 3) {
                     { showAllTransactions = !showAllTransactions }
-                } else null
+                } else null,
+                ground = SurfaceGround.LIGHT
             )
             Spacer(modifier = Modifier.height(AppSpacing.sm))
 
@@ -5253,10 +5273,10 @@ fun WalletScreen(
                 EmptyStateCard(
                     message = "No Transaction History Found",
                     subMessage = "Your wallet deposits, bank transfers, and bulk buying savings will appear here.",
-                    btnText = "Fund Wallet",
+                    btnText = "Fund wallet",
                     onClick = onFundClick,
                     icon = Icons.Default.AccountBalanceWallet,
-                    iconColor = PrimaryGreen
+                    iconColor = SavPurple
                 )
             } else {
                 val previewTxs = if (showAllTransactions) txs else txs.take(3)
@@ -5266,9 +5286,10 @@ fun WalletScreen(
                 }
                 
                 if (txs.size > 3 && !showAllTransactions) {
-                    AfriSavOutlinedButton(
-                        text = "View Full Transaction History 🔽",
+                    AfriSavSecondaryButton(
+                        text = "View full transaction history",
                         onClick = { showAllTransactions = true },
+                        ground = SurfaceGround.LIGHT,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = AppSpacing.xs)
@@ -5282,7 +5303,7 @@ fun WalletScreen(
 @Composable
 fun TransactionRow(tx: WalletTransaction, onReceiptClick: (WalletTransaction) -> Unit) {
     val isDeposit = tx.type == "FUND" || tx.type == "GOAL_SAVE"
-    val color = if (isDeposit) PrimaryGreen else SecondaryOrange
+    val color = if (isDeposit) SemanticSuccessLight else SavPurple
     val symbol = if (tx.type == "FUND") "+" else "-"
 
     AfriSavCard(
@@ -5290,10 +5311,11 @@ fun TransactionRow(tx: WalletTransaction, onReceiptClick: (WalletTransaction) ->
             .fillMaxWidth()
             .clickable { onReceiptClick(tx) }
             .testTag("transaction_row_${tx.id}"),
-        containerColor = SurfaceBg,
-        borderColor = BorderSlate100,
+        containerColor = SurfaceWhite,
+        borderColor = CardBorderLight,
         shape = AppShapes.card,
-        contentPadding = PaddingValues(AppSpacing.md)
+        contentPadding = PaddingValues(AppSpacing.md),
+        ground = SurfaceGround.LIGHT
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
@@ -5307,8 +5329,8 @@ fun TransactionRow(tx: WalletTransaction, onReceiptClick: (WalletTransaction) ->
                 Icon(
                     imageVector = when (tx.type) {
                         "FUND" -> Icons.Default.AddCard
-                        "TRANSFER" -> Icons.Default.Send
-                        "GOAL_SAVE" -> Icons.Default.Savings
+                        "TRANSFER" -> Icons.AutoMirrored.Filled.Send
+                        "GOAL_SAVE" -> Icons.Default.TrendingUp
                         "BUY_FOOD" -> Icons.Default.Restaurant
                         else -> Icons.Default.SwapHoriz
                     },
@@ -5322,34 +5344,34 @@ fun TransactionRow(tx: WalletTransaction, onReceiptClick: (WalletTransaction) ->
                 Text(
                     text = tx.title,
                     style = AppTypography.label.copy(fontWeight = FontWeight.Bold),
-                    color = TextDark
+                    color = Charcoal
                 )
                 Text(
                     text = tx.description,
                     style = AppTypography.caption,
-                    color = TextSlate500,
+                    color = TextMuted,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
             }
             Column(horizontalAlignment = Alignment.End) {
                 Text(
-                    text = "$symbol ₦${String.format("%,.2f", tx.amount)}",
-                    style = AppTypography.sectionHeader.copy(fontWeight = FontWeight.Bold),
+                    text = "$symbol ${AppFormatters.formatNaira(tx.amount)}",
+                    style = AppTypography.sectionHeader.copy(fontWeight = FontWeight.Bold, fontFamily = SoraFamily, fontFeatureSettings = "tnum"),
                     color = color
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         imageVector = Icons.Default.ReceiptLong,
                         contentDescription = "View Receipt",
-                        tint = Color(0xFF2563EB),
+                        tint = SavPurple,
                         modifier = Modifier.size(AppIconSize.xs)
                     )
                     Spacer(modifier = Modifier.width(2.dp))
                     Text(
                         text = "Receipt",
                         style = AppTypography.caption.copy(fontWeight = FontWeight.Bold),
-                        color = Color(0xFF2563EB)
+                        color = SavPurple
                     )
                 }
             }
@@ -5796,8 +5818,8 @@ fun HistoricalPriceTrendChart(
             .fillMaxWidth()
             .padding(vertical = 6.dp)
             .testTag("historical_price_trends_card"),
-        colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-        border = BorderStroke(1.dp, BorderSlate100),
+        colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+        border = BorderStroke(1.dp, NeutralLightBorder),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -5811,31 +5833,26 @@ fun HistoricalPriceTrendChart(
                     Icon(
                         imageVector = Icons.Default.Timeline,
                         contentDescription = null,
-                        tint = PrimaryGreen,
+                        tint = SavPurple,
                         modifier = Modifier.size(20.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "Historical Price Trends 📈",
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = TextSlate800
+                        text = "Historical Price Trends",
+                        style = AppTypography.h3.copy(fontFamily = SoraFamily, color = Charcoal, fontSize = 15.sp)
                     )
                 }
                 TextButton(onClick = { isExpanded = !isExpanded }) {
                     Text(
                         text = if (isExpanded) "Collapse ✕" else "Explore 📈",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = PrimaryGreen
+                        style = AppTypography.button.copy(color = SavPurple, fontSize = 12.sp)
                     )
                 }
             }
 
             Text(
                 text = "Visualize local retail vs. factory bulk food prices over the last 3 months.",
-                fontSize = 11.sp,
-                color = TextSlate500,
+                style = AppTypography.bodySmall.copy(color = CharcoalSecondary, fontSize = 11.sp),
                 modifier = Modifier.padding(top = 2.dp)
             )
 
@@ -5858,15 +5875,18 @@ fun HistoricalPriceTrendChart(
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(8.dp))
-                                .background(if (isSel) PrimaryGreen else Color(0xFFF1F5F9))
+                                .background(if (isSel) SavPurple else WarmCream)
+                                .border(1.dp, if (isSel) SavPurple else NeutralLightBorder, RoundedCornerShape(8.dp))
                                 .clickable { selectedTrendItem = key }
                                 .padding(horizontal = 8.dp, vertical = 6.dp)
                         ) {
                             Text(
                                 text = display,
-                                fontSize = 11.sp,
-                                color = if (isSel) Color.White else TextSlate500,
-                                fontWeight = FontWeight.Bold
+                                style = AppTypography.caption.copy(
+                                    fontSize = 11.sp,
+                                    color = if (isSel) SurfaceWhite else Charcoal,
+                                    fontWeight = FontWeight.Bold
+                                )
                             )
                         }
                     }
@@ -5875,26 +5895,28 @@ fun HistoricalPriceTrendChart(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Trend Summary Box
+                val isUpward = currentData.prices.last() > currentData.prices.first()
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color(0xFFF8FAFC), RoundedCornerShape(10.dp))
+                        .background(NeutralLight, RoundedCornerShape(10.dp))
+                        .border(1.dp, NeutralLightBorder, RoundedCornerShape(10.dp))
                         .padding(12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = currentData.title,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = TextSlate800
+                            style = AppTypography.bodySmall.copy(fontFamily = SoraFamily, fontWeight = FontWeight.Bold, color = Charcoal, fontSize = 12.sp)
                         )
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
                             text = currentData.changeText,
-                            fontSize = 11.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = if (currentData.prices.last() > currentData.prices.first()) SecondaryOrange else PrimaryGreen
+                            style = AppTypography.caption.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = if (isUpward) StatusErrorLight else StatusSuccessLight,
+                                fontSize = 11.sp
+                            )
                         )
                     }
                     Spacer(modifier = Modifier.width(8.dp))
@@ -5902,16 +5924,18 @@ fun HistoricalPriceTrendChart(
                     Box(
                         modifier = Modifier
                             .background(
-                                color = if (currentData.prices.last() > currentData.prices.first()) Color(0xFFFEF2F2) else Color(0xFFF0FDF4),
+                                color = if (isUpward) StatusErrorLight.copy(alpha = 0.12f) else StatusSuccessLight.copy(alpha = 0.12f),
                                 shape = RoundedCornerShape(6.dp)
                             )
                             .padding(horizontal = 8.dp, vertical = 4.dp)
                     ) {
                         Text(
-                            text = if (currentData.prices.last() > currentData.prices.first()) "Upward Trend" else "Downward Trend",
-                            fontSize = 9.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = if (currentData.prices.last() > currentData.prices.first()) Color.Red else PrimaryGreen
+                            text = if (isUpward) "Upward Trend" else "Downward Trend",
+                            style = AppTypography.caption.copy(
+                                fontSize = 9.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = if (isUpward) StatusErrorLight else StatusSuccessLight
+                            )
                         )
                     }
                 }
@@ -5923,9 +5947,10 @@ fun HistoricalPriceTrendChart(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(180.dp)
-                        .background(SurfaceBg)
+                        .background(NeutralLight, RoundedCornerShape(10.dp))
+                        .border(1.dp, NeutralLightBorder, RoundedCornerShape(10.dp))
                 ) {
-                    val primaryColorVal = PrimaryGreen
+                    val primaryColorVal = SavPurple
                     
                     Canvas(
                         modifier = Modifier
@@ -5963,7 +5988,7 @@ fun HistoricalPriceTrendChart(
                             val gridVal = maxYVal - yRatio * valueRange
                             drawIntoCanvas { canvas ->
                                 val textPaint = Paint().apply {
-                                    color = android.graphics.Color.parseColor("#94A3B8")
+                                    color = android.graphics.Color.parseColor("#64748B")
                                     textSize = 22f
                                     typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
                                 }
@@ -6086,13 +6111,13 @@ fun HistoricalPriceTrendChart(
                             // Exact values above points
                             drawIntoCanvas { canvas ->
                                 val valPaint = Paint().apply {
-                                    color = android.graphics.Color.parseColor("#1E293B")
+                                    color = android.graphics.Color.parseColor("#171717")
                                     textSize = 22f
                                     textAlign = Paint.Align.CENTER
                                     typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                                 }
                                 canvas.nativeCanvas.drawText(
-                                    "₦${String.format("%,.0f", pVal)}",
+                                    AppFormatters.formatNaira(pVal),
                                     x,
                                     y - 18f,
                                     valPaint
@@ -6115,11 +6140,11 @@ fun HistoricalPriceTrendChart(
                         .padding(vertical = 4.dp)
                         .testTag("price_drop_alerts_toggle_card"),
                     colors = CardDefaults.cardColors(
-                        containerColor = if (hasAlert) Color(0xFFECFDF5) else Color(0xFFF8FAFC)
+                        containerColor = if (hasAlert) WarmCream else SurfaceWhite
                     ),
                     border = BorderStroke(
                         width = 1.dp,
-                        color = if (hasAlert) Color(0xFFA7F3D0) else Color(0xFFE2E8F0)
+                        color = if (hasAlert) SavPurple.copy(alpha = 0.3f) else NeutralLightBorder
                     ),
                     shape = RoundedCornerShape(12.dp)
                 ) {
@@ -6136,21 +6161,18 @@ fun HistoricalPriceTrendChart(
                                 Icon(
                                     imageVector = if (hasAlert) Icons.Default.NotificationsActive else Icons.Default.Notifications,
                                     contentDescription = "Notification Toggle",
-                                    tint = if (hasAlert) PrimaryGreen else TextSlate400,
+                                    tint = if (hasAlert) SavPurple else CharcoalSecondary,
                                     modifier = Modifier.size(20.dp)
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Column {
                                     Text(
                                         text = "Price Drop Alerts for $selectedTrendItem",
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = TextSlate800
+                                        style = AppTypography.bodySmall.copy(fontWeight = FontWeight.Bold, color = Charcoal, fontSize = 12.sp)
                                     )
                                     Text(
                                         text = if (hasAlert) "Alert is active below threshold 🔔" else "Get notified when prices drop below your threshold",
-                                        fontSize = 10.sp,
-                                        color = if (hasAlert) PrimaryGreen else TextSlate500
+                                        style = AppTypography.caption.copy(color = if (hasAlert) SavPurple else CharcoalSecondary, fontSize = 10.sp)
                                     )
                                 }
                             }
@@ -6167,10 +6189,10 @@ fun HistoricalPriceTrendChart(
                                     }
                                 },
                                 colors = SwitchDefaults.colors(
-                                    checkedThumbColor = Color.White,
-                                    checkedTrackColor = PrimaryGreen,
-                                    uncheckedThumbColor = Color.White,
-                                    uncheckedTrackColor = Color(0xFFCBD5E1)
+                                    checkedThumbColor = SurfaceWhite,
+                                    checkedTrackColor = SavPurple,
+                                    uncheckedThumbColor = SurfaceWhite,
+                                    uncheckedTrackColor = NeutralLightBorder
                                 ),
                                 modifier = Modifier.testTag("price_alert_switch_$selectedTrendItem")
                             )
@@ -6178,14 +6200,12 @@ fun HistoricalPriceTrendChart(
 
                         if (hasAlert && existingAlert != null) {
                             Spacer(modifier = Modifier.height(10.dp))
-                            Divider(color = Color(0xFFD1FAE5), thickness = 1.dp)
+                            HorizontalDivider(color = NeutralLightBorder, thickness = 1.dp)
                             Spacer(modifier = Modifier.height(10.dp))
 
                             Text(
                                 text = "Customize Target Price Threshold:",
-                                fontSize = 11.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = TextSlate800
+                                style = AppTypography.caption.copy(fontWeight = FontWeight.SemiBold, color = Charcoal, fontSize = 11.sp)
                             )
                             Spacer(modifier = Modifier.height(6.dp))
 
@@ -6215,17 +6235,19 @@ fun HistoricalPriceTrendChart(
                                             }
                                         }
                                     },
-                                    prefix = { Text("₦", fontSize = 11.sp, color = TextSlate800) },
+                                    prefix = { Text("₦", style = AppTypography.caption.copy(color = Charcoal)) },
                                     singleLine = true,
                                     modifier = Modifier
                                         .weight(1f)
                                         .height(46.dp),
                                     shape = RoundedCornerShape(8.dp),
                                     colors = OutlinedTextFieldDefaults.colors(
-                                        focusedContainerColor = Color.White,
-                                        unfocusedContainerColor = Color.White,
-                                        focusedBorderColor = PrimaryGreen,
-                                        unfocusedBorderColor = Color(0xFFCBD5E1)
+                                        focusedContainerColor = SurfaceWhite,
+                                        unfocusedContainerColor = SurfaceWhite,
+                                        focusedBorderColor = SavPurple,
+                                        unfocusedBorderColor = NeutralLightBorder,
+                                        focusedTextColor = Charcoal,
+                                        unfocusedTextColor = Charcoal
                                     ),
                                     textStyle = androidx.compose.ui.text.TextStyle(fontSize = 12.sp)
                                 )
@@ -6237,8 +6259,8 @@ fun HistoricalPriceTrendChart(
                                     Box(
                                         modifier = Modifier
                                             .clip(RoundedCornerShape(6.dp))
-                                            .background(if (isCurrentPct) PrimaryGreen else Color.White)
-                                            .border(1.dp, if (isCurrentPct) PrimaryGreen else Color(0xFFCBD5E1), RoundedCornerShape(6.dp))
+                                            .background(if (isCurrentPct) SavPurple else SurfaceWhite)
+                                            .border(1.dp, if (isCurrentPct) SavPurple else NeutralLightBorder, RoundedCornerShape(6.dp))
                                             .clickable {
                                                 targetInputText = pctVal.toInt().toString()
                                                 viewModel.removePriceAlert(existingAlert.id)
@@ -6252,18 +6274,19 @@ fun HistoricalPriceTrendChart(
                                     ) {
                                         Text(
                                             text = "-$pct%",
-                                            fontSize = 10.sp,
-                                            fontWeight = FontWeight.Bold,
-                                            color = if (isCurrentPct) Color.White else TextSlate500
+                                            style = AppTypography.caption.copy(
+                                                fontSize = 10.sp,
+                                                fontWeight = FontWeight.Bold,
+                                                color = if (isCurrentPct) SurfaceWhite else CharcoalSecondary
+                                            )
                                         )
                                     }
                                 }
                             }
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
-                                text = "Current Price: ₦${String.format("%,.0f", currentData.prices.last())}. You will be alerted when the market price drops below ₦${String.format("%,.0f", existingAlert.targetPrice)}.",
-                                fontSize = 10.sp,
-                                color = TextSlate500
+                                text = "Current Price: ${AppFormatters.formatNaira(currentData.prices.last())}. You will be alerted when the market price drops below ${AppFormatters.formatNaira(existingAlert.targetPrice)}.",
+                                style = AppTypography.caption.copy(fontSize = 10.sp, color = CharcoalSecondary)
                             )
                         }
                     }
@@ -6275,8 +6298,8 @@ fun HistoricalPriceTrendChart(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color(0xFFFFFBEB), RoundedCornerShape(10.dp))
-                        .border(1.dp, Color(0xFFFEF3C7), RoundedCornerShape(10.dp))
+                        .background(WarmCream, RoundedCornerShape(10.dp))
+                        .border(1.dp, NeutralLightBorder, RoundedCornerShape(10.dp))
                         .padding(10.dp)
                 ) {
                     Row(verticalAlignment = Alignment.Top) {
@@ -6285,16 +6308,12 @@ fun HistoricalPriceTrendChart(
                         Column {
                             Text(
                                 text = "Mama Olufunke's Strategic Advice",
-                                fontSize = 11.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF92400E)
+                                style = AppTypography.caption.copy(fontFamily = SoraFamily, fontWeight = FontWeight.Bold, color = Charcoal, fontSize = 11.sp)
                             )
                             Spacer(modifier = Modifier.height(2.dp))
                             Text(
                                 text = currentData.recommendation,
-                                fontSize = 10.sp,
-                                color = Color(0xFFB45309),
-                                lineHeight = 14.sp
+                                style = AppTypography.caption.copy(color = CharcoalSecondary, fontSize = 10.sp, lineHeight = 14.sp)
                             )
                         }
                     }
@@ -7252,7 +7271,7 @@ fun GoalsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF5F8F6))
+            .background(DeepPlum)
             .statusBarsPadding()
     ) {
         // Modern Tab row switch
@@ -7260,7 +7279,8 @@ fun GoalsScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 12.dp)
-                .background(Color(0xFFE2E8F0), RoundedCornerShape(12.dp))
+                .background(DeepPlumCard, RoundedCornerShape(12.dp))
+                .border(BorderStroke(1.dp, DeepPlumBorder), RoundedCornerShape(12.dp))
                 .padding(4.dp)
         ) {
             Box(
@@ -7268,14 +7288,14 @@ fun GoalsScreen(
                     .weight(1f)
                     .clip(RoundedCornerShape(10.dp))
                     .clickable { activeSubTab = "goals" }
-                    .background(if (activeSubTab == "goals") Color.White else Color.Transparent)
+                    .background(if (activeSubTab == "goals") HarvestLime else Color.Transparent)
                     .padding(vertical = 10.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = "My Goals",
-                    fontWeight = FontWeight.Bold,
-                    color = if (activeSubTab == "goals") Color(0xFF0A8F3D) else Color(0xFF64748B),
+                    style = AppTypography.button.copy(fontWeight = FontWeight.Bold),
+                    color = if (activeSubTab == "goals") Charcoal else SurfaceWhite.copy(alpha = 0.7f),
                     fontSize = 14.sp
                 )
             }
@@ -7284,14 +7304,14 @@ fun GoalsScreen(
                     .weight(1f)
                     .clip(RoundedCornerShape(10.dp))
                     .clickable { activeSubTab = "calculator" }
-                    .background(if (activeSubTab == "calculator") Color.White else Color.Transparent)
+                    .background(if (activeSubTab == "calculator") HarvestLime else Color.Transparent)
                     .padding(vertical = 10.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = "Budget Calculator",
-                    fontWeight = FontWeight.Bold,
-                    color = if (activeSubTab == "calculator") Color(0xFF0A8F3D) else Color(0xFF64748B),
+                    style = AppTypography.button.copy(fontWeight = FontWeight.Bold),
+                    color = if (activeSubTab == "calculator") Charcoal else SurfaceWhite.copy(alpha = 0.7f),
                     fontSize = 14.sp
                 )
             }
@@ -7309,17 +7329,25 @@ fun GoalsScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column {
-                        Text("Food Savings Goals", fontSize = 22.sp, fontWeight = FontWeight.Bold, color = Color(0xFF1E293B))
-                        Text("Save daily or weekly towards wholesale food baskets", fontSize = 13.sp, color = Color(0xFF64748B))
+                        Text(
+                            "Food Savings Goals",
+                            style = AppTypography.screenTitle.copy(fontFamily = SoraFamily, fontWeight = FontWeight.Bold),
+                            color = SurfaceWhite
+                        )
+                        Text(
+                            "Save daily or weekly towards wholesale food baskets",
+                            style = AppTypography.caption,
+                            color = SurfaceWhite.copy(alpha = 0.7f)
+                        )
                     }
                     IconButton(
                         onClick = onCreateGoalClick,
                         modifier = Modifier
-                            .background(Color(0xFF0A8F3D), CircleShape)
+                            .background(HarvestLime, CircleShape)
                             .size(44.dp)
                             .testTag("create_goal_fab")
                     ) {
-                        Icon(Icons.Default.Add, contentDescription = "Add Goal", tint = Color.White)
+                        Icon(Icons.Default.Add, contentDescription = "Add Goal", tint = Charcoal)
                     }
                 }
             }
@@ -7333,7 +7361,8 @@ fun GoalsScreen(
                 item {
                     SavingsReminderCard(
                         viewModel = viewModel,
-                        onRequestPermission = requestPermissionHelper
+                        onRequestPermission = requestPermissionHelper,
+                        ground = SurfaceGround.DARK
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                 }
@@ -7346,7 +7375,8 @@ fun GoalsScreen(
                             btnText = "Create Savings Goal",
                             onClick = onCreateGoalClick,
                             icon = Icons.Default.Savings,
-                            iconColor = PrimaryGreen
+                            iconColor = HarvestLime,
+                            ground = SurfaceGround.DARK
                         )
                     }
                 } else {
@@ -7358,7 +7388,8 @@ fun GoalsScreen(
                             onPauseToggle = { viewModel.pauseResumeGoal(goal.id) },
                             onWithdrawClick = { selectedGoalForWithdrawalOptions = goal },
                             onDeleteClick = { viewModel.deleteGoal(goal.id) },
-                            onLockToggle = { viewModel.toggleGoalLock(goal.id) }
+                            onLockToggle = { viewModel.toggleGoalLock(goal.id) },
+                            ground = SurfaceGround.DARK
                         )
                     }
                 }
@@ -7377,8 +7408,8 @@ fun GoalsScreen(
                 // Introduction Card
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFF0FDF4)),
-                    border = BorderStroke(1.dp, Color(0xFFDCFCE7)),
+                    colors = CardDefaults.cardColors(containerColor = DeepPlumCard),
+                    border = BorderStroke(1.dp, DeepPlumBorder),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Row(
@@ -7388,21 +7419,20 @@ fun GoalsScreen(
                         Icon(
                             imageVector = Icons.Default.Info,
                             contentDescription = null,
-                            tint = Color(0xFF16A34A),
+                            tint = HarvestLime,
                             modifier = Modifier.size(28.dp)
                         )
                         Spacer(modifier = Modifier.width(12.dp))
                         Column {
                             Text(
                                 text = "Smart Cost Estimator",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 15.sp,
-                                color = Color(0xFF14532D)
+                                style = AppTypography.cardTitle.copy(fontFamily = SoraFamily, fontWeight = FontWeight.Bold),
+                                color = SurfaceWhite
                             )
                             Text(
                                 text = "Plan your food expenses and build a personalized savings blueprint based on real local market prices.",
-                                fontSize = 12.sp,
-                                color = Color(0xFF166534)
+                                style = AppTypography.caption,
+                                color = SurfaceWhite.copy(alpha = 0.7f)
                             )
                         }
                     }
@@ -7432,9 +7462,9 @@ fun GoalsScreen(
                                     .clip(RoundedCornerShape(3.dp))
                                     .background(
                                         when {
-                                            isActive -> Color(0xFF0A8F3D)
-                                            isCompleted -> Color(0xFF0A8F3D).copy(alpha = 0.5f)
-                                            else -> Color(0xFFE2E8F0)
+                                            isActive -> HarvestLime
+                                            isCompleted -> HarvestLime.copy(alpha = 0.5f)
+                                            else -> DeepPlumBorder
                                         }
                                     )
                             )
@@ -7446,9 +7476,8 @@ fun GoalsScreen(
                                     3 -> "3. Plan"
                                     else -> "4. Review"
                                 },
-                                fontSize = 11.sp,
-                                fontWeight = if (isActive) FontWeight.Bold else FontWeight.Medium,
-                                color = if (isActive) Color(0xFF0A8F3D) else Color(0xFF64748B)
+                                style = AppTypography.caption.copy(fontWeight = if (isActive) FontWeight.Bold else FontWeight.Medium),
+                                color = if (isActive) HarvestLime else SurfaceWhite.copy(alpha = 0.7f)
                             )
                         }
                     }
@@ -7462,21 +7491,25 @@ fun GoalsScreen(
                         // STEP 1: DELIVERY LOCATION
                         Card(
                             modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(containerColor = Color.White),
-                            border = BorderStroke(1.dp, Color(0xFFE2E8F0)),
+                            colors = CardDefaults.cardColors(containerColor = DeepPlumCard),
+                            border = BorderStroke(1.dp, DeepPlumBorder),
                             shape = RoundedCornerShape(16.dp)
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(Icons.Default.LocationOn, contentDescription = null, tint = Color(0xFF0A8F3D), modifier = Modifier.size(24.dp))
+                                    Icon(Icons.Default.LocationOn, contentDescription = null, tint = HarvestLime, modifier = Modifier.size(24.dp))
                                     Spacer(modifier = Modifier.width(8.dp))
-                                    Text("Where is your food delivered?", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF1E293B))
+                                    Text(
+                                        "Where is your food delivered?",
+                                        style = AppTypography.sectionHeader.copy(fontFamily = SoraFamily, fontWeight = FontWeight.Bold),
+                                        color = SurfaceWhite
+                                    )
                                 }
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Text(
                                     text = "Prices vary slightly across regions. Selecting your location guarantees accurate current market rates.",
-                                    fontSize = 13.sp,
-                                    color = Color(0xFF64748B)
+                                    style = AppTypography.bodySmall,
+                                    color = SurfaceWhite.copy(alpha = 0.7f)
                                 )
                                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -7488,10 +7521,10 @@ fun GoalsScreen(
                                             modifier = Modifier
                                                 .fillMaxWidth()
                                                 .clip(RoundedCornerShape(12.dp))
-                                                .background(if (isSelected) Color(0xFFE8F5E9) else Color(0xFFF8FAFC))
+                                                .background(if (isSelected) DeepPlum else DeepPlum.copy(alpha = 0.5f))
                                                 .border(
                                                     width = if (isSelected) 2.dp else 1.dp,
-                                                    color = if (isSelected) Color(0xFF0A8F3D) else Color(0xFFE2E8F0),
+                                                    color = if (isSelected) HarvestLime else DeepPlumBorder,
                                                     shape = RoundedCornerShape(12.dp)
                                                 )
                                                 .clickable {
@@ -7507,13 +7540,13 @@ fun GoalsScreen(
                                                 Box(
                                                     modifier = Modifier
                                                         .size(36.dp)
-                                                        .background(if (isSelected) Color(0xFF0A8F3D).copy(alpha = 0.15f) else Color(0xFFF1F5F9), CircleShape),
+                                                        .background(if (isSelected) HarvestLime.copy(alpha = 0.2f) else DeepPlumBorder, CircleShape),
                                                     contentAlignment = Alignment.Center
                                                 ) {
                                                     Icon(
                                                         imageVector = Icons.Default.LocationOn,
                                                         contentDescription = null,
-                                                        tint = if (isSelected) Color(0xFF0A8F3D) else Color(0xFF64748B),
+                                                        tint = if (isSelected) HarvestLime else SurfaceWhite.copy(alpha = 0.7f),
                                                         modifier = Modifier.size(18.dp)
                                                     )
                                                 }
@@ -7521,14 +7554,13 @@ fun GoalsScreen(
                                                 Column {
                                                     Text(
                                                         text = stateOption,
-                                                        fontWeight = FontWeight.Bold,
-                                                        fontSize = 15.sp,
-                                                        color = Color(0xFF1E293B)
+                                                        style = AppTypography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                                                        color = SurfaceWhite
                                                     )
                                                     Text(
                                                         text = "Load active merchant prices in $stateOption",
-                                                        fontSize = 11.sp,
-                                                        color = Color(0xFF64748B)
+                                                        style = AppTypography.caption,
+                                                        color = SurfaceWhite.copy(alpha = 0.7f)
                                                     )
                                                 }
                                             }
@@ -7538,7 +7570,10 @@ fun GoalsScreen(
                                                     selectedStateForCalc = stateOption
                                                     basketQuantities = emptyMap()
                                                 },
-                                                colors = RadioButtonDefaults.colors(selectedColor = Color(0xFF0A8F3D))
+                                                colors = RadioButtonDefaults.colors(
+                                                    selectedColor = HarvestLime,
+                                                    unselectedColor = SurfaceWhite.copy(alpha = 0.5f)
+                                                )
                                             )
                                         }
                                     }
@@ -7548,10 +7583,13 @@ fun GoalsScreen(
                                 Button(
                                     onClick = { currentStep = 2 },
                                     modifier = Modifier.fillMaxWidth().height(48.dp),
-                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0A8F3D)),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = HarvestLime,
+                                        contentColor = Charcoal
+                                    ),
                                     shape = RoundedCornerShape(10.dp)
                                 ) {
-                                    Text("Next: Select Food Items ➡️", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                                    Text("Next: Select Food Items ➡️", style = AppTypography.button.copy(fontWeight = FontWeight.Bold))
                                 }
                             }
                         }
@@ -7561,22 +7599,21 @@ fun GoalsScreen(
                         Column {
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
-                                colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF7ED)),
-                                border = BorderStroke(1.dp, Color(0xFFFFEDD5)),
+                                colors = CardDefaults.cardColors(containerColor = DeepPlumCard),
+                                border = BorderStroke(1.dp, DeepPlumBorder),
                                 shape = RoundedCornerShape(12.dp)
                             ) {
                                 Column(modifier = Modifier.padding(14.dp)) {
                                     Text(
                                         text = "💡 Quick Start: Choose a Basket Template",
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = 13.sp,
-                                        color = Color(0xFFC2410C)
+                                        style = AppTypography.bodySmall.copy(fontFamily = SoraFamily, fontWeight = FontWeight.Bold),
+                                        color = HarvestLime
                                     )
                                     Spacer(modifier = Modifier.height(4.dp))
                                     Text(
                                         text = "Pre-fill standard basket quantities for your needs in one click, or select custom foods below.",
-                                        fontSize = 11.sp,
-                                        color = Color(0xFF7C2D12)
+                                        style = AppTypography.caption,
+                                        color = SurfaceWhite.copy(alpha = 0.7f)
                                     )
                                     Spacer(modifier = Modifier.height(12.dp))
                                     Row(
@@ -7592,8 +7629,8 @@ fun GoalsScreen(
                                                 modifier = Modifier
                                                     .weight(1f)
                                                     .clip(RoundedCornerShape(8.dp))
-                                                    .background(Color.White)
-                                                    .border(1.dp, Color(0xFFFFD1A9), RoundedCornerShape(8.dp))
+                                                    .background(DeepPlum)
+                                                    .border(1.dp, DeepPlumBorder, RoundedCornerShape(8.dp))
                                                     .clickable { 
                                                         applyTemplate(key)
                                                         // Informative toast of prefilled basket
@@ -7604,9 +7641,8 @@ fun GoalsScreen(
                                             ) {
                                                 Text(
                                                     text = label,
-                                                    fontSize = 11.sp,
-                                                    fontWeight = FontWeight.Bold,
-                                                    color = Color(0xFFC2410C)
+                                                    style = AppTypography.caption.copy(fontWeight = FontWeight.Bold),
+                                                    color = HarvestLime
                                                 )
                                             }
                                         }
@@ -7618,15 +7654,14 @@ fun GoalsScreen(
 
                             Text(
                                 text = "What groceries do you need?",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 16.sp,
-                                color = Color(0xFF1E293B)
+                                style = AppTypography.sectionHeader.copy(fontFamily = SoraFamily, fontWeight = FontWeight.Bold),
+                                color = SurfaceWhite
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
                                 text = "Tap individual quantities below. Live local rates are configured for $selectedStateForCalc.",
-                                fontSize = 12.sp,
-                                color = Color(0xFF64748B)
+                                style = AppTypography.caption,
+                                color = SurfaceWhite.copy(alpha = 0.7f)
                             )
                             Spacer(modifier = Modifier.height(12.dp))
 
@@ -7638,8 +7673,8 @@ fun GoalsScreen(
                                     val qty = basketQuantities[item.id] ?: 0
                                     Card(
                                         modifier = Modifier.fillMaxWidth(),
-                                        colors = CardDefaults.cardColors(containerColor = Color.White),
-                                        border = BorderStroke(1.dp, if (qty > 0) Color(0xFF0A8F3D).copy(alpha = 0.5f) else Color(0xFFE2E8F0)),
+                                        colors = CardDefaults.cardColors(containerColor = DeepPlumCard),
+                                        border = BorderStroke(1.dp, if (qty > 0) HarvestLime else DeepPlumBorder),
                                         shape = RoundedCornerShape(12.dp)
                                     ) {
                                         Row(
@@ -7654,7 +7689,7 @@ fun GoalsScreen(
                                                     Box(
                                                         modifier = Modifier
                                                             .size(32.dp)
-                                                            .background(Color(0xFFF1F5F9), CircleShape),
+                                                            .background(DeepPlumBorder, CircleShape),
                                                         contentAlignment = Alignment.Center
                                                     ) {
                                                         Text(getCategoryEmoji(item.category), fontSize = 16.sp)
@@ -7662,16 +7697,15 @@ fun GoalsScreen(
                                                     Spacer(modifier = Modifier.width(8.dp))
                                                     Text(
                                                         text = item.name,
-                                                        fontWeight = FontWeight.Bold,
-                                                        fontSize = 14.sp,
-                                                        color = Color(0xFF1E293B)
+                                                        style = AppTypography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                                                        color = SurfaceWhite
                                                     )
                                                 }
                                                 Spacer(modifier = Modifier.height(4.dp))
                                                 Text(
-                                                    text = "₦${String.format("%,.2f", item.price)} • ${item.category}",
-                                                    fontSize = 12.sp,
-                                                    color = Color(0xFF64748B)
+                                                    text = "${AppFormatters.formatNaira(item.price)} • ${item.category}",
+                                                    style = AppTypography.caption.copy(fontFamily = SoraFamily),
+                                                    color = SurfaceWhite.copy(alpha = 0.7f)
                                                 )
                                             }
 
@@ -7683,7 +7717,8 @@ fun GoalsScreen(
                                                     modifier = Modifier
                                                         .size(40.dp)
                                                         .clip(RoundedCornerShape(8.dp))
-                                                        .background(Color(0xFFF1F5F9))
+                                                        .background(DeepPlum)
+                                                        .border(1.dp, DeepPlumBorder, RoundedCornerShape(8.dp))
                                                         .clickable {
                                                             if (qty > 0) {
                                                                 basketQuantities = basketQuantities.toMutableMap().apply {
@@ -7697,22 +7732,21 @@ fun GoalsScreen(
                                                         imageVector = Icons.Default.Remove,
                                                         contentDescription = "Reduce Quantity",
                                                         modifier = Modifier.size(18.dp),
-                                                        tint = Color(0xFF475569)
+                                                        tint = SurfaceWhite.copy(alpha = 0.8f)
                                                     )
                                                 }
 
                                                 Text(
                                                     text = qty.toString(),
-                                                    fontWeight = FontWeight.Black,
-                                                    fontSize = 16.sp,
-                                                    color = Color(0xFF1E293B)
+                                                    style = AppTypography.bodyLarge.copy(fontFamily = SoraFamily, fontWeight = FontWeight.Black),
+                                                    color = if (qty > 0) HarvestLime else SurfaceWhite
                                                 )
 
                                                 Box(
                                                     modifier = Modifier
                                                         .size(40.dp)
                                                         .clip(RoundedCornerShape(8.dp))
-                                                        .background(Color(0xFFE8F5E9))
+                                                        .background(HarvestLime)
                                                         .clickable {
                                                             basketQuantities = basketQuantities.toMutableMap().apply {
                                                                 put(item.id, qty + 1)
@@ -7724,7 +7758,7 @@ fun GoalsScreen(
                                                         imageVector = Icons.Default.Add,
                                                         contentDescription = "Increase Quantity",
                                                         modifier = Modifier.size(18.dp),
-                                                        tint = Color(0xFF0A8F3D)
+                                                        tint = Charcoal
                                                     )
                                                 }
                                             }
@@ -7740,7 +7774,8 @@ fun GoalsScreen(
 
                             if (totalItemsSelected > 0) {
                                 Card(
-                                    colors = CardDefaults.cardColors(containerColor = Color(0xFFE8F5E9)),
+                                    colors = CardDefaults.cardColors(containerColor = DeepPlumCard),
+                                    border = BorderStroke(1.dp, HarvestLime),
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
                                     Row(
@@ -7749,10 +7784,9 @@ fun GoalsScreen(
                                         horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
                                         Text(
-                                            text = "Selected total: ₦${String.format("%,.0f", currentTotal)} ($totalItemsSelected food items)",
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = 13.sp,
-                                            color = Color(0xFF1B5E20)
+                                            text = "Selected total: ${AppFormatters.formatNaira(currentTotal)} ($totalItemsSelected food items)",
+                                            style = AppTypography.bodyMedium.copy(fontFamily = SoraFamily, fontWeight = FontWeight.Bold),
+                                            color = HarvestLime
                                         )
                                     }
                                 }
@@ -7768,18 +7802,23 @@ fun GoalsScreen(
                                     onClick = { currentStep = 1 },
                                     modifier = Modifier.weight(1f).height(48.dp),
                                     shape = RoundedCornerShape(10.dp),
-                                    border = BorderStroke(1.dp, Color(0xFF64748B))
+                                    border = BorderStroke(1.dp, DeepPlumBorder)
                                 ) {
-                                    Text("⬅️ Back", fontWeight = FontWeight.Bold, color = Color(0xFF475569))
+                                    Text("⬅️ Back", style = AppTypography.button.copy(fontWeight = FontWeight.Bold), color = SurfaceWhite.copy(alpha = 0.8f))
                                 }
                                 Button(
                                     onClick = { currentStep = 3 },
                                     enabled = totalItemsSelected > 0,
                                     modifier = Modifier.weight(1.5f).height(48.dp),
-                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0A8F3D)),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = HarvestLime,
+                                        contentColor = Charcoal,
+                                        disabledContainerColor = DeepPlumBorder,
+                                        disabledContentColor = SurfaceWhite.copy(alpha = 0.4f)
+                                    ),
                                     shape = RoundedCornerShape(10.dp)
                                 ) {
-                                    Text("Next: Savings Plan ➡️", fontWeight = FontWeight.Bold)
+                                    Text("Next: Savings Plan ➡️", style = AppTypography.button.copy(fontWeight = FontWeight.Bold))
                                 }
                             }
                         }
@@ -7788,25 +7827,33 @@ fun GoalsScreen(
                         // STEP 3: SAVINGS PLAN TIMELINE & FREQUENCY
                         Card(
                             modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(containerColor = Color.White),
-                            border = BorderStroke(1.dp, Color(0xFFE2E8F0)),
+                            colors = CardDefaults.cardColors(containerColor = DeepPlumCard),
+                            border = BorderStroke(1.dp, DeepPlumBorder),
                             shape = RoundedCornerShape(16.dp)
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(Icons.Default.DateRange, contentDescription = null, tint = Color(0xFF0A8F3D), modifier = Modifier.size(24.dp))
+                                    Icon(Icons.Default.DateRange, contentDescription = null, tint = HarvestLime, modifier = Modifier.size(24.dp))
                                     Spacer(modifier = Modifier.width(8.dp))
-                                    Text("Choose your savings duration", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF1E293B))
+                                    Text(
+                                        "Choose your savings duration",
+                                        style = AppTypography.sectionHeader.copy(fontFamily = SoraFamily, fontWeight = FontWeight.Bold),
+                                        color = SurfaceWhite
+                                    )
                                 }
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Text(
                                     text = "Select how long you wish to save. Spreading deposits over a longer duration lowers each individual transfer amount.",
-                                    fontSize = 13.sp,
-                                    color = Color(0xFF64748B)
+                                    style = AppTypography.bodySmall,
+                                    color = SurfaceWhite.copy(alpha = 0.7f)
                                 )
                                 Spacer(modifier = Modifier.height(16.dp))
 
-                                Text("I want to save for:", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color(0xFF1E293B))
+                                Text(
+                                    "I want to save for:",
+                                    style = AppTypography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                                    color = SurfaceWhite
+                                )
                                 Spacer(modifier = Modifier.height(8.dp))
 
                                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -7823,28 +7870,35 @@ fun GoalsScreen(
                                             modifier = Modifier
                                                 .fillMaxWidth()
                                                 .clip(RoundedCornerShape(10.dp))
-                                                .background(if (isSelected) Color(0xFFE8F5E9) else Color(0xFFF8FAFC))
-                                                .border(1.dp, if (isSelected) Color(0xFF0A8F3D) else Color(0xFFE2E8F0), RoundedCornerShape(10.dp))
+                                                .background(if (isSelected) DeepPlum else DeepPlum.copy(alpha = 0.5f))
+                                                .border(1.dp, if (isSelected) HarvestLime else DeepPlumBorder, RoundedCornerShape(10.dp))
                                                 .clickable { savingTimelineWeeks = weeks }
                                                 .padding(12.dp),
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.SpaceBetween
                                         ) {
                                             Column(modifier = Modifier.weight(1f)) {
-                                                Text(label, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color(0xFF1E293B))
-                                                Text(desc, fontSize = 11.sp, color = Color(0xFF64748B))
+                                                Text(label, style = AppTypography.bodyMedium.copy(fontWeight = FontWeight.Bold), color = SurfaceWhite)
+                                                Text(desc, style = AppTypography.caption, color = SurfaceWhite.copy(alpha = 0.7f))
                                             }
                                             RadioButton(
                                                 selected = isSelected,
                                                 onClick = { savingTimelineWeeks = weeks },
-                                                colors = RadioButtonDefaults.colors(selectedColor = Color(0xFF0A8F3D))
+                                                colors = RadioButtonDefaults.colors(
+                                                    selectedColor = HarvestLime,
+                                                    unselectedColor = SurfaceWhite.copy(alpha = 0.5f)
+                                                )
                                             )
                                         }
                                     }
                                 }
 
                                 Spacer(modifier = Modifier.height(20.dp))
-                                Text("Savings Frequency:", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color(0xFF1E293B))
+                                Text(
+                                    "Savings Frequency:",
+                                    style = AppTypography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                                    color = SurfaceWhite
+                                )
                                 Spacer(modifier = Modifier.height(8.dp))
 
                                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
@@ -7857,21 +7911,24 @@ fun GoalsScreen(
                                             modifier = Modifier
                                                 .weight(1f)
                                                 .clip(RoundedCornerShape(10.dp))
-                                                .background(if (isSelected) Color(0xFFE8F5E9) else Color(0xFFF8FAFC))
-                                                .border(1.dp, if (isSelected) Color(0xFF0A8F3D) else Color(0xFFE2E8F0), RoundedCornerShape(10.dp))
+                                                .background(if (isSelected) DeepPlum else DeepPlum.copy(alpha = 0.5f))
+                                                .border(1.dp, if (isSelected) HarvestLime else DeepPlumBorder, RoundedCornerShape(10.dp))
                                                 .clickable { savingFrequency = freq }
                                                 .padding(12.dp),
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.SpaceBetween
                                         ) {
                                             Column(modifier = Modifier.weight(1f)) {
-                                                Text(freq, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color(0xFF1E293B))
-                                                Text(desc, fontSize = 11.sp, color = Color(0xFF64748B))
+                                                Text(freq, style = AppTypography.bodyMedium.copy(fontWeight = FontWeight.Bold), color = SurfaceWhite)
+                                                Text(desc, style = AppTypography.caption, color = SurfaceWhite.copy(alpha = 0.7f))
                                             }
                                             RadioButton(
                                                 selected = isSelected,
                                                 onClick = { savingFrequency = freq },
-                                                colors = RadioButtonDefaults.colors(selectedColor = Color(0xFF0A8F3D))
+                                                colors = RadioButtonDefaults.colors(
+                                                    selectedColor = HarvestLime,
+                                                    unselectedColor = SurfaceWhite.copy(alpha = 0.5f)
+                                                )
                                             )
                                         }
                                     }
@@ -7889,17 +7946,20 @@ fun GoalsScreen(
                                 onClick = { currentStep = 2 },
                                 modifier = Modifier.weight(1f).height(48.dp),
                                 shape = RoundedCornerShape(10.dp),
-                                border = BorderStroke(1.dp, Color(0xFF64748B))
+                                border = BorderStroke(1.dp, DeepPlumBorder)
                             ) {
-                                Text("⬅️ Back", fontWeight = FontWeight.Bold, color = Color(0xFF475569))
+                                Text("⬅️ Back", style = AppTypography.button.copy(fontWeight = FontWeight.Bold), color = SurfaceWhite.copy(alpha = 0.8f))
                             }
                             Button(
                                 onClick = { currentStep = 4 },
                                 modifier = Modifier.weight(1.5f).height(48.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0A8F3D)),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = HarvestLime,
+                                    contentColor = Charcoal
+                                ),
                                 shape = RoundedCornerShape(10.dp)
                             ) {
-                                Text("View Summary ➡️", fontWeight = FontWeight.Bold)
+                                Text("View Summary ➡️", style = AppTypography.button.copy(fontWeight = FontWeight.Bold))
                             }
                         }
                     }
@@ -7932,8 +7992,8 @@ fun GoalsScreen(
 
                         Card(
                             modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(containerColor = Color.White),
-                            border = BorderStroke(1.dp, Color(0xFFE2E8F0)),
+                            colors = CardDefaults.cardColors(containerColor = DeepPlumCard),
+                            border = BorderStroke(1.dp, DeepPlumBorder),
                             shape = RoundedCornerShape(16.dp)
                         ) {
                             Column {
@@ -7964,27 +8024,25 @@ fun GoalsScreen(
                                     ) {
                                         Box(
                                             modifier = Modifier
-                                                .background(Color(0xFF0A8F3D), RoundedCornerShape(4.dp))
+                                                .background(HarvestLime, RoundedCornerShape(4.dp))
                                                 .padding(horizontal = 6.dp, vertical = 2.dp)
                                         ) {
                                             Text(
                                                 text = "VISUAL BUNDLE PREVIEW",
-                                                fontSize = 9.sp,
-                                                fontWeight = FontWeight.Bold,
-                                                color = Color.White
+                                                style = AppTypography.caption.copy(fontWeight = FontWeight.Bold),
+                                                color = Charcoal
                                             )
                                         }
                                         Spacer(modifier = Modifier.height(4.dp))
                                         Text(
                                             text = if (totalItemsCountSummary <= 3) "Single Starter Basket" else if (totalItemsCountSummary <= 8) "Standard Family Food Basket" else "Ultimate Abundance Feast Basket",
-                                            fontWeight = FontWeight.ExtraBold,
-                                            fontSize = 16.sp,
-                                            color = Color.White
+                                            style = AppTypography.cardTitle.copy(fontFamily = SoraFamily, fontWeight = FontWeight.ExtraBold),
+                                            color = SurfaceWhite
                                         )
                                         Text(
                                             text = "$totalItemsCountSummary food item(s) selected in $selectedStateForCalc",
-                                            fontSize = 12.sp,
-                                            color = Color.White.copy(alpha = 0.9f)
+                                            style = AppTypography.caption,
+                                            color = SurfaceWhite.copy(alpha = 0.9f)
                                         )
                                     }
                                 }
@@ -7993,7 +8051,8 @@ fun GoalsScreen(
                                     // Recommended Periodic Savings display
                                     Card(
                                         modifier = Modifier.fillMaxWidth(),
-                                        colors = CardDefaults.cardColors(containerColor = Color(0xFF0A8F3D)),
+                                        colors = CardDefaults.cardColors(containerColor = DeepPlum),
+                                        border = BorderStroke(1.dp, DeepPlumBorder),
                                         shape = RoundedCornerShape(12.dp)
                                     ) {
                                         Column(
@@ -8002,27 +8061,24 @@ fun GoalsScreen(
                                         ) {
                                             Text(
                                                 text = "ESTIMATED TOTAL BUDGET",
-                                                fontSize = 11.sp,
-                                                fontWeight = FontWeight.Bold,
-                                                color = Color.White.copy(alpha = 0.8f)
+                                                style = AppTypography.caption.copy(fontWeight = FontWeight.Bold),
+                                                color = SurfaceWhite.copy(alpha = 0.7f)
                                             )
                                             Spacer(modifier = Modifier.height(4.dp))
                                             Text(
-                                                text = "₦${String.format("%,.2f", totalCostSummary)}",
-                                                fontSize = 24.sp,
-                                                fontWeight = FontWeight.Black,
-                                                color = Color.White
+                                                text = AppFormatters.formatNaira(totalCostSummary),
+                                                style = AppTypography.screenTitle.copy(fontFamily = SoraFamily, fontWeight = FontWeight.Black),
+                                                color = SurfaceWhite
                                             )
                                             
                                             Spacer(modifier = Modifier.height(12.dp))
-                                            Divider(color = Color.White.copy(alpha = 0.2f))
+                                            Divider(color = DeepPlumBorder)
                                             Spacer(modifier = Modifier.height(12.dp))
 
                                             Text(
                                                 text = "RECOMMENDED SAVINGS PLAN",
-                                                fontSize = 11.sp,
-                                                fontWeight = FontWeight.Bold,
-                                                color = Color.White.copy(alpha = 0.8f)
+                                                style = AppTypography.caption.copy(fontWeight = FontWeight.Bold),
+                                                color = SurfaceWhite.copy(alpha = 0.7f)
                                             )
                                             Spacer(modifier = Modifier.height(4.dp))
                                             Row(
@@ -8030,23 +8086,21 @@ fun GoalsScreen(
                                                 horizontalArrangement = Arrangement.Center
                                             ) {
                                                 Text(
-                                                    text = "₦${String.format("%,.0f", savingPerPeriod)}",
-                                                    fontSize = 28.sp,
-                                                    fontWeight = FontWeight.Black,
-                                                    color = Color(0xFFFFD700) // Beautiful Gold Accent
+                                                    text = AppFormatters.formatNaira(savingPerPeriod),
+                                                    style = AppTypography.displayLarge.copy(fontFamily = SoraFamily, fontWeight = FontWeight.Black),
+                                                    color = HarvestLime
                                                 )
                                                 Text(
                                                     text = if (savingFrequency == "Weekly") " / week" else " / month",
-                                                    fontSize = 14.sp,
-                                                    fontWeight = FontWeight.Bold,
-                                                    color = Color.White.copy(alpha = 0.9f),
+                                                    style = AppTypography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                                                    color = SurfaceWhite.copy(alpha = 0.9f),
                                                     modifier = Modifier.padding(bottom = 4.dp)
                                                 )
                                             }
                                             Text(
                                                 text = "for a duration of $savingTimelineWeeks Weeks",
-                                                fontSize = 12.sp,
-                                                color = Color.White.copy(alpha = 0.9f)
+                                                style = AppTypography.caption,
+                                                color = SurfaceWhite.copy(alpha = 0.9f)
                                             )
                                         }
                                     }
@@ -8063,20 +8117,23 @@ fun GoalsScreen(
                                                 modifier = Modifier
                                                     .fillMaxWidth()
                                                     .testTag("ai_preview_generate_button"),
-                                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E293B)),
+                                                colors = ButtonDefaults.buttonColors(
+                                                    containerColor = DeepPlum,
+                                                    contentColor = HarvestLime
+                                                ),
+                                                border = BorderStroke(1.dp, DeepPlumBorder),
                                                 shape = RoundedCornerShape(10.dp)
                                             ) {
                                                 Icon(
                                                     imageVector = Icons.Default.Star,
                                                     contentDescription = null,
                                                     modifier = Modifier.size(16.dp),
-                                                    tint = Color(0xFFFFD700)
+                                                    tint = HarvestLime
                                                 )
                                                 Spacer(modifier = Modifier.width(8.dp))
                                                 Text(
                                                     text = "Ask Mama AI to Review Your Basket",
-                                                    fontWeight = FontWeight.Bold,
-                                                    fontSize = 13.sp
+                                                    style = AppTypography.button.copy(fontWeight = FontWeight.Bold)
                                                 )
                                             }
                                         }
@@ -8088,23 +8145,22 @@ fun GoalsScreen(
                                                 horizontalAlignment = Alignment.CenterHorizontally
                                             ) {
                                                 CircularProgressIndicator(
-                                                    color = Color(0xFF0A8F3D),
+                                                    color = HarvestLime,
                                                     modifier = Modifier.size(28.dp),
                                                     strokeWidth = 3.dp
                                                 )
                                                 Spacer(modifier = Modifier.height(10.dp))
                                                 Text(
                                                     text = "Mama Olufunke is arranging your kitchen basket...",
-                                                    fontSize = 12.sp,
-                                                    color = Color(0xFF0A8F3D),
-                                                    fontWeight = FontWeight.Medium
+                                                    style = AppTypography.caption.copy(fontWeight = FontWeight.Medium),
+                                                    color = HarvestLime
                                                 )
                                             }
                                         }
                                         is BasketPreviewState.Success -> {
                                             Card(
-                                                colors = CardDefaults.cardColors(containerColor = Color(0xFFF8FAFC)),
-                                                border = BorderStroke(1.dp, Color(0xFFE2E8F0)),
+                                                colors = CardDefaults.cardColors(containerColor = DeepPlum),
+                                                border = BorderStroke(1.dp, DeepPlumBorder),
                                                 shape = RoundedCornerShape(12.dp),
                                                 modifier = Modifier.fillMaxWidth()
                                             ) {
@@ -8118,15 +8174,14 @@ fun GoalsScreen(
                                                             Icon(
                                                                 imageVector = Icons.Default.Star,
                                                                 contentDescription = null,
-                                                                tint = Color(0xFFFFB300),
+                                                                tint = HarvestLime,
                                                                 modifier = Modifier.size(16.dp)
                                                             )
                                                             Spacer(modifier = Modifier.width(6.dp))
                                                             Text(
                                                                 text = "MAMA OLUFUNKE'S REVIEW",
-                                                                fontSize = 11.sp,
-                                                                fontWeight = FontWeight.Black,
-                                                                color = Color(0xFF1E293B)
+                                                                style = AppTypography.caption.copy(fontWeight = FontWeight.Black),
+                                                                color = HarvestLime
                                                             )
                                                         }
                                                         
@@ -8135,14 +8190,14 @@ fun GoalsScreen(
                                                             contentPadding = PaddingValues(0.dp),
                                                             modifier = Modifier.height(24.dp)
                                                         ) {
-                                                            Text("Clear Review", fontSize = 11.sp, color = Color(0xFFEF4444), fontWeight = FontWeight.Bold)
+                                                            Text("Clear Review", style = AppTypography.caption.copy(fontWeight = FontWeight.Bold), color = StatusErrorDark)
                                                         }
                                                     }
                                                     Spacer(modifier = Modifier.height(8.dp))
                                                     Text(
                                                         text = previewState.description,
-                                                        fontSize = 12.sp,
-                                                        color = Color(0xFF334155),
+                                                        style = AppTypography.bodySmall,
+                                                        color = SurfaceWhite.copy(alpha = 0.9f),
                                                         lineHeight = 18.sp
                                                     )
                                                 }
@@ -8169,12 +8224,15 @@ fun GoalsScreen(
                                             }
                                         },
                                         modifier = Modifier.fillMaxWidth().height(52.dp),
-                                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0A8F3D)),
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = HarvestLime,
+                                            contentColor = Charcoal
+                                        ),
                                         shape = RoundedCornerShape(10.dp)
                                     ) {
                                         Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(18.dp))
                                         Spacer(modifier = Modifier.width(8.dp))
-                                        Text("Turn this into a Savings Goal 🎯", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                                        Text("Turn this into a Savings Goal 🎯", style = AppTypography.button.copy(fontWeight = FontWeight.Bold))
                                     }
                                 }
                             }
@@ -8190,9 +8248,9 @@ fun GoalsScreen(
                                 onClick = { currentStep = 3 },
                                 modifier = Modifier.weight(1f).height(48.dp),
                                 shape = RoundedCornerShape(10.dp),
-                                border = BorderStroke(1.dp, Color(0xFF64748B))
+                                border = BorderStroke(1.dp, DeepPlumBorder)
                             ) {
-                                Text("⬅️ Back", fontWeight = FontWeight.Bold, color = Color(0xFF475569))
+                                Text("⬅️ Back", style = AppTypography.button.copy(fontWeight = FontWeight.Bold), color = SurfaceWhite.copy(alpha = 0.8f))
                             }
                             OutlinedButton(
                                 onClick = {
@@ -8202,10 +8260,10 @@ fun GoalsScreen(
                                 },
                                 modifier = Modifier.weight(1f).height(48.dp),
                                 shape = RoundedCornerShape(10.dp),
-                                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFFEF4444)),
-                                border = BorderStroke(1.dp, Color(0xFFEF4444))
+                                colors = ButtonDefaults.outlinedButtonColors(contentColor = StatusErrorDark),
+                                border = BorderStroke(1.dp, StatusErrorDark)
                             ) {
-                                Text("Reset 🔄", fontWeight = FontWeight.Bold)
+                                Text("Reset 🔄", style = AppTypography.button.copy(fontWeight = FontWeight.Bold))
                             }
                         }
                     }
@@ -8233,10 +8291,19 @@ fun GoalsScreen(
         val goal = goals.find { it.id == goalId } ?: return@let
         AlertDialog(
             onDismissRequest = { selectedGoalIdForContribution = null },
-            title = { Text("Save Towards: ${goal.title}") },
+            title = {
+                Text(
+                    text = "Save Towards: ${goal.title}",
+                    style = AppTypography.dialogTitle.copy(fontFamily = SoraFamily, fontWeight = FontWeight.Bold, color = Charcoal)
+                )
+            },
             text = {
                 Column {
-                    Text("How much would you like to save right now from your available balance?", fontSize = 14.sp)
+                    Text(
+                        text = "How much would you like to save right now from your available balance?",
+                        style = AppTypography.bodyMedium,
+                        color = CharcoalSecondary
+                    )
                     Spacer(modifier = Modifier.height(16.dp))
                     OutlinedTextField(
                         value = contributeAmountText,
@@ -8244,7 +8311,12 @@ fun GoalsScreen(
                         label = { Text("Savings Amount (₦)") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         singleLine = true,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = SavPurple,
+                            focusedLabelColor = SavPurple,
+                            cursorColor = SavPurple
+                        )
                     )
                 }
             },
@@ -8258,14 +8330,18 @@ fun GoalsScreen(
                             selectedGoalIdForContribution = null
                         }
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0A8F3D))
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = SavPurple,
+                        contentColor = SurfaceWhite
+                    ),
+                    shape = RoundedCornerShape(8.dp)
                 ) {
-                    Text("Confirm Save")
+                    Text("Confirm Save", style = AppTypography.button.copy(fontWeight = FontWeight.Bold))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { selectedGoalIdForContribution = null }) {
-                    Text("Cancel")
+                    Text("Cancel", style = AppTypography.button.copy(fontWeight = FontWeight.Medium), color = CharcoalSecondary)
                 }
             }
         )
@@ -8278,9 +8354,18 @@ fun GoalsScreen(
             val amt = contributeAmountText.toDoubleOrNull() ?: 0.0
             AlertDialog(
                 onDismissRequest = { showSaveGoalConfirmDialog = false },
-                title = { Text("Confirm Transfer") },
+                title = {
+                    Text(
+                        text = "Confirm Transfer",
+                        style = AppTypography.dialogTitle.copy(fontFamily = SoraFamily, fontWeight = FontWeight.Bold, color = Charcoal)
+                    )
+                },
                 text = {
-                    Text("Are you sure you want to deposit/transfer ₦${String.format("%,.2f", amt)} into your savings goal \"${goal.title}\"?")
+                    Text(
+                        text = "Are you sure you want to deposit/transfer ${AppFormatters.formatNaira(amt)} into your savings goal \"${goal.title}\"?",
+                        style = AppTypography.bodyMedium,
+                        color = CharcoalSecondary
+                    )
                 },
                 confirmButton = {
                     Button(
@@ -8290,15 +8375,19 @@ fun GoalsScreen(
                             selectedGoalIdForContribution = null
                             showSaveGoalConfirmDialog = false
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0A8F3D)),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = SavPurple,
+                            contentColor = SurfaceWhite
+                        ),
+                        shape = RoundedCornerShape(8.dp),
                         modifier = Modifier.testTag("confirm_transfer_button")
                     ) {
-                        Text("Confirm Transfer")
+                        Text("Confirm Transfer", style = AppTypography.button.copy(fontWeight = FontWeight.Bold))
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { showSaveGoalConfirmDialog = false }) {
-                        Text("Cancel")
+                        Text("Cancel", style = AppTypography.button.copy(fontWeight = FontWeight.Medium), color = CharcoalSecondary)
                     }
                 }
             )
@@ -8309,20 +8398,24 @@ fun GoalsScreen(
         if (goal.isLocked) {
             AlertDialog(
                 onDismissRequest = { selectedGoalForWithdrawalOptions = null },
-                icon = { Icon(Icons.Default.Lock, contentDescription = null, tint = Color(0xFFFF8C00), modifier = Modifier.size(36.dp)) },
-                title = { Text("Goal is Locked", fontWeight = FontWeight.Bold, color = Color(0xFF1E293B)) },
+                icon = { Icon(Icons.Default.Lock, contentDescription = null, tint = StatusWarningLight, modifier = Modifier.size(36.dp)) },
+                title = {
+                    Text(
+                        text = "Goal is Locked",
+                        style = AppTypography.dialogTitle.copy(fontFamily = SoraFamily, fontWeight = FontWeight.Bold, color = Charcoal)
+                    )
+                },
                 text = {
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         Text(
                             text = "This savings goal is currently locked to secure your food funds and help you stay on budget.",
-                            fontSize = 13.sp,
-                            color = Color(0xFF64748B)
+                            style = AppTypography.bodySmall,
+                            color = CharcoalSecondary
                         )
                         Text(
                             text = "To withdraw these funds back to your Available to Spend wallet or Bank, you must unlock this goal first.",
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = Color(0xFF1E293B)
+                            style = AppTypography.bodySmall.copy(fontWeight = FontWeight.Medium),
+                            color = Charcoal
                         )
                     }
                 },
@@ -8332,14 +8425,18 @@ fun GoalsScreen(
                             viewModel.unlockGoal(goal.id)
                             selectedGoalForWithdrawalOptions = null
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0A8F3D))
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = SavPurple,
+                            contentColor = SurfaceWhite
+                        ),
+                        shape = RoundedCornerShape(8.dp)
                     ) {
-                        Text("Unlock Goal", color = Color.White)
+                        Text("Unlock Goal", style = AppTypography.button.copy(fontWeight = FontWeight.Bold))
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { selectedGoalForWithdrawalOptions = null }) {
-                        Text("Cancel", color = Color(0xFF64748B))
+                        Text("Cancel", style = AppTypography.button.copy(fontWeight = FontWeight.Medium), color = CharcoalSecondary)
                     }
                 }
             )
@@ -8347,82 +8444,86 @@ fun GoalsScreen(
             val isCompleted = goal.savedAmount >= goal.targetAmount
             AlertDialog(
                 onDismissRequest = { selectedGoalForWithdrawalOptions = null },
-            icon = { Icon(Icons.Default.AccountBalanceWallet, contentDescription = null, tint = Color(0xFF0A8F3D)) },
-            title = { Text("Withdraw savings for ${goal.title}", fontWeight = FontWeight.Bold) },
-            text = {
-                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                icon = { Icon(Icons.Default.AccountBalanceWallet, contentDescription = null, tint = SavPurple, modifier = Modifier.size(36.dp)) },
+                title = {
                     Text(
-                        text = "You have ₦${String.format("%,.0f", goal.savedAmount)} saved in this goal. Where would you like to withdraw these funds?",
-                        fontSize = 13.sp,
-                        color = Color(0xFF64748B)
+                        text = "Withdraw savings for ${goal.title}",
+                        style = AppTypography.dialogTitle.copy(fontFamily = SoraFamily, fontWeight = FontWeight.Bold, color = Charcoal)
                     )
-                    
-                    if (!isCompleted) {
+                },
+                text = {
+                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Text(
+                            text = "You have ${AppFormatters.formatNaira(goal.savedAmount)} saved in this goal. Where would you like to withdraw these funds?",
+                            style = AppTypography.bodySmall,
+                            color = CharcoalSecondary
+                        )
+                        
+                        if (!isCompleted) {
+                            Card(
+                                colors = CardDefaults.cardColors(containerColor = WarmCream),
+                                border = BorderStroke(1.dp, StatusWarningLight.copy(alpha = 0.5f)),
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(
+                                    text = "⚠️ This goal is incomplete. Emergency early withdrawal will incur a 5% penalty fee (${AppFormatters.formatNaira(goal.savedAmount * 0.05)}) on the refunded amount.",
+                                    style = AppTypography.caption.copy(fontWeight = FontWeight.Bold),
+                                    color = StatusWarningLight,
+                                    modifier = Modifier.padding(8.dp)
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(4.dp))
+
                         Card(
-                            colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF7ED)),
-                            border = BorderStroke(1.dp, Color(0xFFFFEDD5)),
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    showWithdrawWalletConfirmDialog = goal
+                                    selectedGoalForWithdrawalOptions = null
+                                },
+                            colors = CardDefaults.cardColors(containerColor = WarmCream),
+                            border = BorderStroke(1.dp, NeutralLightBorder)
                         ) {
-                            Text(
-                                text = "⚠️ This goal is incomplete. Emergency early withdrawal will incur a 5% penalty fee (₦${String.format("%,.2f", goal.savedAmount * 0.05)}) on the refunded amount.",
-                                fontSize = 11.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFFC2410C),
-                                modifier = Modifier.padding(8.dp)
-                            )
+                            Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                                Icon(Icons.Default.AccountBalanceWallet, contentDescription = null, tint = SavPurple, modifier = Modifier.size(24.dp))
+                                Spacer(modifier = Modifier.width(12.dp))
+                                Column {
+                                    Text("Transfer to AfriSav Wallet", style = AppTypography.bodySmall.copy(fontWeight = FontWeight.Bold), color = Charcoal)
+                                    Text("Move funds to available balance", style = AppTypography.caption, color = CharcoalSecondary)
+                                }
+                            }
                         }
-                    }
 
-                    Spacer(modifier = Modifier.height(4.dp))
-
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                showWithdrawWalletConfirmDialog = goal
-                                selectedGoalForWithdrawalOptions = null
-                            },
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFF0FDF4)),
-                        border = BorderStroke(1.dp, Color(0xFFDCFCE7))
-                    ) {
-                        Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.AccountBalanceWallet, contentDescription = null, tint = Color(0xFF16A34A), modifier = Modifier.size(24.dp))
-                            Spacer(modifier = Modifier.width(12.dp))
-                            Column {
-                                Text("Transfer to AfriSav Wallet", fontWeight = FontWeight.Bold, fontSize = 13.sp, color = Color(0xFF14532D))
-                                Text("Move funds to available balance", fontSize = 11.sp, color = Color(0xFF166534))
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    showWithdrawalBankDialogForGoal = goal
+                                    selectedGoalForWithdrawalOptions = null
+                                },
+                            colors = CardDefaults.cardColors(containerColor = WarmCream),
+                            border = BorderStroke(1.dp, NeutralLightBorder)
+                        ) {
+                            Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                                Icon(Icons.Default.AccountBalance, contentDescription = null, tint = SavPurple, modifier = Modifier.size(24.dp))
+                                Spacer(modifier = Modifier.width(12.dp))
+                                Column {
+                                    Text("Direct Cashout to Bank", style = AppTypography.bodySmall.copy(fontWeight = FontWeight.Bold), color = Charcoal)
+                                    Text("Settle directly to commercial bank", style = AppTypography.caption, color = CharcoalSecondary)
+                                }
                             }
                         }
                     }
-
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                showWithdrawalBankDialogForGoal = goal
-                                selectedGoalForWithdrawalOptions = null
-                            },
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFEFF6FF)),
-                        border = BorderStroke(1.dp, Color(0xFFDBEAFE))
-                    ) {
-                        Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.AccountBalance, contentDescription = null, tint = Color(0xFF2563EB), modifier = Modifier.size(24.dp))
-                            Spacer(modifier = Modifier.width(12.dp))
-                            Column {
-                                Text("Direct Cashout to Bank", fontWeight = FontWeight.Bold, fontSize = 13.sp, color = Color(0xFF1E3A8A))
-                                Text("Settle directly to commercial bank", fontSize = 11.sp, color = Color(0xFF1E40AF))
-                            }
-                        }
+                },
+                confirmButton = {},
+                dismissButton = {
+                    TextButton(onClick = { selectedGoalForWithdrawalOptions = null }) {
+                        Text("Cancel", style = AppTypography.button.copy(fontWeight = FontWeight.Medium), color = CharcoalSecondary)
                     }
                 }
-            },
-            confirmButton = {},
-            dismissButton = {
-                TextButton(onClick = { selectedGoalForWithdrawalOptions = null }) {
-                    Text("Cancel", color = Color(0xFF64748B))
-                }
-            }
-        )
+            )
         }
     }
 
@@ -8433,17 +8534,22 @@ fun GoalsScreen(
                 goalWithdrawAccountNumber = ""
                 goalWithdrawBankError = ""
             },
-            icon = { Icon(Icons.Default.AccountBalance, contentDescription = null, tint = Color(0xFF2563EB)) },
-            title = { Text("Bank Cashout Details", fontWeight = FontWeight.Bold) },
+            icon = { Icon(Icons.Default.AccountBalance, contentDescription = null, tint = SavPurple, modifier = Modifier.size(36.dp)) },
+            title = {
+                Text(
+                    text = "Bank Cashout Details",
+                    style = AppTypography.dialogTitle.copy(fontFamily = SoraFamily, fontWeight = FontWeight.Bold, color = Charcoal)
+                )
+            },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     Text(
-                        text = "Withdraw ₦${String.format("%,.0f", goal.savedAmount)} from \"${goal.title}\" directly to your bank account.",
-                        fontSize = 13.sp,
-                        color = Color(0xFF64748B)
+                        text = "Withdraw ${AppFormatters.formatNaira(goal.savedAmount)} from \"${goal.title}\" directly to your bank account.",
+                        style = AppTypography.bodySmall,
+                        color = CharcoalSecondary
                     )
 
-                    Text("Select Destination Bank", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color(0xFF64748B))
+                    Text("Select Destination Bank", style = AppTypography.caption.copy(fontWeight = FontWeight.Bold), color = Charcoal)
                     val withdrawBanks = listOf(
                         "Access Bank",
                         "Zenith Bank",
@@ -8477,12 +8583,12 @@ fun GoalsScreen(
                                 .menuAnchor()
                                 .fillMaxWidth(),
                             shape = RoundedCornerShape(8.dp),
-                            textStyle = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Medium),
+                            textStyle = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Medium, color = Charcoal),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedContainerColor = Color.White,
-                                unfocusedContainerColor = Color.White,
-                                focusedBorderColor = Color(0xFF2563EB),
-                                unfocusedBorderColor = Color(0xFFCBD5E1)
+                                focusedContainerColor = SurfaceWhite,
+                                unfocusedContainerColor = SurfaceWhite,
+                                focusedBorderColor = SavPurple,
+                                unfocusedBorderColor = NeutralLightBorder
                             )
                         )
                         ExposedDropdownMenu(
@@ -8491,7 +8597,7 @@ fun GoalsScreen(
                         ) {
                             withdrawBanks.forEach { bank ->
                                 DropdownMenuItem(
-                                    text = { Text(bank, fontSize = 13.sp) },
+                                    text = { Text(bank, style = AppTypography.bodySmall, color = Charcoal) },
                                     onClick = {
                                         goalWithdrawBankName = bank
                                         bankDropdownExpanded = false
@@ -8514,11 +8620,16 @@ fun GoalsScreen(
                         label = { Text("10-Digit Account Number") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         singleLine = true,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = SavPurple,
+                            focusedLabelColor = SavPurple,
+                            cursorColor = SavPurple
+                        )
                     )
 
                     if (goalWithdrawBankError.isNotEmpty()) {
-                        Text(goalWithdrawBankError, color = Color.Red, fontSize = 11.sp)
+                        Text(goalWithdrawBankError, color = StatusErrorLight, style = AppTypography.caption)
                     }
                 }
             },
@@ -8531,10 +8642,13 @@ fun GoalsScreen(
                             showWithdrawBankConfirmDialog = true
                         }
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB)),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = SavPurple,
+                        contentColor = SurfaceWhite
+                    ),
                     shape = RoundedCornerShape(8.dp)
                 ) {
-                    Text("Request Bank Cashout", fontWeight = FontWeight.Bold, color = Color.White)
+                    Text("Request Bank Cashout", style = AppTypography.button.copy(fontWeight = FontWeight.Bold))
                 }
             },
             dismissButton = {
@@ -8543,7 +8657,7 @@ fun GoalsScreen(
                     goalWithdrawAccountNumber = ""
                     goalWithdrawBankError = ""
                 }) {
-                    Text("Cancel", color = Color(0xFF64748B))
+                    Text("Cancel", style = AppTypography.button.copy(fontWeight = FontWeight.Medium), color = CharcoalSecondary)
                 }
             }
         )
@@ -8552,9 +8666,18 @@ fun GoalsScreen(
     showWithdrawWalletConfirmDialog?.let { goal ->
         AlertDialog(
             onDismissRequest = { showWithdrawWalletConfirmDialog = null },
-            title = { Text("Confirm Transfer") },
+            title = {
+                Text(
+                    text = "Confirm Transfer",
+                    style = AppTypography.dialogTitle.copy(fontFamily = SoraFamily, fontWeight = FontWeight.Bold, color = Charcoal)
+                )
+            },
             text = {
-                Text("Are you sure you want to withdraw/transfer ₦${String.format("%,.2f", goal.savedAmount)} from your savings goal \"${goal.title}\" back to your available spendable wallet balance?")
+                Text(
+                    text = "Are you sure you want to withdraw/transfer ${AppFormatters.formatNaira(goal.savedAmount)} from your savings goal \"${goal.title}\" back to your available spendable wallet balance?",
+                    style = AppTypography.bodyMedium,
+                    color = CharcoalSecondary
+                )
             },
             confirmButton = {
                 Button(
@@ -8562,15 +8685,19 @@ fun GoalsScreen(
                         viewModel.withdrawGoalFunds(goal.id)
                         showWithdrawWalletConfirmDialog = null
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0A8F3D)),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = SavPurple,
+                        contentColor = SurfaceWhite
+                    ),
+                    shape = RoundedCornerShape(8.dp),
                     modifier = Modifier.testTag("confirm_transfer_button")
                 ) {
-                    Text("Confirm Transfer")
+                    Text("Confirm Transfer", style = AppTypography.button.copy(fontWeight = FontWeight.Bold))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showWithdrawWalletConfirmDialog = null }) {
-                    Text("Cancel")
+                    Text("Cancel", style = AppTypography.button.copy(fontWeight = FontWeight.Medium), color = CharcoalSecondary)
                 }
             }
         )
@@ -8580,9 +8707,18 @@ fun GoalsScreen(
         val goal = showWithdrawalBankDialogForGoal!!
         AlertDialog(
             onDismissRequest = { showWithdrawBankConfirmDialog = false },
-            title = { Text("Confirm Transfer") },
+            title = {
+                Text(
+                    text = "Confirm Transfer",
+                    style = AppTypography.dialogTitle.copy(fontFamily = SoraFamily, fontWeight = FontWeight.Bold, color = Charcoal)
+                )
+            },
             text = {
-                Text("Are you sure you want to withdraw/transfer ₦${String.format("%,.2f", goal.savedAmount)} from \"${goal.title}\" directly to your $goalWithdrawBankName account ($goalWithdrawAccountNumber)?")
+                Text(
+                    text = "Are you sure you want to withdraw/transfer ${AppFormatters.formatNaira(goal.savedAmount)} from \"${goal.title}\" directly to your $goalWithdrawBankName account ($goalWithdrawAccountNumber)?",
+                    style = AppTypography.bodyMedium,
+                    color = CharcoalSecondary
+                )
             },
             confirmButton = {
                 Button(
@@ -8593,15 +8729,19 @@ fun GoalsScreen(
                         goalWithdrawAccountNumber = ""
                         goalWithdrawBankError = ""
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0A8F3D)),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = SavPurple,
+                        contentColor = SurfaceWhite
+                    ),
+                    shape = RoundedCornerShape(8.dp),
                     modifier = Modifier.testTag("confirm_transfer_button")
                 ) {
-                    Text("Confirm Transfer")
+                    Text("Confirm Transfer", style = AppTypography.button.copy(fontWeight = FontWeight.Bold))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showWithdrawBankConfirmDialog = false }) {
-                    Text("Cancel")
+                    Text("Cancel", style = AppTypography.button.copy(fontWeight = FontWeight.Medium), color = CharcoalSecondary)
                 }
             }
         )
@@ -8612,9 +8752,11 @@ fun GoalsScreen(
 fun BasketSavingsProgressBar(
     savedAmount: Double,
     targetAmount: Double,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    ground: SurfaceGround = SurfaceGround.DARK
 ) {
     val progress = if (targetAmount > 0) (savedAmount / targetAmount).toFloat().coerceIn(0f, 1f) else 0f
+    val isDark = ground == SurfaceGround.DARK
     
     // Smooth progress animation
     val animatedProgress by animateFloatAsState(
@@ -8643,15 +8785,13 @@ fun BasketSavingsProgressBar(
             }
             Text(
                 text = statusText,
-                fontSize = 11.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = if (percentage >= 100) Color(0xFF0A8F3D) else Color(0xFF475569)
+                style = AppTypography.caption.copy(fontWeight = FontWeight.SemiBold),
+                color = if (percentage >= 100) (if (isDark) HarvestLime else SuccessGreenLight) else (if (isDark) SurfaceWhite.copy(alpha = 0.8f) else CharcoalMuted)
             )
             Text(
                 text = "$percentage%",
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF0A8F3D)
+                style = AppTypography.caption.copy(fontWeight = FontWeight.Bold, fontFamily = SoraFamily, fontFeatureSettings = "tnum"),
+                color = if (isDark) HarvestLime else SavPurple
             )
         }
 
@@ -8661,23 +8801,26 @@ fun BasketSavingsProgressBar(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(12.dp)
-                .clip(RoundedCornerShape(6.dp))
-                .background(Color(0xFFE2E8F0)) // Track background
+                .height(10.dp)
+                .clip(RoundedCornerShape(5.dp))
+                .background(if (isDark) DeepPlumBorder else Color(0xFFE2E8F0)) // Track background
         ) {
             // Active Progress with LinearGradient
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
                     .fillMaxWidth(animatedProgress)
-                    .clip(RoundedCornerShape(6.dp))
+                    .clip(RoundedCornerShape(5.dp))
                     .background(
-                        Brush.horizontalGradient(
-                            colors = listOf(
-                                Color(0xFF4ADE80), // Vibrant light green
-                                Color(0xFF0A8F3D)  // Premium dark green
+                        if (isDark) {
+                            Brush.horizontalGradient(
+                                colors = listOf(HarvestLime, HarvestLime400)
                             )
-                        )
+                        } else {
+                            Brush.horizontalGradient(
+                                colors = listOf(SavPurple, Purple400)
+                            )
+                        }
                     )
             )
         }
@@ -8692,24 +8835,21 @@ fun BasketSavingsProgressBar(
         ) {
             val remaining = targetAmount - savedAmount
             Text(
-                text = "Saved: ₦${String.format("%,.0f", savedAmount)}",
-                fontSize = 10.sp,
-                color = Color(0xFF64748B),
-                fontWeight = FontWeight.Medium
+                text = "Saved: ${AppFormatters.formatNaira(savedAmount)}",
+                style = AppTypography.caption.copy(fontFamily = SoraFamily, fontFeatureSettings = "tnum"),
+                color = if (isDark) SurfaceWhite.copy(alpha = 0.7f) else TextMuted
             )
             if (remaining > 0) {
                 Text(
-                    text = "₦${String.format("%,.0f", remaining)} left",
-                    fontSize = 10.sp,
-                    color = Color(0xFFFF8C00),
-                    fontWeight = FontWeight.Bold
+                    text = "${AppFormatters.formatNaira(remaining)} left",
+                    style = AppTypography.caption.copy(fontWeight = FontWeight.Bold, fontFamily = SoraFamily, fontFeatureSettings = "tnum"),
+                    color = if (isDark) WarningAmberLight else WarningAmber
                 )
             } else {
                 Text(
                     text = "Ready to buy!",
-                    fontSize = 10.sp,
-                    color = Color(0xFF0A8F3D),
-                    fontWeight = FontWeight.Bold
+                    style = AppTypography.caption.copy(fontWeight = FontWeight.Bold),
+                    color = if (isDark) HarvestLime else SuccessGreen
                 )
             }
         }
@@ -8724,14 +8864,17 @@ fun GoalCard(
     onPauseToggle: () -> Unit,
     onWithdrawClick: () -> Unit,
     onDeleteClick: () -> Unit,
-    onLockToggle: () -> Unit
+    onLockToggle: () -> Unit,
+    ground: SurfaceGround = SurfaceGround.DARK
 ) {
     var expanded by remember { mutableStateOf(false) }
     val isComplete = goal.savedAmount >= goal.targetAmount
+    val isDark = ground == SurfaceGround.DARK
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = SurfaceBg),
+        colors = CardDefaults.cardColors(containerColor = if (isDark) DeepPlumCard else SurfaceWhite),
+        border = BorderStroke(1.dp, if (isDark) DeepPlumBorder else BorderSubtle),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -8744,24 +8887,36 @@ fun GoalCard(
                     Box(
                         modifier = Modifier
                             .size(44.dp)
-                            .background(Color(0xFF0A8F3D).copy(alpha = 0.1f), CircleShape),
+                            .background(if (isDark) HarvestLime.copy(alpha = 0.15f) else SavPurple.copy(alpha = 0.1f), CircleShape),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(getCategoryEmoji(goal.category), fontSize = 22.sp)
                     }
                     Spacer(modifier = Modifier.width(12.dp))
                     Column {
-                        Text(text = goal.title, fontWeight = FontWeight.Bold, fontSize = 15.sp, color = Color(0xFF1E293B))
+                        Text(
+                            text = goal.title,
+                            style = AppTypography.cardTitle.copy(fontWeight = FontWeight.Bold, fontFamily = SoraFamily),
+                            color = if (isDark) SurfaceWhite else Charcoal
+                        )
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(text = goal.category, fontSize = 11.sp, color = Color(0xFF64748B))
+                            Text(
+                                text = goal.category,
+                                style = AppTypography.caption,
+                                color = if (isDark) SurfaceWhite.copy(alpha = 0.7f) else TextMuted
+                            )
                             if (goal.isAutoSaveEnabled) {
                                 Spacer(modifier = Modifier.width(6.dp))
-                                Card(colors = CardDefaults.cardColors(containerColor = Color(0xFFE2F0D9))) {
+                                Card(
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = if (isDark) HarvestLime.copy(alpha = 0.2f) else Purple50
+                                    ),
+                                    shape = RoundedCornerShape(4.dp)
+                                ) {
                                     Text(
-                                        "₦${goal.autoSaveAmount.toInt()}/day Auto",
-                                        fontSize = 9.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = Color(0xFF0A8F3D),
+                                        "${AppFormatters.formatNaira(goal.autoSaveAmount)}/day Auto",
+                                        style = AppTypography.caption.copy(fontWeight = FontWeight.Bold, fontFamily = SoraFamily, fontFeatureSettings = "tnum"),
+                                        color = if (isDark) HarvestLime else SavPurple,
                                         modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
                                     )
                                 }
@@ -8770,9 +8925,20 @@ fun GoalCard(
                             Spacer(modifier = Modifier.width(6.dp))
                             Card(
                                 colors = CardDefaults.cardColors(
-                                    containerColor = if (goal.isLocked) Color(0xFFFEF2F2) else Color(0xFFF0FDF4)
+                                    containerColor = if (goal.isLocked) {
+                                        if (isDark) ErrorRedLight.copy(alpha = 0.15f) else Color(0xFFFEF2F2)
+                                    } else {
+                                        if (isDark) SuccessGreenLight.copy(alpha = 0.15f) else Color(0xFFF0FDF4)
+                                    }
                                 ),
-                                border = BorderStroke(1.dp, if (goal.isLocked) Color(0xFFFEE2E2) else Color(0xFFDCFCE7)),
+                                border = BorderStroke(
+                                    1.dp,
+                                    if (goal.isLocked) {
+                                        if (isDark) ErrorRedLight.copy(alpha = 0.3f) else Color(0xFFFEE2E2)
+                                    } else {
+                                        if (isDark) SuccessGreenLight.copy(alpha = 0.3f) else Color(0xFFDCFCE7)
+                                    }
+                                ),
                                 shape = RoundedCornerShape(4.dp)
                             ) {
                                 Row(
@@ -8782,7 +8948,7 @@ fun GoalCard(
                                     Icon(
                                         imageVector = if (goal.isLocked) Icons.Default.Lock else Icons.Default.LockOpen,
                                         contentDescription = null,
-                                        tint = if (goal.isLocked) Color(0xFFEF4444) else Color(0xFF15803D),
+                                        tint = if (goal.isLocked) (if (isDark) ErrorRedLight else ErrorRed) else (if (isDark) SuccessGreenLight else SuccessGreen),
                                         modifier = Modifier.size(9.dp)
                                     )
                                     Spacer(modifier = Modifier.width(2.dp))
@@ -8790,7 +8956,7 @@ fun GoalCard(
                                         text = if (goal.isLocked) "Locked" else "Unlocked",
                                         fontSize = 9.sp,
                                         fontWeight = FontWeight.Bold,
-                                        color = if (goal.isLocked) Color(0xFFEF4444) else Color(0xFF15803D)
+                                        color = if (goal.isLocked) (if (isDark) ErrorRedLight else ErrorRed) else (if (isDark) SuccessGreenLight else SuccessGreen)
                                     )
                                 }
                             }
@@ -8800,7 +8966,8 @@ fun GoalCard(
                 IconButton(onClick = { expanded = !expanded }) {
                     Icon(
                         imageVector = if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                        contentDescription = "Options"
+                        contentDescription = "Options",
+                        tint = if (isDark) SurfaceWhite.copy(alpha = 0.7f) else CharcoalMuted
                     )
                 }
             }
@@ -8810,7 +8977,8 @@ fun GoalCard(
             BasketSavingsProgressBar(
                 savedAmount = goal.savedAmount,
                 targetAmount = goal.targetAmount,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                ground = ground
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -8821,9 +8989,9 @@ fun GoalCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Target: ₦${String.format("%,.0f", goal.targetAmount)}",
-                    fontSize = 11.sp,
-                    color = Color(0xFF64748B)
+                    text = "Target: ${AppFormatters.formatNaira(goal.targetAmount)}",
+                    style = AppTypography.caption.copy(fontFamily = SoraFamily, fontFeatureSettings = "tnum"),
+                    color = if (isDark) SurfaceWhite.copy(alpha = 0.7f) else TextMuted
                 )
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -8832,63 +9000,87 @@ fun GoalCard(
                     if (goal.isLocked) {
                         OutlinedButton(
                             onClick = onLockToggle,
-                            border = BorderStroke(1.dp, Color(0xFF3B82F6)),
+                            border = BorderStroke(1.dp, if (isDark) HarvestLime else SavPurple),
                             shape = RoundedCornerShape(8.dp),
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = if (isDark) HarvestLime else SavPurple),
                             contentPadding = PaddingValues(horizontal = 10.dp, vertical = 6.dp)
                         ) {
                             Icon(
                                 imageVector = Icons.Default.LockOpen,
                                 contentDescription = null,
-                                tint = Color(0xFF3B82F6),
+                                tint = if (isDark) HarvestLime else SavPurple,
                                 modifier = Modifier.size(12.dp)
                             )
                             Spacer(modifier = Modifier.width(4.dp))
-                            Text("Unlock", fontSize = 12.sp, color = Color(0xFF3B82F6))
+                            Text(
+                                "Unlock",
+                                style = AppTypography.caption.copy(fontWeight = FontWeight.Bold),
+                                color = if (isDark) HarvestLime else SavPurple
+                            )
                         }
                     } else {
                         OutlinedButton(
                             onClick = onWithdrawClick,
-                            border = BorderStroke(1.dp, Color(0xFF0A8F3D)),
+                            border = BorderStroke(1.dp, if (isDark) SurfaceWhite.copy(alpha = 0.3f) else BorderSubtle),
                             shape = RoundedCornerShape(8.dp),
-                            colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFF0A8F3D)),
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = if (isDark) SurfaceWhite else Charcoal),
                             contentPadding = PaddingValues(horizontal = 10.dp, vertical = 6.dp)
                         ) {
                             Icon(
                                 imageVector = Icons.Default.AccountBalanceWallet,
                                 contentDescription = null,
-                                tint = Color(0xFF0A8F3D),
+                                tint = if (isDark) SurfaceWhite else Charcoal,
                                 modifier = Modifier.size(12.dp)
                             )
                             Spacer(modifier = Modifier.width(4.dp))
-                            Text("Withdraw", fontSize = 12.sp, color = Color(0xFF0A8F3D))
+                            Text(
+                                "Withdraw",
+                                style = AppTypography.caption.copy(fontWeight = FontWeight.Bold),
+                                color = if (isDark) SurfaceWhite else Charcoal
+                            )
                         }
                     }
                     if (isComplete) {
                         Button(
                             onClick = onBuyNowClick,
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF15803D)),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = if (isDark) HarvestLime else SavPurple,
+                                contentColor = if (isDark) Charcoal else SurfaceWhite
+                            ),
                             shape = RoundedCornerShape(8.dp),
                             contentPadding = PaddingValues(horizontal = 14.dp, vertical = 6.dp)
                         ) {
-                            Icon(Icons.Default.ShoppingCart, contentDescription = null, modifier = Modifier.size(13.dp), tint = Color.White)
+                            Icon(Icons.Default.ShoppingCart, contentDescription = null, modifier = Modifier.size(13.dp))
                             Spacer(modifier = Modifier.width(4.dp))
-                            Text("Buy Now", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                            Text(
+                                "Buy Now",
+                                style = AppTypography.caption.copy(fontWeight = FontWeight.Bold)
+                            )
                         }
                     } else {
                         Button(
                             onClick = onContributeClick,
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0A8F3D)),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = if (isDark) HarvestLime else SavPurple,
+                                contentColor = if (isDark) Charcoal else SurfaceWhite
+                            ),
                             shape = RoundedCornerShape(8.dp),
                             contentPadding = PaddingValues(horizontal = 14.dp, vertical = 6.dp)
                         ) {
-                            Text("Add Funds", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                            Text(
+                                "Add Funds",
+                                style = AppTypography.caption.copy(fontWeight = FontWeight.Bold)
+                            )
                         }
                     }
                 }
             }
 
             if (expanded) {
-                Divider(modifier = Modifier.padding(vertical = 12.dp), color = Color(0xFFF1F5F9))
+                Divider(
+                    modifier = Modifier.padding(vertical = 12.dp),
+                    color = if (isDark) DeepPlumBorder else BorderSubtle
+                )
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
@@ -8897,29 +9089,53 @@ fun GoalCard(
                         Icon(
                             imageVector = if (goal.isPaused) Icons.Default.PlayArrow else Icons.Default.Pause,
                             contentDescription = null,
-                            tint = Color(0xFFFF8C00)
+                            tint = if (isDark) WarningAmberLight else WarningAmber
                         )
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text(if (goal.isPaused) "Resume" else "Pause", color = Color(0xFFFF8C00))
+                        Text(
+                            if (goal.isPaused) "Resume" else "Pause",
+                            color = if (isDark) WarningAmberLight else WarningAmber,
+                            style = AppTypography.caption.copy(fontWeight = FontWeight.Bold)
+                        )
                     }
                     TextButton(onClick = onLockToggle) {
                         Icon(
                             imageVector = if (goal.isLocked) Icons.Default.LockOpen else Icons.Default.Lock,
                             contentDescription = null,
-                            tint = Color(0xFF3B82F6)
+                            tint = if (isDark) InfoLilac else InfoBlue
                         )
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text(if (goal.isLocked) "Unlock" else "Lock", color = Color(0xFF3B82F6))
+                        Text(
+                            if (goal.isLocked) "Unlock" else "Lock",
+                            color = if (isDark) InfoLilac else InfoBlue,
+                            style = AppTypography.caption.copy(fontWeight = FontWeight.Bold)
+                        )
                     }
                     TextButton(onClick = onWithdrawClick) {
-                        Icon(Icons.Default.Reply, contentDescription = null, tint = Color(0xFF065A26))
+                        Icon(
+                            Icons.Default.Reply,
+                            contentDescription = null,
+                            tint = if (isDark) SurfaceWhite.copy(alpha = 0.9f) else Charcoal
+                        )
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text("Withdraw", color = Color(0xFF065A26))
+                        Text(
+                            "Withdraw",
+                            color = if (isDark) SurfaceWhite.copy(alpha = 0.9f) else Charcoal,
+                            style = AppTypography.caption.copy(fontWeight = FontWeight.Bold)
+                        )
                     }
                     TextButton(onClick = onDeleteClick) {
-                        Icon(Icons.Default.Delete, contentDescription = null, tint = MaterialTheme.colorScheme.error)
+                        Icon(
+                            Icons.Default.Delete,
+                            contentDescription = null,
+                            tint = if (isDark) ErrorRedLight else ErrorRed
+                        )
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text("Delete", color = MaterialTheme.colorScheme.error)
+                        Text(
+                            "Delete",
+                            color = if (isDark) ErrorRedLight else ErrorRed,
+                            style = AppTypography.caption.copy(fontWeight = FontWeight.Bold)
+                        )
                     }
                 }
             }
@@ -9035,7 +9251,7 @@ fun MarketScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .background(SoftBackground)
+                .background(WarmCream)
                 .statusBarsPadding(),
             contentPadding = PaddingValues(bottom = 24.dp)
         ) {
@@ -9048,11 +9264,13 @@ fun MarketScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Text("Food Marketplace 🥦", fontSize = 22.sp, fontWeight = FontWeight.Bold, color = TextSlate800)
+                            Text(
+                                "Food Marketplace",
+                                style = AppTypography.h2.copy(fontFamily = SoraFamily, color = Charcoal)
+                            )
                             Text(
                                 text = if (showOnlyWishlist) "Your personal favorites and wishlist items" else "Real-time prices from trusted local wholesale merchants",
-                                fontSize = 13.sp,
-                                color = TextSlate500
+                                style = AppTypography.bodySmall.copy(color = CharcoalSecondary)
                             )
                         }
                         
@@ -9067,13 +9285,13 @@ fun MarketScreen(
                                 IconButton(
                                     onClick = { showOnlyWishlist = !showOnlyWishlist },
                                     modifier = Modifier
-                                        .background(Color.White, CircleShape)
-                                        .border(1.dp, BorderSlate100, CircleShape)
+                                        .background(SurfaceWhite, CircleShape)
+                                        .border(1.dp, NeutralLightBorder, CircleShape)
                                 ) {
                                     Icon(
                                         imageVector = if (showOnlyWishlist) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                                         contentDescription = "Show Wishlist Only",
-                                        tint = if (showOnlyWishlist) Color.Red else Color(0xFF64748B)
+                                        tint = if (showOnlyWishlist) StatusErrorLight else CharcoalSecondary
                                     )
                                 }
                                 if (wishlist.isNotEmpty()) {
@@ -9081,14 +9299,13 @@ fun MarketScreen(
                                         modifier = Modifier
                                             .align(Alignment.TopEnd)
                                             .offset(x = 4.dp, y = (-4).dp)
-                                            .background(Color.Red, CircleShape)
+                                            .background(SavPurple, CircleShape)
                                             .padding(horizontal = 6.dp, vertical = 2.dp)
                                     ) {
                                         Text(
                                             text = wishlist.size.toString(),
-                                            color = Color.White,
-                                            fontSize = 10.sp,
-                                            fontWeight = FontWeight.Bold
+                                            color = SurfaceWhite,
+                                            style = AppTypography.caption.copy(fontFamily = SoraFamily, fontWeight = FontWeight.Bold, fontSize = 10.sp)
                                         )
                                     }
                                 }
@@ -9101,13 +9318,13 @@ fun MarketScreen(
                                 IconButton(
                                     onClick = { showCartDialog = true },
                                     modifier = Modifier
-                                        .background(Color.White, CircleShape)
-                                        .border(1.dp, BorderSlate100, CircleShape)
+                                        .background(SurfaceWhite, CircleShape)
+                                        .border(1.dp, NeutralLightBorder, CircleShape)
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.ShoppingCart,
                                         contentDescription = "Shopping Cart",
-                                        tint = PrimaryGreen
+                                        tint = SavPurple
                                     )
                                 }
                                 if (cartCount > 0) {
@@ -9115,14 +9332,13 @@ fun MarketScreen(
                                         modifier = Modifier
                                             .align(Alignment.TopEnd)
                                             .offset(x = 4.dp, y = (-4).dp)
-                                            .background(Color.Red, CircleShape)
+                                            .background(SavPurple, CircleShape)
                                             .padding(horizontal = 6.dp, vertical = 2.dp)
                                     ) {
                                         Text(
                                             text = cartCount.toString(),
-                                            color = Color.White,
-                                            fontSize = 10.sp,
-                                            fontWeight = FontWeight.Bold
+                                            color = SurfaceWhite,
+                                            style = AppTypography.caption.copy(fontFamily = SoraFamily, fontWeight = FontWeight.Bold, fontSize = 10.sp)
                                         )
                                     }
                                 }
@@ -9136,12 +9352,12 @@ fun MarketScreen(
                     OutlinedTextField(
                         value = search,
                         onValueChange = { viewModel.setSearchQuery(it) },
-                        placeholder = { Text("Search 50kg rice, basket tomatoes...") },
-                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = TextSlate500) },
+                        placeholder = { Text("Search 50kg rice, basket tomatoes...", style = AppTypography.bodyMedium.copy(color = CharcoalSecondary)) },
+                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = CharcoalSecondary) },
                         trailingIcon = {
                             if (search.isNotEmpty()) {
                                 IconButton(onClick = { viewModel.setSearchQuery("") }) {
-                                    Icon(Icons.Default.Close, contentDescription = "Clear", tint = TextSlate500)
+                                    Icon(Icons.Default.Close, contentDescription = "Clear", tint = CharcoalSecondary)
                                 }
                             }
                         },
@@ -9150,7 +9366,14 @@ fun MarketScreen(
                             .fillMaxWidth()
                             .testTag("market_search_input"),
                         shape = RoundedCornerShape(12.dp),
-                        colors = defaultTextFieldColors()
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedContainerColor = SurfaceWhite,
+                            unfocusedContainerColor = SurfaceWhite,
+                            focusedBorderColor = SavPurple,
+                            unfocusedBorderColor = NeutralLightBorder,
+                            focusedTextColor = Charcoal,
+                            unfocusedTextColor = Charcoal
+                        )
                     )
 
                     Spacer(modifier = Modifier.height(14.dp))
@@ -9161,9 +9384,9 @@ fun MarketScreen(
                     Button(
                         onClick = { filterPanelExpanded = !filterPanelExpanded },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = if (isFilterActive) SecondaryOrange else Color.White
+                            containerColor = if (isFilterActive) SavPurple else SurfaceWhite
                         ),
-                        border = BorderStroke(1.dp, if (isFilterActive) Color.Transparent else BorderSlate100),
+                        border = BorderStroke(1.dp, if (isFilterActive) Color.Transparent else NeutralLightBorder),
                         shape = RoundedCornerShape(12.dp),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -9175,24 +9398,25 @@ fun MarketScreen(
                             horizontalArrangement = Arrangement.Center
                         ) {
                             Icon(
-                                imageVector = if (isFilterActive) Icons.Default.Favorite else Icons.Default.FavoriteBorder, // using favorite border as generic decoration or similar
+                                imageVector = Icons.Default.Tune,
                                 contentDescription = "Filter and Sort",
-                                tint = if (isFilterActive) Color.White else TextSlate800,
+                                tint = if (isFilterActive) SurfaceWhite else Charcoal,
                                 modifier = Modifier.size(16.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = if (isFilterActive) "Filters Active (Tap to Edit) ⚙️" else "Filter & Sort Options ⚙️",
-                                fontWeight = FontWeight.Bold,
-                                color = if (isFilterActive) Color.White else TextSlate800,
-                                fontSize = 13.sp
+                                text = if (isFilterActive) "Filters active (tap to edit)" else "Filter & sort options",
+                                style = AppTypography.button.copy(
+                                    fontFamily = PlusJakartaSansFamily,
+                                    color = if (isFilterActive) SurfaceWhite else Charcoal
+                                )
                             )
                             if (isFilterActive) {
                                 Spacer(modifier = Modifier.width(6.dp))
                                 Box(
                                     modifier = Modifier
                                         .size(8.dp)
-                                        .background(Color.White, CircleShape)
+                                        .background(HarvestLime, CircleShape)
                                 )
                             }
                         }
@@ -9204,9 +9428,9 @@ fun MarketScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 8.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color.White),
+                            colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
                             shape = RoundedCornerShape(16.dp),
-                            border = BorderStroke(1.dp, BorderSlate100),
+                            border = BorderStroke(1.dp, NeutralLightBorder),
                             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
@@ -9215,16 +9439,22 @@ fun MarketScreen(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Text("Consolidated Filters ⚙️", fontWeight = FontWeight.Bold, fontSize = 15.sp, color = TextSlate800)
+                                    Text(
+                                        "Filter Products",
+                                        style = AppTypography.h3.copy(fontFamily = SoraFamily, color = Charcoal)
+                                    )
                                     IconButton(onClick = { filterPanelExpanded = false }) {
-                                        Icon(Icons.Default.Close, contentDescription = "Close", tint = TextSlate500, modifier = Modifier.size(18.dp))
+                                        Icon(Icons.Default.Close, contentDescription = "Close", tint = CharcoalSecondary, modifier = Modifier.size(18.dp))
                                     }
                                 }
                                 
                                 Spacer(modifier = Modifier.height(10.dp))
                                 
                                 // Section 1: Categories
-                                Text("Category Type", fontWeight = FontWeight.Bold, fontSize = 11.sp, color = TextSlate500)
+                                Text(
+                                    "Category Type",
+                                    style = AppTypography.caption.copy(fontWeight = FontWeight.Bold, color = CharcoalSecondary)
+                                )
                                 Spacer(modifier = Modifier.height(6.dp))
                                 Row(
                                     modifier = Modifier.horizontalScroll(rememberScrollState()),
@@ -9235,15 +9465,16 @@ fun MarketScreen(
                                         Box(
                                             modifier = Modifier
                                                 .clip(RoundedCornerShape(20.dp))
-                                                .background(if (isSelected) PrimaryGreen else Color(0xFFF1F5F9))
+                                                .background(if (isSelected) SavPurple else NeutralLight)
                                                 .clickable { tempCategory = cat }
                                                 .padding(horizontal = 12.dp, vertical = 6.dp)
                                         ) {
                                             Text(
                                                 text = cat,
-                                                fontSize = 11.sp,
-                                                fontWeight = FontWeight.Bold,
-                                                color = if (isSelected) Color.White else TextSlate500
+                                                style = AppTypography.caption.copy(
+                                                    fontWeight = FontWeight.Bold,
+                                                    color = if (isSelected) SurfaceWhite else CharcoalSecondary
+                                                )
                                             )
                                         }
                                     }
@@ -9252,7 +9483,10 @@ fun MarketScreen(
                                 Spacer(modifier = Modifier.height(12.dp))
                                 
                                 // Section 2: Location/State
-                                Text("Market State/Location", fontWeight = FontWeight.Bold, fontSize = 11.sp, color = TextSlate500)
+                                Text(
+                                    "Market State/Location",
+                                    style = AppTypography.caption.copy(fontWeight = FontWeight.Bold, color = CharcoalSecondary)
+                                )
                                 Spacer(modifier = Modifier.height(6.dp))
                                 Row(
                                     modifier = Modifier.horizontalScroll(rememberScrollState()),
@@ -9263,15 +9497,16 @@ fun MarketScreen(
                                         Box(
                                             modifier = Modifier
                                                 .clip(RoundedCornerShape(20.dp))
-                                                .background(if (isSelected) SecondaryOrange else Color(0xFFF1F5F9))
+                                                .background(if (isSelected) SavPurple else NeutralLight)
                                                 .clickable { tempState = state }
                                                 .padding(horizontal = 12.dp, vertical = 6.dp)
                                         ) {
                                             Text(
                                                 text = state,
-                                                fontSize = 11.sp,
-                                                fontWeight = FontWeight.Bold,
-                                                color = if (isSelected) Color.White else TextSlate500
+                                                style = AppTypography.caption.copy(
+                                                    fontWeight = FontWeight.Bold,
+                                                    color = if (isSelected) SurfaceWhite else CharcoalSecondary
+                                                )
                                             )
                                         }
                                     }
@@ -9280,7 +9515,10 @@ fun MarketScreen(
                                 Spacer(modifier = Modifier.height(12.dp))
                                 
                                 // Section 3: Sort Options
-                                Text("Sort Priority", fontWeight = FontWeight.Bold, fontSize = 11.sp, color = TextSlate500)
+                                Text(
+                                    "Sort Priority",
+                                    style = AppTypography.caption.copy(fontWeight = FontWeight.Bold, color = CharcoalSecondary)
+                                )
                                 Spacer(modifier = Modifier.height(6.dp))
                                 Row(
                                     modifier = Modifier.horizontalScroll(rememberScrollState()),
@@ -9295,15 +9533,16 @@ fun MarketScreen(
                                         Box(
                                             modifier = Modifier
                                                 .clip(RoundedCornerShape(20.dp))
-                                                .background(if (isSelected) AccentGold else Color(0xFFF1F5F9))
+                                                .background(if (isSelected) SavPurple else NeutralLight)
                                                 .clickable { tempSortBy = sortValue }
                                                 .padding(horizontal = 12.dp, vertical = 6.dp)
                                         ) {
                                             Text(
                                                 text = label,
-                                                fontSize = 11.sp,
-                                                fontWeight = FontWeight.Bold,
-                                                color = if (isSelected) Color(0xFF1E293B) else TextSlate500
+                                                style = AppTypography.caption.copy(
+                                                    fontWeight = FontWeight.Bold,
+                                                    color = if (isSelected) SurfaceWhite else CharcoalSecondary
+                                                )
                                             )
                                         }
                                     }
@@ -9312,7 +9551,10 @@ fun MarketScreen(
                                 Spacer(modifier = Modifier.height(12.dp))
                                 
                                 // Section 4: Bulk Selection
-                                Text("Product Purchase Type", fontWeight = FontWeight.Bold, fontSize = 11.sp, color = TextSlate500)
+                                Text(
+                                    "Product Purchase Type",
+                                    style = AppTypography.caption.copy(fontWeight = FontWeight.Bold, color = CharcoalSecondary)
+                                )
                                 Spacer(modifier = Modifier.height(6.dp))
                                 Row(
                                     horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -9325,15 +9567,16 @@ fun MarketScreen(
                                         Box(
                                             modifier = Modifier
                                                 .clip(RoundedCornerShape(20.dp))
-                                                .background(if (isSelected) PrimaryGreen else Color(0xFFF1F5F9))
+                                                .background(if (isSelected) SavPurple else NeutralLight)
                                                 .clickable { tempFilterOnlyBulk = bulkValue }
                                                 .padding(horizontal = 12.dp, vertical = 6.dp)
                                         ) {
                                             Text(
                                                 text = label,
-                                                fontSize = 11.sp,
-                                                fontWeight = FontWeight.Bold,
-                                                color = if (isSelected) Color.White else TextSlate500
+                                                style = AppTypography.caption.copy(
+                                                    fontWeight = FontWeight.Bold,
+                                                    color = if (isSelected) SurfaceWhite else CharcoalSecondary
+                                                )
                                             )
                                         }
                                     }
@@ -9360,9 +9603,12 @@ fun MarketScreen(
                                         },
                                         modifier = Modifier.weight(1f),
                                         shape = RoundedCornerShape(10.dp),
-                                        border = BorderStroke(1.dp, Color(0xFFCBD5E1))
+                                        border = BorderStroke(1.dp, NeutralLightBorder)
                                     ) {
-                                        Text("Reset/Clear All", color = TextSlate800, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                        Text(
+                                            "Reset / Clear All",
+                                            style = AppTypography.button.copy(color = Charcoal, fontSize = 12.sp)
+                                        )
                                     }
                                     
                                     Button(
@@ -9374,10 +9620,13 @@ fun MarketScreen(
                                             filterPanelExpanded = false
                                         },
                                         modifier = Modifier.weight(1f),
-                                        colors = ButtonDefaults.buttonColors(containerColor = PrimaryGreen),
+                                        colors = ButtonDefaults.buttonColors(containerColor = SavPurple),
                                         shape = RoundedCornerShape(10.dp)
                                     ) {
-                                        Text("Apply Filters", color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                        Text(
+                                            "Apply Filters",
+                                            style = AppTypography.button.copy(color = SurfaceWhite, fontSize = 12.sp)
+                                        )
                                     }
                                 }
                             }
@@ -9407,11 +9656,11 @@ fun MarketScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 6.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFFFFBEB)),
-                    border = BorderStroke(1.dp, Color(0xFFFDE68A)),
+                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                    border = BorderStroke(1.dp, NeutralLightBorder),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Column(modifier = Modifier.padding(12.dp)) {
+                    Column(modifier = Modifier.padding(14.dp)) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -9421,23 +9670,19 @@ fun MarketScreen(
                                 Icon(
                                     imageVector = Icons.Default.NotificationsActive,
                                     contentDescription = "Price Alerts",
-                                    tint = Color(0xFFD97706),
+                                    tint = SavPurple,
                                     modifier = Modifier.size(18.dp)
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
                                     text = "Smart Price Drop Alerts (${alerts.size})",
-                                    fontSize = 13.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF78350F)
+                                    style = AppTypography.h3.copy(fontFamily = SoraFamily, color = Charcoal, fontSize = 14.sp)
                                 )
                             }
                             TextButton(onClick = { showPriceAlertsSection = !showPriceAlertsSection }) {
                                 Text(
                                     text = if (showPriceAlertsSection) "Collapse ✕" else "Manage ⚙️",
-                                    fontSize = 11.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color(0xFFD97706)
+                                    style = AppTypography.button.copy(color = SavPurple, fontSize = 11.sp)
                                 )
                             }
                         }
@@ -9446,27 +9691,37 @@ fun MarketScreen(
                             Spacer(modifier = Modifier.height(10.dp))
                             
                             if (alerts.isEmpty()) {
-                                Text("No active price alerts. Add one below!", fontSize = 11.sp, color = Color(0xFF92400E))
+                                Text(
+                                    "No active price alerts. Add one below!",
+                                    style = AppTypography.bodySmall.copy(color = CharcoalSecondary)
+                                )
                             } else {
                                 alerts.forEach { alert ->
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .background(Color.White.copy(alpha = 0.6f), RoundedCornerShape(6.dp))
-                                            .padding(horizontal = 10.dp, vertical = 6.dp)
+                                            .background(NeutralLight, RoundedCornerShape(8.dp))
+                                            .border(1.dp, NeutralLightBorder, RoundedCornerShape(8.dp))
+                                            .padding(horizontal = 10.dp, vertical = 8.dp)
                                             .padding(bottom = 4.dp),
                                         horizontalArrangement = Arrangement.SpaceBetween,
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         Column {
-                                            Text("${alert.category} target price drops", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color(0xFF1E293B))
-                                            Text("Alert below: ₦${String.format("%,.0f", alert.targetPrice)} (Current: ₦${String.format("%,.0f", alert.originalPrice)})", fontSize = 10.sp, color = Color(0xFF64748B))
+                                            Text(
+                                                "${alert.category} target price drops",
+                                                style = AppTypography.bodySmall.copy(fontWeight = FontWeight.Bold, color = Charcoal)
+                                            )
+                                            Text(
+                                                "Alert below: ${AppFormatters.formatNaira(alert.targetPrice)} (Current: ${AppFormatters.formatNaira(alert.originalPrice)})",
+                                                style = AppTypography.caption.copy(color = CharcoalSecondary)
+                                            )
                                         }
                                         IconButton(
                                             onClick = { viewModel.removePriceAlert(alert.id) },
                                             modifier = Modifier.size(24.dp)
                                         ) {
-                                            Icon(Icons.Default.Delete, contentDescription = "Delete Alert", tint = Color.Red, modifier = Modifier.size(16.dp))
+                                            Icon(Icons.Default.Delete, contentDescription = "Delete Alert", tint = StatusErrorLight, modifier = Modifier.size(16.dp))
                                         }
                                     }
                                 }
@@ -9486,30 +9741,32 @@ fun MarketScreen(
                                             val nextIdx = (cats.indexOf(newAlertCategory) + 1) % cats.size
                                             newAlertCategory = cats[nextIdx]
                                         },
-                                        colors = ButtonDefaults.buttonColors(containerColor = SurfaceBg),
-                                        border = BorderStroke(1.dp, Color(0xFFFDE68A)),
+                                        colors = ButtonDefaults.buttonColors(containerColor = WarmCream),
+                                        border = BorderStroke(1.dp, NeutralLightBorder),
                                         shape = RoundedCornerShape(8.dp),
                                         modifier = Modifier.fillMaxWidth(),
                                         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
                                     ) {
-                                        Text(newAlertCategory, fontSize = 11.sp, color = Color(0xFF78350F), fontWeight = FontWeight.Bold)
+                                        Text(newAlertCategory, style = AppTypography.button.copy(color = Charcoal, fontSize = 11.sp))
                                     }
                                 }
                                 
                                 OutlinedTextField(
                                     value = newAlertTargetPrice,
                                     onValueChange = { newAlertTargetPrice = it },
-                                    placeholder = { Text("Target ₦", fontSize = 11.sp) },
+                                    placeholder = { Text("Target ₦", style = AppTypography.bodySmall.copy(fontSize = 11.sp, color = CharcoalSecondary)) },
                                     singleLine = true,
                                     modifier = Modifier
                                         .weight(1.2f)
                                         .height(46.dp),
                                     shape = RoundedCornerShape(8.dp),
                                     colors = OutlinedTextFieldDefaults.colors(
-                                        focusedContainerColor = Color.White,
-                                        unfocusedContainerColor = Color.White,
-                                        focusedBorderColor = Color(0xFFD97706),
-                                        unfocusedBorderColor = Color(0xFFFDE68A)
+                                        focusedContainerColor = SurfaceWhite,
+                                        unfocusedContainerColor = SurfaceWhite,
+                                        focusedBorderColor = SavPurple,
+                                        unfocusedBorderColor = NeutralLightBorder,
+                                        focusedTextColor = Charcoal,
+                                        unfocusedTextColor = Charcoal
                                     )
                                 )
                                 
@@ -9530,11 +9787,11 @@ fun MarketScreen(
                                             newAlertTargetPrice = ""
                                         }
                                     },
-                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD97706)),
+                                    colors = ButtonDefaults.buttonColors(containerColor = SavPurple),
                                     shape = RoundedCornerShape(8.dp),
                                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
                                 ) {
-                                    Text("Set Alert", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                                    Text("Set Alert", style = AppTypography.button.copy(color = SurfaceWhite, fontSize = 11.sp))
                                 }
                             }
                             
@@ -9542,13 +9799,13 @@ fun MarketScreen(
                             
                             Button(
                                 onClick = { viewModel.simulatePriceDrop() },
-                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E293B)),
+                                colors = ButtonDefaults.buttonColors(containerColor = DeepPlum),
                                 shape = RoundedCornerShape(8.dp),
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-                                Icon(Icons.Default.TrendingDown, contentDescription = null, tint = Color.Green, modifier = Modifier.size(16.dp))
+                                Icon(Icons.Default.TrendingDown, contentDescription = null, tint = HarvestLime, modifier = Modifier.size(16.dp))
                                 Spacer(modifier = Modifier.width(6.dp))
-                                Text("Simulate Wholesale Price Drop 📈", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color.Green)
+                                Text("Simulate Wholesale Price Drop", style = AppTypography.button.copy(color = HarvestLime, fontSize = 11.sp))
                             }
                         }
                     }
@@ -9584,16 +9841,13 @@ fun MarketScreen(
                         Spacer(modifier = Modifier.height(14.dp))
                         Text(
                             text = if (search.isNotEmpty()) "No items found for \'$search\'" else "No food items found matching filters",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = TextSlate800,
+                            style = AppTypography.h3.copy(fontFamily = SoraFamily, color = Charcoal),
                             textAlign = TextAlign.Center
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = "Try clearing search keywords or selecting \"All Items\" / \"All States\" in the Filter panel above.",
-                            fontSize = 13.sp,
-                            color = TextSlate500,
+                            style = AppTypography.bodyMedium.copy(color = CharcoalSecondary),
                             textAlign = TextAlign.Center
                         )
                         Spacer(modifier = Modifier.height(16.dp))
@@ -9605,10 +9859,10 @@ fun MarketScreen(
                                 viewModel.setSortBy("Cheapest")
                                 filterOnlyBulk = false
                             },
-                            colors = ButtonDefaults.buttonColors(containerColor = PrimaryGreen),
+                            colors = ButtonDefaults.buttonColors(containerColor = SavPurple),
                             shape = RoundedCornerShape(10.dp)
                         ) {
-                            Text("Reset Search & Filters", color = Color.White)
+                            Text("Reset Search & Filters", style = AppTypography.button.copy(color = SurfaceWhite))
                         }
                     }
                 }
@@ -9677,18 +9931,16 @@ fun MarketScreen(
                                 Box(
                                     modifier = Modifier
                                         .size(6.dp)
-                                        .background(SecondaryOrange, CircleShape)
+                                        .background(SavPurple, CircleShape)
                                 )
                                 Spacer(modifier = Modifier.width(6.dp))
                                 Text(
                                     text = "📍 $state Market Sellers",
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = TextSlate800
+                                    style = AppTypography.h3.copy(fontFamily = SoraFamily, color = Charcoal, fontSize = 14.sp)
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 HorizontalDivider(
-                                    color = BorderSlate100,
+                                    color = NeutralLightBorder,
                                     thickness = 1.dp,
                                     modifier = Modifier.weight(1f)
                                 )
@@ -9772,7 +10024,7 @@ fun FoodItemDetailDialog(
                 .fillMaxWidth(0.95f)
                 .fillMaxHeight(0.85f)
                 .clip(RoundedCornerShape(24.dp)),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
+            colors = CardDefaults.cardColors(containerColor = WarmCream),
             elevation = CardDefaults.cardElevation(defaultElevation = 12.dp)
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
@@ -9783,7 +10035,7 @@ fun FoodItemDetailDialog(
                         .height(180.dp)
                         .background(
                             Brush.verticalGradient(
-                                colors = listOf(SecondaryOrange.copy(alpha = 0.2f), PrimaryGreen.copy(alpha = 0.1f))
+                                colors = listOf(SavPurple.copy(alpha = 0.15f), WarmCream)
                             )
                         )
                 ) {
@@ -9800,9 +10052,9 @@ fun FoodItemDetailDialog(
                         modifier = Modifier
                             .align(Alignment.TopEnd)
                             .padding(12.dp)
-                            .background(Color.White.copy(alpha = 0.8f), CircleShape)
+                            .background(SurfaceWhite.copy(alpha = 0.9f), CircleShape)
                     ) {
-                        Icon(Icons.Default.Close, contentDescription = "Close", tint = TextSlate800)
+                        Icon(Icons.Default.Close, contentDescription = "Close", tint = Charcoal)
                     }
 
                     // Bookmark / Heart toggle overlay
@@ -9811,12 +10063,12 @@ fun FoodItemDetailDialog(
                         modifier = Modifier
                             .align(Alignment.TopStart)
                             .padding(12.dp)
-                            .background(Color.White.copy(alpha = 0.8f), CircleShape)
+                            .background(SurfaceWhite.copy(alpha = 0.9f), CircleShape)
                     ) {
                         Icon(
                             imageVector = if (isWishlisted) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                             contentDescription = "Save Item",
-                            tint = if (isWishlisted) Color.Red else TextSlate500
+                            tint = if (isWishlisted) StatusErrorLight else CharcoalSecondary
                         )
                     }
                 }
@@ -9835,24 +10087,25 @@ fun FoodItemDetailDialog(
                     ) {
                         Box(
                             modifier = Modifier
-                                .background(PrimaryGreen.copy(alpha = 0.1f), RoundedCornerShape(6.dp))
+                                .background(SavPurple.copy(alpha = 0.12f), RoundedCornerShape(6.dp))
                                 .padding(horizontal = 8.dp, vertical = 4.dp)
                         ) {
-                            Text(item.category, color = PrimaryGreen, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                            Text(item.category, color = SavPurple, style = AppTypography.caption.copy(fontWeight = FontWeight.Bold, fontSize = 10.sp))
                         }
                         Box(
                             modifier = Modifier
-                                .background(SecondaryOrange.copy(alpha = 0.1f), RoundedCornerShape(6.dp))
+                                .background(SurfaceWhite, RoundedCornerShape(6.dp))
+                                .border(1.dp, NeutralLightBorder, RoundedCornerShape(6.dp))
                                 .padding(horizontal = 8.dp, vertical = 4.dp)
                         ) {
-                            Text("${item.distance} km away", color = SecondaryOrange, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                            Text("${item.distance} km away", color = Charcoal, style = AppTypography.caption.copy(fontWeight = FontWeight.Bold, fontSize = 10.sp))
                         }
                         Box(
                             modifier = Modifier
-                                .background(Color(0xFFF1F5F9), RoundedCornerShape(6.dp))
+                                .background(NeutralLight, RoundedCornerShape(6.dp))
                                 .padding(horizontal = 8.dp, vertical = 4.dp)
                         ) {
-                            Text(item.state, color = TextSlate500, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                            Text(item.state, color = CharcoalSecondary, style = AppTypography.caption.copy(fontWeight = FontWeight.Bold, fontSize = 10.sp))
                         }
                     }
 
@@ -9861,9 +10114,7 @@ fun FoodItemDetailDialog(
                     // Item Name
                     Text(
                         text = item.name,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = TextSlate800
+                        style = AppTypography.h2.copy(fontFamily = SoraFamily, color = Charcoal)
                     )
 
                     Spacer(modifier = Modifier.height(6.dp))
@@ -9876,9 +10127,7 @@ fun FoodItemDetailDialog(
                         Text("🏪", fontSize = 14.sp)
                         Text(
                             text = "Seller: ${item.vendorName}",
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = TextSlate800
+                            style = AppTypography.bodyMedium.copy(fontWeight = FontWeight.SemiBold, color = Charcoal)
                         )
                     }
 
@@ -9891,7 +10140,10 @@ fun FoodItemDetailDialog(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column {
-                            Text("Wholesale Unit Price", fontSize = 11.sp, color = TextSlate500, fontWeight = FontWeight.Bold)
+                            Text(
+                                "Wholesale Unit Price",
+                                style = AppTypography.caption.copy(fontWeight = FontWeight.Bold, color = CharcoalSecondary)
+                            )
                             PriceDisplay(
                                 price = item.price,
                                 originalPrice = item.originalPrice,
@@ -9902,15 +10154,15 @@ fun FoodItemDetailDialog(
                         }
                         Column(horizontalAlignment = Alignment.End) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(Icons.Default.Star, contentDescription = "Rating", tint = AccentGold, modifier = Modifier.size(16.dp))
-                                Text(" ${item.rating}", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = TextSlate800)
+                                Icon(Icons.Default.Star, contentDescription = "Rating", tint = Color(0xFFD97706), modifier = Modifier.size(16.dp))
+                                Text(" ${item.rating}", style = AppTypography.bodySmall.copy(fontFamily = SoraFamily, fontWeight = FontWeight.Bold, color = Charcoal))
                             }
-                            Text("(${item.ratingCount} reviews)", fontSize = 10.sp, color = TextSlate500)
+                            Text("(${item.ratingCount} reviews)", style = AppTypography.caption.copy(color = CharcoalSecondary))
                         }
                     }
 
                     Spacer(modifier = Modifier.height(12.dp))
-                    HorizontalDivider(color = BorderSlate100, thickness = 1.dp)
+                    HorizontalDivider(color = NeutralLightBorder, thickness = 1.dp)
                     Spacer(modifier = Modifier.height(12.dp))
 
                     // Stock and Delivery Time details
@@ -9919,28 +10171,30 @@ fun FoodItemDetailDialog(
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Text("Availability", fontSize = 10.sp, color = TextSlate500, fontWeight = FontWeight.Bold)
-                            Text("${item.stock} Units Stocked", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = TextSlate800)
+                            Text("Availability", style = AppTypography.caption.copy(fontWeight = FontWeight.Bold, color = CharcoalSecondary))
+                            Text("${item.stock} Units Stocked", style = AppTypography.bodySmall.copy(fontWeight = FontWeight.Bold, color = Charcoal))
                         }
                         Column(modifier = Modifier.weight(1f)) {
-                            Text("Est. Delivery Speed", fontSize = 10.sp, color = TextSlate500, fontWeight = FontWeight.Bold)
-                            Text("${item.deliveryTimeMinutes} Minutes", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = TextSlate800)
+                            Text("Est. Delivery Speed", style = AppTypography.caption.copy(fontWeight = FontWeight.Bold, color = CharcoalSecondary))
+                            Text("${item.deliveryTimeMinutes} Minutes", style = AppTypography.bodySmall.copy(fontWeight = FontWeight.Bold, color = Charcoal))
                         }
                     }
 
                     if (item.isBundle && item.bundleItems.isNotEmpty()) {
                         Spacer(modifier = Modifier.height(12.dp))
-                        Text("Bundle Items", fontSize = 10.sp, color = TextSlate500, fontWeight = FontWeight.Bold)
-                        Text(item.bundleItems, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryGreen)
+                        Text("Bundle Items", style = AppTypography.caption.copy(fontWeight = FontWeight.Bold, color = CharcoalSecondary))
+                        Text(item.bundleItems, style = AppTypography.bodySmall.copy(fontWeight = FontWeight.Bold, color = SavPurple))
                     }
 
                     Spacer(modifier = Modifier.height(12.dp))
-                    Text("About this Listing", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = TextSlate800)
+                    Text(
+                        "About this Listing",
+                        style = AppTypography.h3.copy(fontFamily = SoraFamily, color = Charcoal, fontSize = 14.sp)
+                    )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = "Premium, carefully selected and packed ${item.name} supplied by ${item.vendorName} located in the ${item.state} market cluster. AfriSav verified wholesale merchants guarantee accurate weighting and fast dispatch with minimal logistics friction.",
-                        fontSize = 12.sp,
-                        color = TextSlate500,
+                        style = AppTypography.bodySmall.copy(color = CharcoalSecondary),
                         lineHeight = 16.sp
                     )
 
@@ -9948,14 +10202,12 @@ fun FoodItemDetailDialog(
                     val otherVendorItems = allMarketItems.filter { it.vendorName == item.vendorName && it.id != item.id }
                     if (otherVendorItems.isNotEmpty()) {
                         Spacer(modifier = Modifier.height(16.dp))
-                        HorizontalDivider(color = BorderSlate100, thickness = 1.dp)
+                        HorizontalDivider(color = NeutralLightBorder, thickness = 1.dp)
                         Spacer(modifier = Modifier.height(12.dp))
                         
                         Text(
                             text = "Other Items from ${item.vendorName} 🏪",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 13.sp,
-                            color = TextSlate800
+                            style = AppTypography.h3.copy(fontFamily = SoraFamily, color = Charcoal, fontSize = 14.sp)
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         
@@ -9968,16 +10220,16 @@ fun FoodItemDetailDialog(
                                     modifier = Modifier
                                         .width(130.dp)
                                         .clickable { onItemClick(otherItem) },
-                                    colors = CardDefaults.cardColors(containerColor = Color(0xFFF8FAFC)),
+                                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
                                     shape = RoundedCornerShape(12.dp),
-                                    border = BorderStroke(1.dp, BorderSlate100)
+                                    border = BorderStroke(1.dp, NeutralLightBorder)
                                 ) {
                                     Column {
                                         Box(
                                             modifier = Modifier
                                                 .fillMaxWidth()
                                                 .height(70.dp)
-                                                .background(Color(0xFFE2E8F0)),
+                                                .background(NeutralLight),
                                             contentAlignment = Alignment.Center
                                         ) {
                                             FoodItemImage(
@@ -9990,18 +10242,18 @@ fun FoodItemDetailDialog(
                                         Column(modifier = Modifier.padding(6.dp)) {
                                             Text(
                                                 text = otherItem.name,
-                                                fontSize = 11.sp,
-                                                fontWeight = FontWeight.Bold,
-                                                color = TextSlate800,
+                                                style = AppTypography.caption.copy(fontWeight = FontWeight.Bold, color = Charcoal),
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis
                                             )
                                             Spacer(modifier = Modifier.height(2.dp))
                                             Text(
-                                                text = "₦${String.format("%,.0f", otherItem.price)}",
-                                                fontSize = 11.sp,
-                                                fontWeight = FontWeight.Black,
-                                                color = PrimaryGreen
+                                                text = AppFormatters.formatNaira(otherItem.price),
+                                                style = AppTypography.caption.copy(
+                                                    fontFamily = SoraFamily,
+                                                    fontWeight = FontWeight.Bold,
+                                                    color = SavPurple
+                                                )
                                             )
                                         }
                                     }
@@ -10015,7 +10267,7 @@ fun FoodItemDetailDialog(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFF8FAFC)),
+                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
                     elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
                 ) {
                     Row(
@@ -10032,10 +10284,13 @@ fun FoodItemDetailDialog(
                                 .weight(1f)
                                 .height(44.dp),
                             shape = RoundedCornerShape(10.dp),
-                            border = BorderStroke(1.dp, SecondaryOrange),
-                            colors = ButtonDefaults.outlinedButtonColors(contentColor = SecondaryOrange)
+                            border = BorderStroke(1.5.dp, SavPurple),
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = SavPurple)
                         ) {
-                            Text("Save Towards", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                            Text(
+                                "Save Towards",
+                                style = AppTypography.button.copy(color = SavPurple, fontSize = 12.sp)
+                            )
                         }
 
                         // Buy Now / Order Action
@@ -10045,9 +10300,12 @@ fun FoodItemDetailDialog(
                                 .weight(1.2f)
                                 .height(44.dp),
                             shape = RoundedCornerShape(10.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = PrimaryGreen)
+                            colors = ButtonDefaults.buttonColors(containerColor = SavPurple)
                         ) {
-                            Text("Buy Now ⚡", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                            Text(
+                                "Buy Now",
+                                style = AppTypography.button.copy(color = SurfaceWhite, fontSize = 12.sp)
+                            )
                         }
                     }
                 }
@@ -10084,9 +10342,10 @@ fun ProductCard(
             .fillMaxWidth()
             .clickable { onItemClick() }
             .testTag("product_card_${item.id}"),
-        colors = CardDefaults.cardColors(containerColor = SurfaceBg),
+        colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
         shape = RoundedCornerShape(14.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        border = BorderStroke(1.dp, NeutralLightBorder),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column {
             // Food visual thumbnail placeholder
@@ -10094,11 +10353,7 @@ fun ProductCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(110.dp)
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(SecondaryOrange.copy(alpha = 0.2f), PrimaryGreen.copy(alpha = 0.1f))
-                        )
-                    ),
+                    .background(NeutralLight),
                 contentAlignment = Alignment.Center
             ) {
                 FoodItemImage(
@@ -10114,12 +10369,13 @@ fun ProductCard(
                         .padding(6.dp),
                     contentAlignment = Alignment.BottomStart
                 ) {
-                    Card(colors = CardDefaults.cardColors(containerColor = SecondaryOrange)) {
+                    Card(
+                        colors = CardDefaults.cardColors(containerColor = Charcoal.copy(alpha = 0.75f)),
+                        shape = RoundedCornerShape(4.dp)
+                    ) {
                         Text(
                             text = "${item.distance} km",
-                            fontSize = 9.sp,
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold,
+                            style = AppTypography.caption.copy(fontSize = 9.sp, color = SurfaceWhite, fontWeight = FontWeight.Bold),
                             modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
                         )
                     }
@@ -10134,7 +10390,7 @@ fun ProductCard(
                         contentAlignment = Alignment.BottomEnd
                     ) {
                         Card(
-                            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B)),
+                            colors = CardDefaults.cardColors(containerColor = DeepPlum),
                             shape = RoundedCornerShape(4.dp)
                         ) {
                             Row(
@@ -10145,14 +10401,12 @@ fun ProductCard(
                                 Icon(
                                     imageVector = Icons.Default.Inventory,
                                     contentDescription = null,
-                                    tint = Color.White,
+                                    tint = HarvestLime,
                                     modifier = Modifier.size(9.dp)
                                 )
                                 Text(
                                     text = "BULK",
-                                    fontSize = 8.sp,
-                                    color = Color.White,
-                                    fontWeight = FontWeight.Bold
+                                    style = AppTypography.caption.copy(fontSize = 8.sp, color = HarvestLime, fontWeight = FontWeight.Bold)
                                 )
                             }
                         }
@@ -10170,13 +10424,13 @@ fun ProductCard(
                         onClick = onWishlistClick,
                         modifier = Modifier
                             .size(28.dp)
-                            .background(Color.White.copy(alpha = 0.9f), CircleShape)
-                            .border(1.dp, Color(0xFFE2E8F0), CircleShape)
+                            .background(SurfaceWhite.copy(alpha = 0.9f), CircleShape)
+                            .border(1.dp, NeutralLightBorder, CircleShape)
                     ) {
                         Icon(
                             imageVector = if (isWishlisted) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                             contentDescription = "Toggle Wishlist",
-                            tint = if (isWishlisted) Color.Red else Color(0xFF64748B),
+                            tint = if (isWishlisted) StatusErrorLight else CharcoalSecondary,
                             modifier = Modifier.size(14.dp)
                         )
                     }
@@ -10186,9 +10440,7 @@ fun ProductCard(
             Column(modifier = Modifier.padding(10.dp)) {
                 Text(
                     text = item.name,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 13.sp,
-                    color = TextSlate800,
+                    style = AppTypography.bodySmall.copy(fontFamily = SoraFamily, fontWeight = FontWeight.Bold, color = Charcoal, fontSize = 13.sp),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -10200,22 +10452,20 @@ fun ProductCard(
                 ) {
                     Text(
                         text = "by ${item.vendorName}",
-                        fontSize = 10.sp,
-                        color = TextSlate500,
+                        style = AppTypography.caption.copy(fontSize = 10.sp, color = CharcoalSecondary),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f)
                     )
                     Box(
                         modifier = Modifier
-                            .background(SecondaryOrange.copy(alpha = 0.08f), RoundedCornerShape(4.dp))
+                            .background(WarmCream, RoundedCornerShape(4.dp))
+                            .border(1.dp, NeutralLightBorder, RoundedCornerShape(4.dp))
                             .padding(horizontal = 4.dp, vertical = 2.dp)
                     ) {
                         Text(
                             text = item.state,
-                            fontSize = 8.sp,
-                            color = SecondaryOrange,
-                            fontWeight = FontWeight.Bold
+                            style = AppTypography.caption.copy(fontSize = 8.sp, color = CharcoalSecondary, fontWeight = FontWeight.Bold)
                         )
                     }
                 }
@@ -10234,8 +10484,8 @@ fun ProductCard(
                         fontWeight = FontWeight.Black
                     )
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.Star, contentDescription = null, tint = AccentGold, modifier = Modifier.size(12.dp))
-                        Text(" ${item.rating}", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = TextSlate800)
+                        Icon(Icons.Default.Star, contentDescription = null, tint = Color(0xFFD97706), modifier = Modifier.size(12.dp))
+                        Text(" ${item.rating}", style = AppTypography.caption.copy(fontFamily = SoraFamily, fontSize = 10.sp, fontWeight = FontWeight.Bold, color = Charcoal))
                     }
                 }
 
@@ -10246,27 +10496,23 @@ fun ProductCard(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color(0xFFF0FDF4), RoundedCornerShape(6.dp))
+                            .background(StatusSuccessLight.copy(alpha = 0.1f), RoundedCornerShape(6.dp))
                             .padding(horizontal = 6.dp, vertical = 4.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
                             text = unitPrice,
-                            fontSize = 10.sp,
-                            color = Color(0xFF15803D),
-                            fontWeight = FontWeight.Bold
+                            style = AppTypography.caption.copy(fontSize = 10.sp, color = StatusSuccessLight, fontWeight = FontWeight.Bold)
                         )
                         Box(
                             modifier = Modifier
-                                .background(Color(0xFFDCFCE7), RoundedCornerShape(4.dp))
+                                .background(StatusSuccessLight.copy(alpha = 0.18f), RoundedCornerShape(4.dp))
                                 .padding(horizontal = 4.dp, vertical = 1.dp)
                         ) {
                             Text(
                                 text = "Save ~15%",
-                                fontSize = 8.sp,
-                                color = Color(0xFF15803D),
-                                fontWeight = FontWeight.Bold
+                                style = AppTypography.caption.copy(fontSize = 8.sp, color = StatusSuccessLight, fontWeight = FontWeight.Bold)
                             )
                         }
                     }
@@ -10278,7 +10524,8 @@ fun ProductCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(8.dp))
-                        .background(if (isTracked) SecondaryOrange.copy(alpha = 0.1f) else Color(0xFFF1F5F9))
+                        .background(if (isTracked) SavPurple.copy(alpha = 0.1f) else NeutralLight)
+                        .border(1.dp, if (isTracked) SavPurple.copy(alpha = 0.3f) else NeutralLightBorder, RoundedCornerShape(8.dp))
                         .clickable { onTrackPriceClick() }
                         .padding(horizontal = 8.dp, vertical = 6.dp)
                         .testTag("track_price_row_${item.id}"),
@@ -10288,15 +10535,17 @@ fun ProductCard(
                     Icon(
                         imageVector = if (isTracked) Icons.Default.NotificationsActive else Icons.Default.Notifications,
                         contentDescription = "Track Price Icon",
-                        tint = if (isTracked) SecondaryOrange else TextSlate500,
+                        tint = if (isTracked) SavPurple else CharcoalSecondary,
                         modifier = Modifier.size(13.dp)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = if (isTracked) "Tracking (Initial: ₦${String.format("%,.0f", initialPrice ?: item.price)})" else "Track Price",
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = if (isTracked) SecondaryOrange else TextSlate500
+                        text = if (isTracked) "Tracking (${AppFormatters.formatNaira(initialPrice ?: item.price)})" else "Track Price",
+                        style = AppTypography.caption.copy(
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = if (isTracked) SavPurple else CharcoalSecondary
+                        )
                     )
                 }
 
@@ -10316,9 +10565,10 @@ fun ProductCard(
                             .height(36.dp),
                         contentPadding = PaddingValues(0.dp),
                         shape = RoundedCornerShape(10.dp),
-                        border = BorderStroke(1.dp, SecondaryOrange)
+                        border = BorderStroke(1.dp, SavPurple),
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = SavPurple)
                     ) {
-                        Text("Save For", fontSize = 11.sp, color = SecondaryOrange, fontWeight = FontWeight.Bold)
+                        Text("Save For", style = AppTypography.button.copy(fontSize = 11.sp, color = SavPurple))
                     }
                     
                     // Add to Basket / Quantity Selector
@@ -10329,7 +10579,7 @@ fun ProductCard(
                                 .weight(1.2f)
                                 .height(36.dp)
                                 .testTag("add_to_basket_btn_${item.id}"),
-                            colors = ButtonDefaults.buttonColors(containerColor = PrimaryGreen),
+                            colors = ButtonDefaults.buttonColors(containerColor = SavPurple),
                             shape = RoundedCornerShape(10.dp),
                             contentPadding = PaddingValues(0.dp)
                         ) {
@@ -10340,11 +10590,11 @@ fun ProductCard(
                                 Icon(
                                     imageVector = Icons.Default.ShoppingBasket,
                                     contentDescription = "Add to Basket",
-                                    tint = Color.White,
+                                    tint = SurfaceWhite,
                                     modifier = Modifier.size(14.dp)
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
-                                Text("Basket +", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                                Text("Basket +", style = AppTypography.button.copy(fontSize = 11.sp, color = SurfaceWhite))
                             }
                         }
                     } else {
@@ -10353,8 +10603,8 @@ fun ProductCard(
                                 .weight(1.2f)
                                 .height(36.dp)
                                 .clip(RoundedCornerShape(10.dp))
-                                .background(PrimaryGreen.copy(alpha = 0.08f))
-                                .border(1.dp, PrimaryGreen, RoundedCornerShape(10.dp)),
+                                .background(SavPurple.copy(alpha = 0.08f))
+                                .border(1.dp, SavPurple, RoundedCornerShape(10.dp)),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -10365,15 +10615,18 @@ fun ProductCard(
                                 Icon(
                                     imageVector = Icons.Default.Remove,
                                     contentDescription = "Remove One from Basket",
-                                    tint = PrimaryGreen,
+                                    tint = SavPurple,
                                     modifier = Modifier.size(12.dp)
                                 )
                             }
                             Text(
                                 text = "$quantity",
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = PrimaryGreen
+                                style = AppTypography.caption.copy(
+                                    fontFamily = SoraFamily,
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = SavPurple
+                                )
                             )
                             IconButton(
                                 onClick = onAddToCart,
@@ -10382,7 +10635,7 @@ fun ProductCard(
                                 Icon(
                                     imageVector = Icons.Default.Add,
                                     contentDescription = "Add One to Basket",
-                                    tint = PrimaryGreen,
+                                    tint = SavPurple,
                                     modifier = Modifier.size(12.dp)
                                 )
                             }
@@ -14776,13 +15029,15 @@ fun EmptyStateCard(
     icon: androidx.compose.ui.graphics.vector.ImageVector? = null,
     emoji: String = "🥑",
     subMessage: String = "",
-    iconColor: Color = Color(0xFF0A8F3D)
+    iconColor: Color = SavPurple,
+    ground: SurfaceGround = SurfaceGround.LIGHT
 ) {
+    val isDark = ground == SurfaceGround.DARK
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = SurfaceBg),
+        colors = CardDefaults.cardColors(containerColor = if (isDark) DeepPlumCard else SurfaceWhite),
         shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(1.dp, Color(0xFFE2E8F0)),
+        border = BorderStroke(1.dp, if (isDark) DeepPlumBorder else BorderSubtle),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(
@@ -14797,21 +15052,21 @@ fun EmptyStateCard(
                 modifier = Modifier
                     .size(72.dp)
                     .clip(CircleShape)
-                    .background(iconColor.copy(alpha = 0.08f)),
+                    .background(if (isDark) HarvestLime.copy(alpha = 0.12f) else iconColor.copy(alpha = 0.08f)),
                 contentAlignment = Alignment.Center
             ) {
                 Box(
                     modifier = Modifier
                         .size(54.dp)
                         .clip(CircleShape)
-                        .background(iconColor.copy(alpha = 0.12f)),
+                        .background(if (isDark) HarvestLime.copy(alpha = 0.2f) else iconColor.copy(alpha = 0.12f)),
                     contentAlignment = Alignment.Center
                 ) {
                     if (icon != null) {
                         Icon(
                             imageVector = icon,
                             contentDescription = null,
-                            tint = iconColor,
+                            tint = if (isDark) HarvestLime else iconColor,
                             modifier = Modifier.size(26.dp)
                         )
                     } else {
@@ -14851,9 +15106,8 @@ fun EmptyStateCard(
             
             Text(
                 text = message,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B),
+                style = AppTypography.sectionHeader.copy(fontFamily = SoraFamily, fontWeight = FontWeight.Bold),
+                color = if (isDark) SurfaceWhite else Charcoal,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(horizontal = 12.dp)
             )
@@ -14862,8 +15116,8 @@ fun EmptyStateCard(
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(
                     text = subMessage,
-                    fontSize = 12.sp,
-                    color = Color(0xFF64748B),
+                    style = AppTypography.caption,
+                    color = if (isDark) SurfaceWhite.copy(alpha = 0.7f) else TextMuted,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(horizontal = 12.dp)
                 )
@@ -14873,11 +15127,17 @@ fun EmptyStateCard(
                 Spacer(modifier = Modifier.height(18.dp))
                 Button(
                     onClick = onClick,
-                    colors = ButtonDefaults.buttonColors(containerColor = iconColor),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (isDark) HarvestLime else iconColor,
+                        contentColor = if (isDark) Charcoal else SurfaceWhite
+                    ),
                     shape = RoundedCornerShape(12.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
                 ) {
-                    Text(btnText, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                    Text(
+                        btnText,
+                        style = AppTypography.button.copy(fontWeight = FontWeight.Bold)
+                    )
                 }
             }
         }
@@ -15844,17 +16104,17 @@ fun PreFilledGoalDialog(
         onDismissRequest = onDismiss,
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.CheckCircle, contentDescription = null, tint = Color(0xFF0A8F3D), modifier = Modifier.size(24.dp))
+                Icon(Icons.Default.CheckCircle, contentDescription = null, tint = SavPurple, modifier = Modifier.size(24.dp))
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Convert Basket to Goal", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text("Convert Basket to Goal", style = AppTypography.cardTitle.copy(fontFamily = SoraFamily, fontWeight = FontWeight.Bold), color = Charcoal)
             }
         },
         text = {
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 Text(
                     "We have prefilled your savings target based on your calculated basket budget. You can customize the name, auto-save plan, and start saving!",
-                    fontSize = 12.sp,
-                    color = Color(0xFF64748B)
+                    style = AppTypography.caption,
+                    color = TextMuted
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -15888,7 +16148,7 @@ fun PreFilledGoalDialog(
                     ) {
                         categories.forEach { cat ->
                             DropdownMenuItem(
-                                text = { Text(cat) },
+                                text = { Text(cat, style = AppTypography.bodyMedium) },
                                 onClick = {
                                     category = cat
                                     catExpanded = false
@@ -15912,8 +16172,12 @@ fun PreFilledGoalDialog(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Checkbox(checked = autoSaveEnabled, onCheckedChange = { autoSaveEnabled = it })
-                    Text("Enable Auto-Save Plan", fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                    Checkbox(
+                        checked = autoSaveEnabled,
+                        onCheckedChange = { autoSaveEnabled = it },
+                        colors = CheckboxDefaults.colors(checkedColor = SavPurple)
+                    )
+                    Text("Enable Auto-Save Plan", style = AppTypography.bodySmall.copy(fontWeight = FontWeight.Bold), color = Charcoal)
                 }
 
                 if (autoSaveEnabled) {
@@ -15937,14 +16201,15 @@ fun PreFilledGoalDialog(
                         onConfirm(title, target, category, autoAmt, autoSaveEnabled)
                     }
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0A8F3D))
+                colors = ButtonDefaults.buttonColors(containerColor = SavPurple, contentColor = SurfaceWhite),
+                shape = RoundedCornerShape(10.dp)
             ) {
-                Text("Create Savings Goal")
+                Text("Create Savings Goal", style = AppTypography.button.copy(fontWeight = FontWeight.Bold))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text("Cancel", style = AppTypography.button, color = TextMuted)
             }
         }
     )
@@ -17662,7 +17927,8 @@ fun ThemeToggle(
 fun SavingsReminderCard(
     viewModel: KoboViewModel,
     onRequestPermission: (onPermissionGranted: () -> Unit) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    ground: SurfaceGround = SurfaceGround.DARK
 ) {
     val reminderEnabled by viewModel.reminderEnabled.collectAsStateWithLifecycle()
     val reminderHour by viewModel.reminderHour.collectAsStateWithLifecycle()
@@ -17670,10 +17936,11 @@ fun SavingsReminderCard(
     val isDarkMode by viewModel.isDarkMode.collectAsStateWithLifecycle()
     val context = LocalContext.current
     
-    val cardBg = if (isDarkMode) Color(0xFF1E1E1E) else Color.White
-    val textColor = if (isDarkMode) Color(0xFFF8FAFC) else Color(0xFF1E293B)
-    val subtitleColor = if (isDarkMode) Color(0xFF94A3B8) else Color(0xFF64748B)
-    val borderColor = if (isDarkMode) Color(0xFF334155) else Color(0xFFE2E8F0)
+    val isDark = ground == SurfaceGround.DARK || isDarkMode
+    val cardBg = if (isDark) DeepPlumCard else SurfaceWhite
+    val textColor = if (isDark) SurfaceWhite else Charcoal
+    val subtitleColor = if (isDark) SurfaceWhite.copy(alpha = 0.7f) else TextMuted
+    val borderColor = if (isDark) DeepPlumBorder else BorderSubtle
     
     var selectedHour by remember(reminderHour) { mutableStateOf(reminderHour) }
     var selectedMinute by remember(reminderMinute) { mutableStateOf(reminderMinute) }
@@ -17701,7 +17968,7 @@ fun SavingsReminderCard(
                     Box(
                         modifier = Modifier
                             .size(40.dp)
-                            .background(PrimaryGreen.copy(alpha = 0.15f), CircleShape),
+                            .background(if (isDark) HarvestLime.copy(alpha = 0.15f) else SavPurple.copy(alpha = 0.1f), CircleShape),
                         contentAlignment = Alignment.Center
                     ) {
                         Text("⏰", fontSize = 20.sp)
@@ -17709,8 +17976,7 @@ fun SavingsReminderCard(
                     Column {
                         Text(
                             text = "Daily Savings Reminder",
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold,
+                            style = AppTypography.cardTitle.copy(fontWeight = FontWeight.Bold, fontFamily = SoraFamily),
                             color = textColor
                         )
                         Text(
@@ -17719,7 +17985,7 @@ fun SavingsReminderCard(
                             } else {
                                 "Never miss your savings goals"
                             },
-                            fontSize = 12.sp,
+                            style = AppTypography.caption,
                             color = subtitleColor
                         )
                     }
@@ -17737,10 +18003,10 @@ fun SavingsReminderCard(
                         }
                     },
                     colors = SwitchDefaults.colors(
-                        checkedThumbColor = Color.White,
-                        checkedTrackColor = PrimaryGreen,
+                        checkedThumbColor = if (isDark) Charcoal else SurfaceWhite,
+                        checkedTrackColor = if (isDark) HarvestLime else SavPurple,
                         uncheckedThumbColor = subtitleColor,
-                        uncheckedTrackColor = if (isDarkMode) Color(0xFF334155) else Color(0xFFE2E8F0)
+                        uncheckedTrackColor = if (isDark) DeepPlumBorder else Color(0xFFE2E8F0)
                     ),
                     modifier = Modifier.testTag("savings_reminder_switch")
                 )
@@ -17758,8 +18024,7 @@ fun SavingsReminderCard(
                 ) {
                     Text(
                         text = "Reminder Time",
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Medium,
+                        style = AppTypography.bodySmall.copy(fontWeight = FontWeight.Medium),
                         color = textColor
                     )
                     
@@ -17770,7 +18035,7 @@ fun SavingsReminderCard(
                         // Hour selector
                         Row(
                             modifier = Modifier
-                                .background(if (isDarkMode) Color(0xFF2D3748) else Color(0xFFF1F5F9), RoundedCornerShape(8.dp))
+                                .background(if (isDark) DeepPlum else Color(0xFFF1F5F9), RoundedCornerShape(8.dp))
                                 .border(1.dp, borderColor, RoundedCornerShape(8.dp))
                                 .padding(horizontal = 10.dp, vertical = 6.dp),
                             verticalAlignment = Alignment.CenterVertically,
@@ -17778,15 +18043,14 @@ fun SavingsReminderCard(
                         ) {
                             Text(
                                 text = String.format("%02d", selectedHour),
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Bold,
+                                style = AppTypography.bodyMedium.copy(fontWeight = FontWeight.Bold, fontFamily = SoraFamily, fontFeatureSettings = "tnum"),
                                 color = textColor
                             )
                             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                                 Icon(
                                     imageVector = Icons.Default.KeyboardArrowUp,
                                     contentDescription = "Increase Hour",
-                                    tint = PrimaryGreen,
+                                    tint = if (isDark) HarvestLime else SavPurple,
                                     modifier = Modifier
                                         .size(16.dp)
                                         .clickable {
@@ -17797,7 +18061,7 @@ fun SavingsReminderCard(
                                 Icon(
                                     imageVector = Icons.Default.KeyboardArrowDown,
                                     contentDescription = "Decrease Hour",
-                                    tint = PrimaryGreen,
+                                    tint = if (isDark) HarvestLime else SavPurple,
                                     modifier = Modifier
                                         .size(16.dp)
                                         .clickable {
@@ -17813,7 +18077,7 @@ fun SavingsReminderCard(
                         // Minute selector
                         Row(
                             modifier = Modifier
-                                .background(if (isDarkMode) Color(0xFF2D3748) else Color(0xFFF1F5F9), RoundedCornerShape(8.dp))
+                                .background(if (isDark) DeepPlum else Color(0xFFF1F5F9), RoundedCornerShape(8.dp))
                                 .border(1.dp, borderColor, RoundedCornerShape(8.dp))
                                 .padding(horizontal = 10.dp, vertical = 6.dp),
                             verticalAlignment = Alignment.CenterVertically,
@@ -17821,15 +18085,14 @@ fun SavingsReminderCard(
                         ) {
                             Text(
                                 text = String.format("%02d", selectedMinute),
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Bold,
+                                style = AppTypography.bodyMedium.copy(fontWeight = FontWeight.Bold, fontFamily = SoraFamily, fontFeatureSettings = "tnum"),
                                 color = textColor
                             )
                             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                                 Icon(
                                     imageVector = Icons.Default.KeyboardArrowUp,
                                     contentDescription = "Increase Minute",
-                                    tint = PrimaryGreen,
+                                    tint = if (isDark) HarvestLime else SavPurple,
                                     modifier = Modifier
                                         .size(16.dp)
                                         .clickable {
@@ -17840,7 +18103,7 @@ fun SavingsReminderCard(
                                 Icon(
                                     imageVector = Icons.Default.KeyboardArrowDown,
                                     contentDescription = "Decrease Minute",
-                                    tint = PrimaryGreen,
+                                    tint = if (isDark) HarvestLime else SavPurple,
                                     modifier = Modifier
                                         .size(16.dp)
                                         .clickable {
@@ -17866,8 +18129,8 @@ fun SavingsReminderCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .testTag("trigger_test_reminder_button"),
-                border = BorderStroke(1.dp, SecondaryOrange.copy(alpha = 0.5f)),
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = SecondaryOrange),
+                border = BorderStroke(1.dp, if (isDark) HarvestLime.copy(alpha = 0.5f) else SavPurple.copy(alpha = 0.5f)),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = if (isDark) HarvestLime else SavPurple),
                 shape = RoundedCornerShape(10.dp)
             ) {
                 Row(
@@ -17878,8 +18141,8 @@ fun SavingsReminderCard(
                     Text("🔔 ", fontSize = 14.sp)
                     Text(
                         text = "Test Notification Instantly",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold
+                        style = AppTypography.button.copy(fontWeight = FontWeight.Bold),
+                        color = if (isDark) HarvestLime else SavPurple
                     )
                 }
             }
@@ -18730,12 +18993,12 @@ fun CategoryFilterBar(
                     .testTag("category_chip_${cat.id.lowercase()}")
                     .clickable { onCategorySelected(cat.id) },
                 shape = RoundedCornerShape(14.dp),
-                color = if (isSelected) PrimaryGreen.copy(alpha = 0.12f) else Color.White,
+                color = if (isSelected) SavPurple.copy(alpha = 0.10f) else SurfaceWhite,
                 border = BorderStroke(
-                    width = if (isSelected) 2.dp else 1.dp,
-                    color = if (isSelected) PrimaryGreen else Color(0xFFE2E8F0)
+                    width = if (isSelected) 1.5.dp else 1.dp,
+                    color = if (isSelected) SavPurple else NeutralLightBorder
                 ),
-                tonalElevation = if (isSelected) 2.dp else 0.dp
+                tonalElevation = 0.dp
             ) {
                 Row(
                     modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
@@ -18746,7 +19009,7 @@ fun CategoryFilterBar(
                         modifier = Modifier
                             .size(28.dp)
                             .background(
-                                color = if (isSelected) PrimaryGreen.copy(alpha = 0.15f) else cat.color.copy(alpha = 0.08f),
+                                color = if (isSelected) SavPurple.copy(alpha = 0.15f) else WarmCream,
                                 shape = CircleShape
                             ),
                         contentAlignment = Alignment.Center
@@ -18756,24 +19019,29 @@ fun CategoryFilterBar(
 
                     Text(
                         text = cat.displayName,
-                        fontSize = 13.sp,
-                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.SemiBold,
-                        color = if (isSelected) PrimaryGreen else Color(0xFF1E293B)
+                        style = AppTypography.bodySmall.copy(
+                            fontSize = 13.sp,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                            color = if (isSelected) SavPurple else Charcoal
+                        )
                     )
 
                     Box(
                         modifier = Modifier
                             .background(
-                                color = if (isSelected) PrimaryGreen.copy(alpha = 0.2f) else Color(0xFFF1F5F9),
+                                color = if (isSelected) SavPurple.copy(alpha = 0.18f) else NeutralLight,
                                 shape = RoundedCornerShape(8.dp)
                             )
                             .padding(horizontal = 6.dp, vertical = 2.dp)
                     ) {
                         Text(
                             text = count.toString(),
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = if (isSelected) PrimaryGreen else Color(0xFF64748B)
+                            style = AppTypography.caption.copy(
+                                fontFamily = SoraFamily,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = if (isSelected) SavPurple else CharcoalSecondary
+                            )
                         )
                     }
                 }
@@ -18883,15 +19151,15 @@ fun BuyerReviewsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SoftBackground)
+            .background(WarmCream)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(SurfaceBg)
+                .background(WarmCream)
                 .statusBarsPadding()
                 .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 14.dp)
-                .border(width = 1.dp, color = BorderSlate100),
+                .border(width = 1.dp, color = NeutralLightBorder),
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(
@@ -18901,15 +19169,13 @@ fun BuyerReviewsScreen(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
-                    tint = TextSlate800
+                    tint = Charcoal
                 )
             }
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = "Seller Reviews & Ratings",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = TextSlate800
+                style = AppTypography.h2.copy(fontFamily = SoraFamily, fontSize = 18.sp, color = Charcoal)
             )
         }
 
@@ -18921,24 +19187,21 @@ fun BuyerReviewsScreen(
         ) {
             item {
                 Text(
-                    text = "⭐ Your Cooperative Reputation",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = TextSlate800
+                    text = "Your Cooperative Reputation",
+                    style = AppTypography.h3.copy(fontFamily = SoraFamily, fontSize = 16.sp, color = Charcoal)
                 )
                 Text(
                     text = "Ratings and feedback left for you by sellers after completed bulk transactions.",
-                    fontSize = 12.sp,
-                    color = TextSlate500
+                    style = AppTypography.bodySmall.copy(color = CharcoalSecondary, fontSize = 12.sp)
                 )
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(8.dp))
             }
 
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-                    border = BorderStroke(1.dp, BorderSlate100),
+                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                    border = BorderStroke(1.dp, NeutralLightBorder),
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Row(
@@ -18953,16 +19216,14 @@ fun BuyerReviewsScreen(
                         ) {
                             Text(
                                 text = String.format("%.1f", averageRating),
-                                fontSize = 36.sp,
-                                fontWeight = FontWeight.Black,
-                                color = TextSlate800
+                                style = AppTypography.display.copy(fontFamily = SoraFamily, fontSize = 36.sp, color = Charcoal)
                             )
                             Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                                 (1..5).forEach { star ->
                                     Icon(
                                         imageVector = Icons.Default.Star,
                                         contentDescription = null,
-                                        tint = if (star <= averageRating.toInt()) SecondaryOrange else Color(0xFFE2E8F0),
+                                        tint = if (star <= averageRating.toInt()) Color(0xFFD97706) else NeutralLightBorder,
                                         modifier = Modifier.size(16.dp)
                                     )
                                 }
@@ -18970,9 +19231,7 @@ fun BuyerReviewsScreen(
                             Spacer(modifier = Modifier.height(6.dp))
                             Text(
                                 text = "${combinedReviews.size} Seller Reviews",
-                                fontSize = 11.sp,
-                                color = TextSlate500,
-                                fontWeight = FontWeight.SemiBold
+                                style = AppTypography.caption.copy(color = CharcoalSecondary, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
                             )
                         }
 
@@ -18980,7 +19239,7 @@ fun BuyerReviewsScreen(
                             modifier = Modifier
                                 .height(80.dp)
                                 .width(1.dp)
-                                .background(BorderSlate100)
+                                .background(NeutralLightBorder)
                         )
 
                         Column(
@@ -18994,8 +19253,7 @@ fun BuyerReviewsScreen(
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Text(
                                         text = "$starVal ★",
-                                        fontSize = 10.sp,
-                                        color = TextSlate500,
+                                        style = AppTypography.caption.copy(fontFamily = SoraFamily, fontSize = 10.sp, color = CharcoalSecondary),
                                         modifier = Modifier.width(24.dp)
                                     )
                                     LinearProgressIndicator(
@@ -19004,8 +19262,8 @@ fun BuyerReviewsScreen(
                                             .weight(1f)
                                             .height(6.dp)
                                             .clip(RoundedCornerShape(3.dp)),
-                                        color = SecondaryOrange,
-                                        trackColor = Color(0xFFF1F5F9)
+                                        color = SavPurple,
+                                        trackColor = NeutralLight
                                     )
                                 }
                             }
@@ -19018,9 +19276,7 @@ fun BuyerReviewsScreen(
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "Recent Feedback Feed",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = TextSlate800
+                    style = AppTypography.h3.copy(fontFamily = SoraFamily, fontSize = 14.sp, color = Charcoal)
                 )
             }
 
@@ -19030,8 +19286,8 @@ fun BuyerReviewsScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 12.dp),
-                        colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-                        border = BorderStroke(1.dp, BorderSlate100),
+                        colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                        border = BorderStroke(1.dp, NeutralLightBorder),
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Column(
@@ -19044,14 +19300,11 @@ fun BuyerReviewsScreen(
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
                                 text = "No Seller Reviews Yet",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = TextSlate800
+                                style = AppTypography.bodySmall.copy(fontFamily = SoraFamily, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Charcoal)
                             )
                             Text(
                                 text = "Your ratings will appear here after sellers complete bulk deliveries.",
-                                fontSize = 12.sp,
-                                color = TextSlate500,
+                                style = AppTypography.caption.copy(fontSize = 12.sp, color = CharcoalSecondary),
                                 textAlign = androidx.compose.ui.text.style.TextAlign.Center
                             )
                         }
@@ -19068,8 +19321,8 @@ fun BuyerReviewsScreen(
                     }
                     Card(
                         modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-                        border = BorderStroke(1.dp, BorderSlate100),
+                        colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                        border = BorderStroke(1.dp, NeutralLightBorder),
                         shape = RoundedCornerShape(14.dp)
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
@@ -19081,16 +19334,14 @@ fun BuyerReviewsScreen(
                                 Column {
                                     Text(
                                         text = rev.reviewerName,
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = TextSlate800
+                                        style = AppTypography.bodySmall.copy(fontFamily = SoraFamily, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Charcoal)
                                     )
                                     Row(horizontalArrangement = Arrangement.spacedBy(1.dp)) {
                                         (1..5).forEach { s ->
                                             Icon(
                                                 imageVector = Icons.Default.Star,
                                                 contentDescription = null,
-                                                tint = if (s <= rev.rating) SecondaryOrange else Color(0xFFE2E8F0),
+                                                tint = if (s <= rev.rating) Color(0xFFD97706) else NeutralLightBorder,
                                                 modifier = Modifier.size(12.dp)
                                             )
                                         }
@@ -19098,18 +19349,14 @@ fun BuyerReviewsScreen(
                                 }
                                 Text(
                                     text = formattedDate,
-                                    fontSize = 11.sp,
-                                    color = TextSlate400,
-                                    fontWeight = FontWeight.SemiBold
+                                    style = AppTypography.caption.copy(fontSize = 11.sp, color = CharcoalSecondary, fontWeight = FontWeight.SemiBold)
                                 )
                             }
                             if (rev.reviewText.isNotEmpty()) {
                                 Spacer(modifier = Modifier.height(10.dp))
                                 Text(
                                     text = rev.reviewText,
-                                    fontSize = 13.sp,
-                                    color = TextSlate500,
-                                    lineHeight = 18.sp
+                                    style = AppTypography.bodySmall.copy(fontSize = 13.sp, color = CharcoalSecondary, lineHeight = 18.sp)
                                 )
                             }
                         }
@@ -19155,15 +19402,15 @@ fun BuyerProfileMainContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SoftBackground)
+            .background(WarmCream)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(SurfaceBg)
+                .background(WarmCream)
                 .statusBarsPadding()
                 .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 14.dp)
-                .border(width = 1.dp, color = BorderSlate100),
+                .border(width = 1.dp, color = NeutralLightBorder),
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(
@@ -19173,15 +19420,13 @@ fun BuyerProfileMainContent(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
-                    tint = TextSlate800
+                    tint = Charcoal
                 )
             }
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = "Profile & Settings",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = TextSlate800
+                style = AppTypography.h2.copy(fontFamily = SoraFamily, fontSize = 18.sp, color = Charcoal)
             )
         }
 
@@ -19194,8 +19439,8 @@ fun BuyerProfileMainContent(
         ) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-                border = BorderStroke(1.dp, BorderSlate100),
+                colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                border = BorderStroke(1.dp, NeutralLightBorder),
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Column(
@@ -19208,7 +19453,7 @@ fun BuyerProfileMainContent(
                         modifier = Modifier
                             .size(96.dp)
                             .clip(CircleShape)
-                            .border(2.dp, PrimaryGreen, CircleShape)
+                            .border(2.dp, SavPurple, CircleShape)
                             .clickable { showCameraDialog = true }
                     ) {
                         ProfileAvatar(
@@ -19219,15 +19464,15 @@ fun BuyerProfileMainContent(
                         Box(
                             modifier = Modifier
                                 .size(28.dp)
-                                .background(PrimaryGreen, CircleShape)
+                                .background(SavPurple, CircleShape)
                                 .align(Alignment.BottomEnd)
-                                .border(1.5.dp, Color.White, CircleShape),
+                                .border(1.5.dp, SurfaceWhite, CircleShape),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = Icons.Default.CameraAlt,
                                 contentDescription = "Edit Photo",
-                                tint = Color.White,
+                                tint = SurfaceWhite,
                                 modifier = Modifier.size(14.dp)
                             )
                         }
@@ -19235,21 +19480,17 @@ fun BuyerProfileMainContent(
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
                         text = currentName,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = TextSlate800
+                        style = AppTypography.h2.copy(fontFamily = SoraFamily, fontSize = 18.sp, color = Charcoal)
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Box(
                         modifier = Modifier
-                            .background(PrimaryGreen.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
+                            .background(SavPurple.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
                             .padding(horizontal = 12.dp, vertical = 4.dp)
                     ) {
                         Text(
                             text = "Cooperative Buyer Hub",
-                            fontSize = 11.sp,
-                            color = PrimaryGreen,
-                            fontWeight = FontWeight.Bold
+                            style = AppTypography.caption.copy(fontSize = 11.sp, color = SavPurple, fontWeight = FontWeight.Bold)
                         )
                     }
                 }
@@ -19257,9 +19498,7 @@ fun BuyerProfileMainContent(
 
             Text(
                 text = "My Activity Tracking",
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                color = TextSlate800,
+                style = AppTypography.h3.copy(fontFamily = SoraFamily, fontSize = 14.sp, color = Charcoal),
                 modifier = Modifier.padding(horizontal = 4.dp)
             )
 
@@ -19272,35 +19511,32 @@ fun BuyerProfileMainContent(
                         .weight(1f)
                         .testTag("profile_view_orders_card")
                         .clickable { onViewOrdersClick() },
-                    colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-                    border = BorderStroke(1.dp, BorderSlate100),
+                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                    border = BorderStroke(1.dp, NeutralLightBorder),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Box(
                             modifier = Modifier
                                 .size(36.dp)
-                                .background(PrimaryGreen.copy(alpha = 0.1f), CircleShape),
+                                .background(SavPurple.copy(alpha = 0.12f), CircleShape),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = Icons.Default.LocalShipping,
                                 contentDescription = null,
-                                tint = PrimaryGreen,
+                                tint = SavPurple,
                                 modifier = Modifier.size(20.dp)
                             )
                         }
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
                             text = "View Orders",
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = TextSlate800
+                            style = AppTypography.bodySmall.copy(fontFamily = SoraFamily, fontWeight = FontWeight.Bold, color = Charcoal)
                         )
                         Text(
                             text = "Live delivery status",
-                            fontSize = 11.sp,
-                            color = TextSlate500
+                            style = AppTypography.caption.copy(fontSize = 11.sp, color = CharcoalSecondary)
                         )
                     }
                 }
@@ -19310,35 +19546,33 @@ fun BuyerProfileMainContent(
                         .weight(1f)
                         .testTag("profile_view_reviews_card")
                         .clickable { onViewReviewsClick() },
-                    colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-                    border = BorderStroke(1.dp, BorderSlate100),
+                    colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                    border = BorderStroke(1.dp, NeutralLightBorder),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Box(
                             modifier = Modifier
                                 .size(36.dp)
-                                .background(SecondaryOrange.copy(alpha = 0.1f), CircleShape),
+                                .background(WarmCream, CircleShape)
+                                .border(1.dp, NeutralLightBorder, CircleShape),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Star,
                                 contentDescription = null,
-                                tint = SecondaryOrange,
+                                tint = Color(0xFFD97706),
                                 modifier = Modifier.size(20.dp)
                             )
                         }
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
                             text = "Seller Reviews",
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = TextSlate800
+                            style = AppTypography.bodySmall.copy(fontFamily = SoraFamily, fontWeight = FontWeight.Bold, color = Charcoal)
                         )
                         Text(
                             text = "Your reputation score",
-                            fontSize = 11.sp,
-                            color = TextSlate500
+                            style = AppTypography.caption.copy(fontSize = 11.sp, color = CharcoalSecondary)
                         )
                     }
                 }
@@ -19346,8 +19580,8 @@ fun BuyerProfileMainContent(
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-                border = BorderStroke(1.dp, BorderSlate100),
+                colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                border = BorderStroke(1.dp, NeutralLightBorder),
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Column(
@@ -19355,58 +19589,73 @@ fun BuyerProfileMainContent(
                     verticalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
                     Text(
-                        text = "✏️ Edit Profile Details",
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = TextSlate800
+                        text = "Edit Profile Details",
+                        style = AppTypography.h3.copy(fontFamily = SoraFamily, fontSize = 15.sp, color = Charcoal)
+                    )
+
+                    val fieldColors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = SurfaceWhite,
+                        unfocusedContainerColor = SurfaceWhite,
+                        focusedBorderColor = SavPurple,
+                        unfocusedBorderColor = NeutralLightBorder,
+                        focusedTextColor = Charcoal,
+                        unfocusedTextColor = Charcoal,
+                        focusedLabelColor = SavPurple,
+                        unfocusedLabelColor = CharcoalSecondary,
+                        cursorColor = SavPurple
                     )
 
                     OutlinedTextField(
                         value = name,
                         onValueChange = { name = it },
                         label = { Text("Full Name") },
-                        leadingIcon = { Icon(Icons.Default.Person, contentDescription = null, tint = PrimaryGreen) },
+                        leadingIcon = { Icon(Icons.Default.Person, contentDescription = null, tint = SavPurple) },
                         modifier = Modifier.fillMaxWidth().testTag("profile_name_input"),
-                        shape = RoundedCornerShape(10.dp)
+                        shape = RoundedCornerShape(10.dp),
+                        colors = fieldColors
                     )
 
                     OutlinedTextField(
                         value = phone,
                         onValueChange = { phone = it },
                         label = { Text("Phone Number") },
-                        leadingIcon = { Icon(Icons.Default.Phone, contentDescription = null, tint = PrimaryGreen) },
+                        leadingIcon = { Icon(Icons.Default.Phone, contentDescription = null, tint = SavPurple) },
                         modifier = Modifier.fillMaxWidth().testTag("profile_phone_input"),
                         shape = RoundedCornerShape(10.dp),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                        colors = fieldColors
                     )
 
                     OutlinedTextField(
                         value = email,
                         onValueChange = { email = it },
                         label = { Text("Email Address") },
-                        leadingIcon = { Icon(Icons.Default.Email, contentDescription = null, tint = PrimaryGreen) },
+                        leadingIcon = { Icon(Icons.Default.Email, contentDescription = null, tint = SavPurple) },
                         modifier = Modifier.fillMaxWidth().testTag("profile_email_input"),
                         shape = RoundedCornerShape(10.dp),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                        colors = fieldColors
                     )
 
                     OutlinedTextField(
                         value = location,
                         onValueChange = { location = it },
                         label = { Text("Cooperative Location") },
-                        leadingIcon = { Icon(Icons.Default.LocationOn, contentDescription = null, tint = PrimaryGreen) },
+                        leadingIcon = { Icon(Icons.Default.LocationOn, contentDescription = null, tint = SavPurple) },
                         modifier = Modifier.fillMaxWidth().testTag("profile_location_input"),
-                        shape = RoundedCornerShape(10.dp)
+                        shape = RoundedCornerShape(10.dp),
+                        colors = fieldColors
                     )
 
                     OutlinedTextField(
                         value = bio,
                         onValueChange = { bio = it },
                         label = { Text("Bio / Slogan") },
-                        leadingIcon = { Icon(Icons.Default.Info, contentDescription = null, tint = PrimaryGreen) },
+                        leadingIcon = { Icon(Icons.Default.Info, contentDescription = null, tint = SavPurple) },
                         modifier = Modifier.fillMaxWidth().height(90.dp).testTag("profile_bio_input"),
                         shape = RoundedCornerShape(10.dp),
-                        maxLines = 3
+                        maxLines = 3,
+                        colors = fieldColors
                     )
 
                     Button(
@@ -19415,22 +19664,22 @@ fun BuyerProfileMainContent(
                                 viewModel.updateUserProfile(name, phone, email, location, bio)
                             }
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = PrimaryGreen),
+                        colors = ButtonDefaults.buttonColors(containerColor = SavPurple),
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(48.dp)
                             .testTag("save_profile_button"),
                         shape = RoundedCornerShape(10.dp)
                     ) {
-                        Text("Save Profile Changes", fontWeight = FontWeight.Bold, color = Color.White)
+                        Text("Save Profile Changes", style = AppTypography.button.copy(color = SurfaceWhite))
                     }
                 }
             }
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-                border = BorderStroke(1.dp, BorderSlate100),
+                colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                border = BorderStroke(1.dp, NeutralLightBorder),
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Column(
@@ -19438,15 +19687,12 @@ fun BuyerProfileMainContent(
                     verticalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
                     Text(
-                        text = "🔐 Security & Authentication",
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = TextSlate800
+                        text = "Security & Authentication",
+                        style = AppTypography.h3.copy(fontFamily = SoraFamily, fontSize = 15.sp, color = Charcoal)
                     )
                     Text(
                         text = "Update your 4-digit quick-entry authentication PIN used to open this app secure sessions.",
-                        fontSize = 11.sp,
-                        color = TextSlate500
+                        style = AppTypography.caption.copy(color = CharcoalSecondary, fontSize = 11.sp)
                     )
 
                     OutlinedTextField(
@@ -19457,10 +19703,21 @@ fun BuyerProfileMainContent(
                             }
                         },
                         label = { Text("New 4-Digit Security PIN") },
-                        leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = PrimaryGreen) },
+                        leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = SavPurple) },
                         modifier = Modifier.fillMaxWidth().testTag("profile_pin_input"),
                         shape = RoundedCornerShape(10.dp),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword)
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedContainerColor = SurfaceWhite,
+                            unfocusedContainerColor = SurfaceWhite,
+                            focusedBorderColor = SavPurple,
+                            unfocusedBorderColor = NeutralLightBorder,
+                            focusedTextColor = Charcoal,
+                            unfocusedTextColor = Charcoal,
+                            focusedLabelColor = SavPurple,
+                            unfocusedLabelColor = CharcoalSecondary,
+                            cursorColor = SavPurple
+                        )
                     )
 
                     Button(
@@ -19472,8 +19729,8 @@ fun BuyerProfileMainContent(
                         },
                         enabled = newPin.length == 4,
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = PrimaryGreen,
-                            disabledContainerColor = PrimaryGreen.copy(alpha = 0.4f)
+                            containerColor = SavPurple,
+                            disabledContainerColor = SavPurple.copy(alpha = 0.4f)
                         ),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -19481,15 +19738,15 @@ fun BuyerProfileMainContent(
                             .testTag("save_pin_button"),
                         shape = RoundedCornerShape(10.dp)
                     ) {
-                        Text("Update Security PIN", fontWeight = FontWeight.Bold, color = Color.White)
+                        Text("Update Security PIN", style = AppTypography.button.copy(color = SurfaceWhite))
                     }
                 }
             }
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-                border = BorderStroke(1.dp, BorderSlate100),
+                colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                border = BorderStroke(1.dp, NeutralLightBorder),
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Column(
@@ -19497,18 +19754,22 @@ fun BuyerProfileMainContent(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
-                        text = "🔔 Notification Preferences",
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = TextSlate800
+                        text = "Notification Preferences",
+                        style = AppTypography.h3.copy(fontFamily = SoraFamily, fontSize = 15.sp, color = Charcoal)
                     )
                     Text(
                         text = "Configure your alert settings for order tracking, pricing changes, and cooperative cycles.",
-                        fontSize = 11.sp,
-                        color = TextSlate500
+                        style = AppTypography.caption.copy(color = CharcoalSecondary, fontSize = 11.sp)
                     )
 
-                    HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp), color = BorderSlate100)
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp), color = NeutralLightBorder)
+
+                    val switchColors = SwitchDefaults.colors(
+                        checkedThumbColor = SurfaceWhite,
+                        checkedTrackColor = SavPurple,
+                        uncheckedThumbColor = SurfaceWhite,
+                        uncheckedTrackColor = NeutralLightBorder
+                    )
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -19518,14 +19779,11 @@ fun BuyerProfileMainContent(
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = "Order & Delivery Tracking",
-                                fontSize = 13.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = TextSlate800
+                                style = AppTypography.bodySmall.copy(fontWeight = FontWeight.Bold, color = Charcoal, fontSize = 13.sp)
                             )
                             Text(
                                 text = "Live dispatch updates for food orders",
-                                fontSize = 11.sp,
-                                color = TextSlate500
+                                style = AppTypography.caption.copy(color = CharcoalSecondary, fontSize = 11.sp)
                             )
                         }
                         Switch(
@@ -19534,17 +19792,12 @@ fun BuyerProfileMainContent(
                                 orderUpdatesEnabled = isChecked
                                 sharedPrefs.edit().putBoolean("order_updates", isChecked).apply()
                             },
-                            colors = SwitchDefaults.colors(
-                                checkedThumbColor = Color.White,
-                                checkedTrackColor = PrimaryGreen,
-                                uncheckedThumbColor = Color.White,
-                                uncheckedTrackColor = Color(0xFFCBD5E1)
-                            ),
+                            colors = switchColors,
                             modifier = Modifier.testTag("switch_order_updates")
                         )
                     }
 
-                    HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp), color = BorderSlate100)
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp), color = NeutralLightBorder)
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -19554,14 +19807,11 @@ fun BuyerProfileMainContent(
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = "Cooperative Savings Goals",
-                                fontSize = 13.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = TextSlate800
+                                style = AppTypography.bodySmall.copy(fontWeight = FontWeight.Bold, color = Charcoal, fontSize = 13.sp)
                             )
                             Text(
                                 text = "Reminders about cycle contributions",
-                                fontSize = 11.sp,
-                                color = TextSlate500
+                                style = AppTypography.caption.copy(color = CharcoalSecondary, fontSize = 11.sp)
                             )
                         }
                         Switch(
@@ -19570,17 +19820,12 @@ fun BuyerProfileMainContent(
                                 savingsRemindersEnabled = isChecked
                                 sharedPrefs.edit().putBoolean("savings_reminders", isChecked).apply()
                             },
-                            colors = SwitchDefaults.colors(
-                                checkedThumbColor = Color.White,
-                                checkedTrackColor = PrimaryGreen,
-                                uncheckedThumbColor = Color.White,
-                                uncheckedTrackColor = Color(0xFFCBD5E1)
-                            ),
+                            colors = switchColors,
                             modifier = Modifier.testTag("switch_savings_reminders")
                         )
                     }
 
-                    HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp), color = BorderSlate100)
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp), color = NeutralLightBorder)
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -19590,14 +19835,11 @@ fun BuyerProfileMainContent(
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = "Market Price Drops",
-                                fontSize = 13.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = TextSlate800
+                                style = AppTypography.bodySmall.copy(fontWeight = FontWeight.Bold, color = Charcoal, fontSize = 13.sp)
                             )
                             Text(
                                 text = "Alerts on saved list price reductions",
-                                fontSize = 11.sp,
-                                color = TextSlate500
+                                style = AppTypography.caption.copy(color = CharcoalSecondary, fontSize = 11.sp)
                             )
                         }
                         Switch(
@@ -19606,12 +19848,7 @@ fun BuyerProfileMainContent(
                                 promotionalAlertsEnabled = isChecked
                                 sharedPrefs.edit().putBoolean("promotional_alerts", isChecked).apply()
                             },
-                            colors = SwitchDefaults.colors(
-                                checkedThumbColor = Color.White,
-                                checkedTrackColor = PrimaryGreen,
-                                uncheckedThumbColor = Color.White,
-                                uncheckedTrackColor = Color(0xFFCBD5E1)
-                            ),
+                            colors = switchColors,
                             modifier = Modifier.testTag("switch_price_alerts")
                         )
                     }
@@ -19620,8 +19857,8 @@ fun BuyerProfileMainContent(
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-                border = BorderStroke(1.dp, BorderSlate100),
+                colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                border = BorderStroke(1.dp, NeutralLightBorder),
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Row(
@@ -19635,13 +19872,13 @@ fun BuyerProfileMainContent(
                         modifier = Modifier
                             .size(40.dp)
                             .clip(CircleShape)
-                            .background(PrimaryGreen.copy(alpha = 0.12f)),
+                            .background(SavPurple.copy(alpha = 0.12f)),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             imageVector = Icons.Default.Palette,
                             contentDescription = null,
-                            tint = PrimaryGreen,
+                            tint = SavPurple,
                             modifier = Modifier.size(22.dp)
                         )
                     }
@@ -19650,35 +19887,31 @@ fun BuyerProfileMainContent(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
                                 text = "Design System Showcase",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = TextSlate800
+                                style = AppTypography.bodySmall.copy(fontFamily = SoraFamily, fontWeight = FontWeight.Bold, color = Charcoal, fontSize = 14.sp)
                             )
                             Spacer(modifier = Modifier.width(6.dp))
                             Box(
                                 modifier = Modifier
                                     .clip(CircleShape)
-                                    .background(SecondaryOrange.copy(alpha = 0.15f))
+                                    .background(WarmCream)
+                                    .border(1.dp, NeutralLightBorder, CircleShape)
                                     .padding(horizontal = 6.dp, vertical = 2.dp)
                             ) {
                                 Text(
                                     text = "Tokens & UI",
-                                    fontSize = 9.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = SecondaryOrange
+                                    style = AppTypography.caption.copy(fontSize = 9.sp, fontWeight = FontWeight.Bold, color = SavPurple)
                                 )
                             }
                         }
                         Text(
                             text = "Preview buttons, cards, inputs, tokens in Light/Dark mode",
-                            fontSize = 11.sp,
-                            color = TextSlate500
+                            style = AppTypography.caption.copy(color = CharcoalSecondary, fontSize = 11.sp)
                         )
                     }
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                         contentDescription = null,
-                        tint = TextSlate400,
+                        tint = CharcoalSecondary,
                         modifier = Modifier.size(18.dp)
                     )
                 }
@@ -19686,8 +19919,8 @@ fun BuyerProfileMainContent(
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = SurfaceBg),
-                border = BorderStroke(1.dp, Color(0xFFFEE2E2)),
+                colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+                border = BorderStroke(1.dp, StatusErrorLight.copy(alpha = 0.3f)),
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Column(
@@ -19696,16 +19929,16 @@ fun BuyerProfileMainContent(
                 ) {
                     Button(
                         onClick = onLogoutClick,
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEF4444)),
+                        colors = ButtonDefaults.buttonColors(containerColor = StatusErrorLight),
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(48.dp)
                             .testTag("logout_button"),
                         shape = RoundedCornerShape(10.dp)
                     ) {
-                        Icon(imageVector = Icons.Default.ExitToApp, contentDescription = null, tint = Color.White)
+                        Icon(imageVector = Icons.Default.ExitToApp, contentDescription = null, tint = SurfaceWhite)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Log Out of Cooperative Hub", fontWeight = FontWeight.Bold, color = Color.White)
+                        Text("Log Out of Cooperative Hub", style = AppTypography.button.copy(color = SurfaceWhite))
                     }
                 }
             }

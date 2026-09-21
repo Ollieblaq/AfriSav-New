@@ -2,7 +2,6 @@ package com.example.ui.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -25,8 +24,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
@@ -40,12 +39,34 @@ import com.example.ui.defaultTextFieldColors
 import com.example.ui.theme.*
 
 // ==============================================================================
-// 1. BUTTONS (Primary, Secondary, Tertiary, Accent, Icon)
+// AfriSav Brand Bible (Edition One) Shared Component Library
 // ==============================================================================
 
 /**
- * Primary action button: Nigerian emerald green container, white bold text,
- * 48dp minimum touch target, rounded 12dp corners.
+ * Surface Ground descriptor for the AfriSav Button Rule:
+ * - LIGHT: White (#FFFFFF) or Warm Cream (#FFF8EA) ground
+ *          -> Sav Purple action button (#5B21B6), White label (#FFFFFF) (8.98:1 contrast)
+ * - DARK:  Sav Purple (#5B21B6) or Deep Plum (#32105F) ground
+ *          -> Harvest Lime action button (#A3E635), Charcoal label (#171717) (11.89:1 contrast)
+ */
+enum class SurfaceGround {
+    LIGHT,
+    DARK
+}
+
+// ==============================================================================
+// 1. BUTTONS (Brand Bible Specifications)
+// Metrics: 52px tall, 12px radius, Jakarta 700 at 15px, sentence case.
+// ==============================================================================
+
+/**
+ * Primary action button:
+ * Follows the AfriSav Button Rule strictly:
+ * - White/Warm Cream ground -> Sav Purple container (#5B21B6), White label (#FFFFFF)
+ * - Purple/Deep Plum ground -> Harvest Lime container (#A3E635), Charcoal label (#171717)
+ * Hover: Purple 600 (#7C3AED). Pressed: Deep Plum (#32105F).
+ * Disabled: 38% opacity, no colour change.
+ * Buttons are sentence case ("Start saving," not "START SAVING").
  */
 @Composable
 fun AfriSavPrimaryButton(
@@ -53,31 +74,44 @@ fun AfriSavPrimaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    containerColor: Color = PrimaryGreen,
-    contentColor: Color = Color.White,
+    ground: SurfaceGround = if (isDark) SurfaceGround.DARK else SurfaceGround.LIGHT,
+    containerColor: Color? = null,
+    contentColor: Color? = null,
     leadingIcon: ImageVector? = null,
     trailingIcon: ImageVector? = null,
     isLoading: Boolean = false,
     fullWidth: Boolean = true
 ) {
+    val resolvedContainerColor = containerColor ?: when (ground) {
+        SurfaceGround.DARK -> HarvestLime
+        SurfaceGround.LIGHT -> SavPurple
+    }
+
+    val resolvedContentColor = contentColor ?: when (ground) {
+        SurfaceGround.DARK -> Charcoal
+        SurfaceGround.LIGHT -> White
+    }
+
+    val formattedText = AppFormatters.toSentenceCase(text)
+
     Button(
         onClick = onClick,
         modifier = modifier
             .then(if (fullWidth) Modifier.fillMaxWidth() else Modifier)
-            .heightIn(min = 48.dp),
+            .heightIn(min = 52.dp),
         enabled = enabled && !isLoading,
-        shape = AppShapes.button,
+        shape = AppShapes.button, // 12px radius
         colors = ButtonDefaults.buttonColors(
-            containerColor = containerColor,
-            contentColor = contentColor,
-            disabledContainerColor = containerColor.copy(alpha = 0.38f),
-            disabledContentColor = contentColor.copy(alpha = 0.7f)
+            containerColor = resolvedContainerColor,
+            contentColor = resolvedContentColor,
+            disabledContainerColor = resolvedContainerColor.copy(alpha = 0.38f),
+            disabledContentColor = resolvedContentColor.copy(alpha = 0.38f)
         ),
-        contentPadding = PaddingValues(horizontal = AppSpacing.lg, vertical = AppSpacing.md)
+        contentPadding = PaddingValues(horizontal = AppSpacing.xl, vertical = AppSpacing.md)
     ) {
         if (isLoading) {
             CircularProgressIndicator(
-                color = contentColor,
+                color = resolvedContentColor,
                 strokeWidth = 2.dp,
                 modifier = Modifier.size(20.dp)
             )
@@ -90,23 +124,23 @@ fun AfriSavPrimaryButton(
                     Icon(
                         imageVector = leadingIcon,
                         contentDescription = null,
-                        modifier = Modifier.size(AppIconSize.md),
-                        tint = contentColor
+                        modifier = Modifier.size(AppIconSize.lg),
+                        tint = resolvedContentColor
                     )
                     Spacer(modifier = Modifier.width(AppSpacing.sm))
                 }
                 Text(
-                    text = text,
-                    style = AppTypography.label.copy(fontWeight = FontWeight.SemiBold),
-                    color = contentColor
+                    text = formattedText,
+                    style = AppTypography.button,
+                    color = resolvedContentColor
                 )
                 if (trailingIcon != null) {
                     Spacer(modifier = Modifier.width(AppSpacing.sm))
                     Icon(
                         imageVector = trailingIcon,
                         contentDescription = null,
-                        modifier = Modifier.size(AppIconSize.md),
-                        tint = contentColor
+                        modifier = Modifier.size(AppIconSize.lg),
+                        tint = resolvedContentColor
                     )
                 }
             }
@@ -115,7 +149,11 @@ fun AfriSavPrimaryButton(
 }
 
 /**
- * Secondary button: Crisp 1px border, surface background, high-contrast text.
+ * Secondary button:
+ * Same metrics (52px tall, 12px radius, Jakarta 700 at 15px, sentence case).
+ * Transparent fill, 1.5px border in the ink colour of its surface.
+ * - On light ground: Charcoal (#171717) border and label
+ * - On dark/plum ground: Purple 300 (#C4B5FD) or White border and label
  */
 @Composable
 fun AfriSavSecondaryButton(
@@ -123,52 +161,33 @@ fun AfriSavSecondaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    ground: SurfaceGround = if (isDark) SurfaceGround.DARK else SurfaceGround.LIGHT,
     leadingIcon: ImageVector? = null,
     trailingIcon: ImageVector? = null,
     fullWidth: Boolean = true
 ) {
-    AfriSavOutlinedButton(
-        text = text,
-        onClick = onClick,
-        modifier = modifier,
-        enabled = enabled,
-        leadingIcon = leadingIcon,
-        trailingIcon = trailingIcon,
-        fullWidth = fullWidth
-    )
-}
+    val inkColor = when (ground) {
+        SurfaceGround.DARK -> Purple300
+        SurfaceGround.LIGHT -> Charcoal
+    }
 
-/**
- * Outlined button: Standardized outlined button token.
- */
-@Composable
-fun AfriSavOutlinedButton(
-    text: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    borderColor: Color = BorderSlate100,
-    containerColor: Color = SurfaceBg,
-    contentColor: Color = TextDark,
-    leadingIcon: ImageVector? = null,
-    trailingIcon: ImageVector? = null,
-    fullWidth: Boolean = true
-) {
+    val formattedText = AppFormatters.toSentenceCase(text)
+
     OutlinedButton(
         onClick = onClick,
         modifier = modifier
             .then(if (fullWidth) Modifier.fillMaxWidth() else Modifier)
-            .heightIn(min = 48.dp),
+            .heightIn(min = 52.dp),
         enabled = enabled,
-        shape = AppShapes.button,
-        border = BorderStroke(1.dp, borderColor),
+        shape = AppShapes.button, // 12px radius
+        border = BorderStroke(1.5.dp, if (enabled) inkColor else inkColor.copy(alpha = 0.38f)),
         colors = ButtonDefaults.outlinedButtonColors(
-            containerColor = containerColor,
-            contentColor = contentColor,
-            disabledContainerColor = containerColor.copy(alpha = 0.5f),
-            disabledContentColor = TextSlate400
+            containerColor = Color.Transparent,
+            contentColor = inkColor,
+            disabledContainerColor = Color.Transparent,
+            disabledContentColor = inkColor.copy(alpha = 0.38f)
         ),
-        contentPadding = PaddingValues(horizontal = AppSpacing.lg, vertical = AppSpacing.md)
+        contentPadding = PaddingValues(horizontal = AppSpacing.xl, vertical = AppSpacing.md)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -178,23 +197,91 @@ fun AfriSavOutlinedButton(
                 Icon(
                     imageVector = leadingIcon,
                     contentDescription = null,
-                    modifier = Modifier.size(AppIconSize.md),
-                    tint = contentColor
+                    modifier = Modifier.size(AppIconSize.lg),
+                    tint = inkColor
                 )
                 Spacer(modifier = Modifier.width(AppSpacing.sm))
             }
             Text(
-                text = text,
-                style = AppTypography.label.copy(fontWeight = FontWeight.SemiBold),
-                color = contentColor
+                text = formattedText,
+                style = AppTypography.button,
+                color = inkColor
             )
             if (trailingIcon != null) {
                 Spacer(modifier = Modifier.width(AppSpacing.sm))
                 Icon(
                     imageVector = trailingIcon,
                     contentDescription = null,
-                    modifier = Modifier.size(AppIconSize.md),
-                    tint = contentColor
+                    modifier = Modifier.size(AppIconSize.lg),
+                    tint = inkColor
+                )
+            }
+        }
+    }
+}
+
+/**
+ * Outlined button: Alias conforming to secondary button specifications.
+ */
+@Composable
+fun AfriSavOutlinedButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    borderColor: Color? = null,
+    containerColor: Color = Color.Transparent,
+    contentColor: Color? = null,
+    leadingIcon: ImageVector? = null,
+    trailingIcon: ImageVector? = null,
+    fullWidth: Boolean = true
+) {
+    val defaultInk = if (isDark) Purple300 else Charcoal
+    val resolvedBorder = borderColor ?: defaultInk
+    val resolvedContent = contentColor ?: defaultInk
+    val formattedText = AppFormatters.toSentenceCase(text)
+
+    OutlinedButton(
+        onClick = onClick,
+        modifier = modifier
+            .then(if (fullWidth) Modifier.fillMaxWidth() else Modifier)
+            .heightIn(min = 52.dp),
+        enabled = enabled,
+        shape = AppShapes.button,
+        border = BorderStroke(1.5.dp, if (enabled) resolvedBorder else resolvedBorder.copy(alpha = 0.38f)),
+        colors = ButtonDefaults.outlinedButtonColors(
+            containerColor = containerColor,
+            contentColor = resolvedContent,
+            disabledContainerColor = containerColor,
+            disabledContentColor = resolvedContent.copy(alpha = 0.38f)
+        ),
+        contentPadding = PaddingValues(horizontal = AppSpacing.xl, vertical = AppSpacing.md)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            if (leadingIcon != null) {
+                Icon(
+                    imageVector = leadingIcon,
+                    contentDescription = null,
+                    modifier = Modifier.size(AppIconSize.lg),
+                    tint = resolvedContent
+                )
+                Spacer(modifier = Modifier.width(AppSpacing.sm))
+            }
+            Text(
+                text = formattedText,
+                style = AppTypography.button,
+                color = resolvedContent
+            )
+            if (trailingIcon != null) {
+                Spacer(modifier = Modifier.width(AppSpacing.sm))
+                Icon(
+                    imageVector = trailingIcon,
+                    contentDescription = null,
+                    modifier = Modifier.size(AppIconSize.lg),
+                    tint = resolvedContent
                 )
             }
         }
@@ -211,16 +298,18 @@ fun AfriSavTertiaryButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     leadingIcon: ImageVector? = null,
-    color: Color = PrimaryGreen
+    color: Color = if (isDark) Purple300 else SavPurple
 ) {
+    val formattedText = AppFormatters.toSentenceCase(text)
+
     TextButton(
         onClick = onClick,
-        modifier = modifier.heightIn(min = 40.dp),
+        modifier = modifier.heightIn(min = 44.dp),
         enabled = enabled,
         shape = AppShapes.button,
         colors = ButtonDefaults.textButtonColors(
             contentColor = color,
-            disabledContentColor = TextSlate400
+            disabledContentColor = color.copy(alpha = 0.38f)
         ),
         contentPadding = PaddingValues(horizontal = AppSpacing.md, vertical = AppSpacing.xs)
     ) {
@@ -235,68 +324,10 @@ fun AfriSavTertiaryButton(
                 Spacer(modifier = Modifier.width(AppSpacing.xs))
             }
             Text(
-                text = text,
-                style = AppTypography.label.copy(fontWeight = FontWeight.SemiBold),
+                text = formattedText,
+                style = AppTypography.button,
                 color = color
             )
-        }
-    }
-}
-
-/**
- * Orange highlight button: Used for food savings goals, alerts, or key market actions.
- */
-@Composable
-fun AfriSavOrangeButton(
-    text: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    leadingIcon: ImageVector? = null,
-    isLoading: Boolean = false,
-    fullWidth: Boolean = true
-) {
-    Button(
-        onClick = onClick,
-        modifier = modifier
-            .then(if (fullWidth) Modifier.fillMaxWidth() else Modifier)
-            .heightIn(min = 48.dp),
-        enabled = enabled && !isLoading,
-        shape = AppShapes.button,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = SecondaryOrange,
-            contentColor = Color.White,
-            disabledContainerColor = SecondaryOrange.copy(alpha = 0.38f),
-            disabledContentColor = Color.White.copy(alpha = 0.7f)
-        ),
-        contentPadding = PaddingValues(horizontal = AppSpacing.lg, vertical = AppSpacing.md)
-    ) {
-        if (isLoading) {
-            CircularProgressIndicator(
-                color = Color.White,
-                strokeWidth = 2.dp,
-                modifier = Modifier.size(20.dp)
-            )
-        } else {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                if (leadingIcon != null) {
-                    Icon(
-                        imageVector = leadingIcon,
-                        contentDescription = null,
-                        modifier = Modifier.size(AppIconSize.md),
-                        tint = Color.White
-                    )
-                    Spacer(modifier = Modifier.width(AppSpacing.sm))
-                }
-                Text(
-                    text = text,
-                    style = AppTypography.label.copy(fontWeight = FontWeight.SemiBold),
-                    color = Color.White
-                )
-            }
         }
     }
 }
@@ -317,13 +348,13 @@ fun AfriSavIconButton(
 ) {
     Box(
         modifier = modifier
-            .size(48.dp)
+            .size(AppIconSize.xxl) // 48dp minimum touch target
             .then(
                 if (containerColor != Color.Transparent) Modifier.clip(CircleShape).background(containerColor)
                 else Modifier
             )
             .then(
-                if (borderColor != null) Modifier.border(1.dp, borderColor, CircleShape)
+                if (borderColor != null) Modifier.border(1.5.dp, borderColor, CircleShape)
                 else Modifier
             )
             .clickable(onClick = onClick),
@@ -339,26 +370,32 @@ fun AfriSavIconButton(
 }
 
 // ==============================================================================
-// 2. CARDS (Standard, Elevated, Balance, Clickable)
+// 2. CARDS (Brand Bible Specifications)
+// White on Cream, 20px radius, 20px padding, 1px #E8DCC6 border.
+// Shadow only when interactive: 0 8px 24px -16px rgba(50,16,95,.28).
+// Rule: Use either a border OR a shadow on an element, never both.
 // ==============================================================================
 
 /**
- * Clean fintech card: Neutral white/slate container, crisp 1px border, 16dp radius.
+ * Standard non-interactive card:
+ * White on Cream, 20px radius, 20px padding, 1px #E8DCC6 border, 0 elevation.
  */
 @Composable
 fun AfriSavCard(
     modifier: Modifier = Modifier,
     containerColor: Color = SurfaceBg,
-    borderColor: Color = BorderSlate100,
-    shape: RoundedCornerShape = AppShapes.card,
-    contentPadding: PaddingValues = PaddingValues(AppSpacing.lg),
+    borderColor: Color = if (isDark) CardBorderDark else CardBorderLight,
+    shape: RoundedCornerShape = AppShapes.card, // 20px radius
+    contentPadding: PaddingValues = PaddingValues(AppSpacing.cardPadding), // 20px padding
+    ground: SurfaceGround = if (isDark) SurfaceGround.DARK else SurfaceGround.LIGHT,
     content: @Composable ColumnScope.() -> Unit
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = shape,
         colors = CardDefaults.cardColors(containerColor = containerColor),
-        border = BorderStroke(1.dp, borderColor)
+        border = BorderStroke(1.dp, borderColor),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(
             modifier = Modifier
@@ -370,54 +407,27 @@ fun AfriSavCard(
 }
 
 /**
- * Elevated card with subtle shadow for prominent modules.
- */
-@Composable
-fun AfriSavElevatedCard(
-    modifier: Modifier = Modifier,
-    containerColor: Color = SurfaceBg,
-    borderColor: Color = BorderSlate100,
-    shape: RoundedCornerShape = AppShapes.card,
-    contentPadding: PaddingValues = PaddingValues(AppSpacing.lg),
-    content: @Composable ColumnScope.() -> Unit
-) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .shadow(elevation = AppElevation.low, shape = shape, spotColor = Color.Black.copy(alpha = 0.05f)),
-        shape = shape,
-        colors = CardDefaults.cardColors(containerColor = containerColor),
-        border = BorderStroke(1.dp, borderColor)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(contentPadding),
-            content = content
-        )
-    }
-}
-
-/**
- * Clickable card with ripple and clean border.
+ * Interactive Clickable card:
+ * 20px radius, 20px padding, soft shadow ONLY (no border, per Brand Bible rule).
  */
 @Composable
 fun AfriSavClickableCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     containerColor: Color = SurfaceBg,
-    borderColor: Color = BorderSlate100,
     shape: RoundedCornerShape = AppShapes.card,
-    contentPadding: PaddingValues = PaddingValues(AppSpacing.lg),
+    contentPadding: PaddingValues = PaddingValues(AppSpacing.cardPadding),
     content: @Composable RowScope.() -> Unit
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
+            .afriSavSoftShadow(shape = shape) // Soft shadow, NO border
             .clickable(onClick = onClick),
         shape = shape,
         colors = CardDefaults.cardColors(containerColor = containerColor),
-        border = BorderStroke(1.dp, borderColor)
+        border = null,
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Row(
             modifier = Modifier
@@ -430,9 +440,113 @@ fun AfriSavClickableCard(
 }
 
 /**
- * Dedicated Fintech Balance Card: Prominently showcases balances with
- * high-contrast figures, currency symbol, and optional action buttons.
+ * Dedicated Fintech Balance Card:
+ * Prominently showcases balance using Sora 800 tabular figures with
+ * high-contrast styling and the Button Rule.
  */
+@Composable
+fun AfriSavBalanceCard(
+    title: String,
+    amount: Double,
+    modifier: Modifier = Modifier,
+    subtitle: String? = null,
+    badgeText: String? = null,
+    onPrimaryAction: (() -> Unit)? = null,
+    primaryActionText: String = "Add Money",
+    onSecondaryAction: (() -> Unit)? = null,
+    secondaryActionText: String = "Withdraw",
+    ground: SurfaceGround = if (isDark) SurfaceGround.DARK else SurfaceGround.LIGHT
+) {
+    val cardBg = when (ground) {
+        SurfaceGround.DARK -> DeepPlum
+        SurfaceGround.LIGHT -> White
+    }
+    val cardBorder = when (ground) {
+        SurfaceGround.DARK -> CardBorderDark
+        SurfaceGround.LIGHT -> CardBorderLight
+    }
+
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = AppShapes.card, // 20px radius
+        colors = CardDefaults.cardColors(containerColor = cardBg),
+        border = BorderStroke(1.dp, cardBorder),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(AppSpacing.cardPadding)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = title,
+                    style = AppTypography.bodyMedium,
+                    color = if (ground == SurfaceGround.DARK) Purple300 else TextSlate500
+                )
+                if (badgeText != null) {
+                    AfriSavBadge(
+                        text = badgeText,
+                        type = AfriSavBadgeType.INFO,
+                        icon = Icons.Default.Info
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(AppSpacing.sm))
+
+            AfriSavAmountDisplay(
+                amount = amount,
+                color = if (ground == SurfaceGround.DARK) White else Charcoal,
+                size = AmountDisplaySize.LARGE
+            )
+
+            if (subtitle != null) {
+                Spacer(modifier = Modifier.height(AppSpacing.xs))
+                Text(
+                    text = subtitle,
+                    style = AppTypography.small,
+                    color = if (ground == SurfaceGround.DARK) Purple300 else TextSlate400
+                )
+            }
+
+            if (onPrimaryAction != null || onSecondaryAction != null) {
+                Spacer(modifier = Modifier.height(AppSpacing.xl))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(AppSpacing.md)
+                ) {
+                    if (onPrimaryAction != null) {
+                        Box(modifier = Modifier.weight(1f)) {
+                            AfriSavPrimaryButton(
+                                text = primaryActionText,
+                                onClick = onPrimaryAction,
+                                ground = ground,
+                                fullWidth = true
+                            )
+                        }
+                    }
+                    if (onSecondaryAction != null) {
+                        Box(modifier = Modifier.weight(1f)) {
+                            AfriSavSecondaryButton(
+                                text = secondaryActionText,
+                                onClick = onSecondaryAction,
+                                ground = ground,
+                                fullWidth = true
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Backward-compatible overload accepting formatted string amount
 @Composable
 fun AfriSavBalanceCard(
     title: String,
@@ -445,91 +559,164 @@ fun AfriSavBalanceCard(
     onSecondaryAction: (() -> Unit)? = null,
     secondaryActionText: String = "Withdraw"
 ) {
-    AfriSavCard(
+    val numericAmount = amount.replace("[^0.0-9]".toRegex(), "").toDoubleOrNull() ?: 0.0
+    AfriSavBalanceCard(
+        title = title,
+        amount = numericAmount,
         modifier = modifier,
-        containerColor = SurfaceBg,
-        borderColor = BorderSlate100,
-        shape = AppShapes.xl,
-        contentPadding = PaddingValues(AppSpacing.xl)
-    ) {
+        subtitle = subtitle,
+        badgeText = badgeText,
+        onPrimaryAction = onPrimaryAction,
+        primaryActionText = primaryActionText,
+        onSecondaryAction = onSecondaryAction,
+        secondaryActionText = secondaryActionText
+    )
+}
+
+// ==============================================================================
+// 3. PROGRESS BARS (Brand Bible Specifications)
+// 10px pill. Track: Purple 100 (light) / Purple 700 (dark).
+// Fill: Sav Purple (light) / Harvest Lime (dark).
+// Always paired with a figure and a percentage — never shown alone.
+// ==============================================================================
+
+@Composable
+fun AfriSavProgressBar(
+    progress: Float, // 0.0f to 1.0f
+    modifier: Modifier = Modifier,
+    label: String? = null,
+    figure: String? = null,
+    percentage: Double? = null,
+    ground: SurfaceGround = if (isDark) SurfaceGround.DARK else SurfaceGround.LIGHT
+) {
+    val clampedProgress = progress.coerceIn(0f, 1f)
+    val calculatedPercentage = percentage ?: (clampedProgress * 100.0)
+
+    val trackColor = when (ground) {
+        SurfaceGround.DARK -> Purple700
+        SurfaceGround.LIGHT -> Purple100
+    }
+    val fillColor = when (ground) {
+        SurfaceGround.DARK -> HarvestLime
+        SurfaceGround.LIGHT -> SavPurple
+    }
+    val textColor = when (ground) {
+        SurfaceGround.DARK -> White
+        SurfaceGround.LIGHT -> Charcoal
+    }
+    val subTextColor = when (ground) {
+        SurfaceGround.DARK -> Purple300
+        SurfaceGround.LIGHT -> TextSlate500
+    }
+
+    Column(modifier = modifier.fillMaxWidth()) {
+        // Pairing: Always shown with a figure and a percentage
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = title,
-                style = AppTypography.label,
-                color = TextSlate500
-            )
-            if (badgeText != null) {
-                AfriSavBadge(
-                    text = badgeText,
-                    type = AfriSavBadgeType.BRAND_GREEN
-                )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                if (label != null) {
+                    Text(
+                        text = label,
+                        style = AppTypography.small,
+                        color = subTextColor
+                    )
+                    Spacer(modifier = Modifier.width(AppSpacing.xs))
+                }
+                if (figure != null) {
+                    Text(
+                        text = figure,
+                        style = AppTypography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                        color = textColor
+                    )
+                }
             }
-        }
-
-        Spacer(modifier = Modifier.height(AppSpacing.sm))
-
-        Text(
-            text = amount,
-            style = AppTypography.balanceLarge,
-            color = TextDark
-        )
-
-        if (subtitle != null) {
-            Spacer(modifier = Modifier.height(AppSpacing.xs))
             Text(
-                text = subtitle,
-                style = AppTypography.caption,
-                color = TextSlate400
+                text = AppFormatters.formatPercentage(calculatedPercentage),
+                style = AppTypography.small.copy(fontWeight = FontWeight.Bold),
+                color = if (ground == SurfaceGround.DARK) HarvestLime else SavPurple
             )
         }
 
-        if (onPrimaryAction != null || onSecondaryAction != null) {
-            Spacer(modifier = Modifier.height(AppSpacing.lg))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(AppSpacing.md)
-            ) {
-                if (onPrimaryAction != null) {
-                    Box(modifier = Modifier.weight(1f)) {
-                        AfriSavPrimaryButton(
-                            text = primaryActionText,
-                            onClick = onPrimaryAction,
-                            fullWidth = true
-                        )
-                    }
-                }
-                if (onSecondaryAction != null) {
-                    Box(modifier = Modifier.weight(1f)) {
-                        AfriSavSecondaryButton(
-                            text = secondaryActionText,
-                            onClick = onSecondaryAction,
-                            fullWidth = true
-                        )
-                    }
-                }
-            }
+        Spacer(modifier = Modifier.height(AppSpacing.xs))
+
+        // 10px pill progress track
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(10.dp)
+                .clip(AppShapes.pill)
+                .background(trackColor)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth(clampedProgress)
+                    .clip(AppShapes.pill)
+                    .background(fillColor)
+            )
         }
     }
 }
 
 // ==============================================================================
-// 3. INPUT FIELDS
+// 4. AMOUNT DISPLAY (Brand Bible Specifications)
+// Sora 800, tabular numerals, ₦ sign at the same size as digits (never superscript).
 // ==============================================================================
 
-/**
- * Standardized Outlined Text Field with 12dp corner radius, unified tokens,
- * supporting text, and light/dark mode responsive colors.
- */
+enum class AmountDisplaySize {
+    LARGE,   // 48sp
+    MEDIUM,  // 36sp
+    SMALL    // 24sp
+}
+
+@Composable
+fun AfriSavAmountDisplay(
+    amount: Double,
+    modifier: Modifier = Modifier,
+    size: AmountDisplaySize = AmountDisplaySize.LARGE,
+    color: Color = TextDark,
+    abbreviate: Boolean = false,
+    subtitle: String? = null
+) {
+    val textStyle = when (size) {
+        AmountDisplaySize.LARGE -> AppTypography.figureLarge
+        AmountDisplaySize.MEDIUM -> AppTypography.figureMedium
+        AmountDisplaySize.SMALL -> AppTypography.h2
+    }
+
+    val formattedAmount = AppFormatters.formatNaira(amount, abbreviate = abbreviate)
+
+    Column(modifier = modifier) {
+        Text(
+            text = formattedAmount,
+            style = textStyle,
+            color = color
+        )
+        if (subtitle != null) {
+            Spacer(modifier = Modifier.height(AppSpacing.xxs))
+            Text(
+                text = subtitle,
+                style = AppTypography.small,
+                color = if (isDark) Purple300 else TextSlate400
+            )
+        }
+    }
+}
+
+// ==============================================================================
+// 5. INPUT FIELDS (Brand Bible Specifications)
+// 52px tall, 12px radius, 1.5px border, label always visible above the field.
+// ==============================================================================
+
 @Composable
 fun AfriSavTextField(
     value: String,
     onValueChange: (String) -> Unit,
+    label: String, // Label is mandatory and always visible above the field
     modifier: Modifier = Modifier,
-    label: String? = null,
     placeholder: String? = null,
     leadingIcon: ImageVector? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
@@ -539,25 +726,34 @@ fun AfriSavTextField(
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    ground: SurfaceGround = if (isDark) SurfaceGround.DARK else SurfaceGround.LIGHT
 ) {
+    val isDarkGround = ground == SurfaceGround.DARK
+    val labelColor = if (isDarkGround) White else Charcoal
+    val borderColor = if (isDarkGround) Purple700 else CardBorderLight
+    val focusedBorderColor = if (isDarkGround) HarvestLime else SavPurple
+
     Column(modifier = modifier.fillMaxWidth()) {
-        if (label != null) {
-            Text(
-                text = label,
-                style = AppTypography.label,
-                color = TextDark,
-                modifier = Modifier.padding(bottom = AppSpacing.xs)
-            )
-        }
+        // Label always visible above the field
+        Text(
+            text = label,
+            style = AppTypography.label, // 11px Bold caps
+            color = labelColor,
+            modifier = Modifier.padding(bottom = AppSpacing.xs)
+        )
+
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 52.dp), // 52px tall specification
             enabled = enabled,
             isError = isError,
             singleLine = singleLine,
-            shape = AppShapes.input,
+            textStyle = AppTypography.body.copy(color = TextDark),
+            shape = AppShapes.input, // 12px radius
             placeholder = if (placeholder != null) {
                 { Text(text = placeholder, style = AppTypography.body, color = TextSlate400) }
             } else null,
@@ -566,8 +762,8 @@ fun AfriSavTextField(
                     Icon(
                         imageVector = leadingIcon,
                         contentDescription = null,
-                        tint = if (isError) AppColors.error else TextSlate400,
-                        modifier = Modifier.size(AppIconSize.md)
+                        tint = if (isError) SemanticErrorLight else TextSlate400,
+                        modifier = Modifier.size(AppIconSize.lg)
                     )
                 }
             } else null,
@@ -575,26 +771,43 @@ fun AfriSavTextField(
             visualTransformation = visualTransformation,
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
-            colors = defaultTextFieldColors()
-        )
-        if (isError && !errorMessage.isNullOrBlank()) {
-            Text(
-                text = errorMessage,
-                style = AppTypography.bodySmall,
-                color = AppColors.error,
-                modifier = Modifier.padding(top = AppSpacing.xs, start = AppSpacing.xs)
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = SurfaceBg,
+                unfocusedContainerColor = SurfaceBg,
+                disabledContainerColor = SurfaceBg.copy(alpha = 0.5f),
+                focusedBorderColor = focusedBorderColor,
+                unfocusedBorderColor = borderColor,
+                errorBorderColor = SemanticErrorLight,
+                cursorColor = if (isDark) HarvestLime else SavPurple
             )
+        )
+
+        if (isError && !errorMessage.isNullOrBlank()) {
+            Row(
+                modifier = Modifier.padding(top = AppSpacing.xs, start = AppSpacing.xs),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ErrorOutline,
+                    contentDescription = "Error",
+                    modifier = Modifier.size(AppIconSize.sm),
+                    tint = SemanticErrorLight
+                )
+                Spacer(modifier = Modifier.width(AppSpacing.xs))
+                Text(
+                    text = errorMessage,
+                    style = AppTypography.small,
+                    color = SemanticErrorLight
+                )
+            }
         }
     }
 }
 
 // ==============================================================================
-// 4. TOGGLES & SWITCHES
+// 6. TOGGLES & SWITCHES
 // ==============================================================================
 
-/**
- * Fintech Switch: PrimaryGreen track when checked, clean white thumb, smooth animation.
- */
 @Composable
 fun AfriSavSwitch(
     checked: Boolean,
@@ -602,27 +815,27 @@ fun AfriSavSwitch(
     modifier: Modifier = Modifier,
     enabled: Boolean = true
 ) {
+    val checkedTrackColor = if (isDark) HarvestLime else SavPurple
+    val checkedThumbColor = if (isDark) Charcoal else White
+
     Switch(
         checked = checked,
         onCheckedChange = onCheckedChange,
         modifier = modifier,
         enabled = enabled,
         colors = SwitchDefaults.colors(
-            checkedThumbColor = Color.White,
-            checkedTrackColor = PrimaryGreen,
-            checkedBorderColor = PrimaryGreen,
+            checkedThumbColor = checkedThumbColor,
+            checkedTrackColor = checkedTrackColor,
+            checkedBorderColor = checkedTrackColor,
             uncheckedThumbColor = TextSlate400,
-            uncheckedTrackColor = BorderSlate100,
-            uncheckedBorderColor = BorderSlate100,
-            disabledCheckedThumbColor = Color.White.copy(alpha = 0.6f),
-            disabledCheckedTrackColor = PrimaryGreen.copy(alpha = 0.4f)
+            uncheckedTrackColor = if (isDark) Purple900 else Purple100,
+            uncheckedBorderColor = if (isDark) Purple700 else Purple200,
+            disabledCheckedThumbColor = checkedThumbColor.copy(alpha = 0.6f),
+            disabledCheckedTrackColor = checkedTrackColor.copy(alpha = 0.38f)
         )
     )
 }
 
-/**
- * Standard row with label, optional description, and switch.
- */
 @Composable
 fun AfriSavSwitchRow(
     title: String,
@@ -649,16 +862,16 @@ fun AfriSavSwitchRow(
             if (icon != null) {
                 Box(
                     modifier = Modifier
-                        .size(36.dp)
+                        .size(40.dp)
                         .clip(CircleShape)
-                        .background(SurfaceSubtle),
+                        .background(if (isDark) DeepPlum else Purple50),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = icon,
                         contentDescription = null,
                         modifier = Modifier.size(AppIconSize.md),
-                        tint = if (checked) PrimaryGreen else TextSlate500
+                        tint = if (checked) (if (isDark) HarvestLime else SavPurple) else TextSlate500
                     )
                 }
                 Spacer(modifier = Modifier.width(AppSpacing.md))
@@ -666,14 +879,14 @@ fun AfriSavSwitchRow(
             Column {
                 Text(
                     text = title,
-                    style = AppTypography.bodyMedium,
+                    style = AppTypography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
                     color = TextDark
                 )
                 if (subtitle != null) {
                     Text(
                         text = subtitle,
-                        style = AppTypography.caption,
-                        color = TextSlate400
+                        style = AppTypography.small,
+                        color = if (isDark) Purple300 else TextSlate400
                     )
                 }
             }
@@ -687,13 +900,9 @@ fun AfriSavSwitchRow(
 }
 
 // ==============================================================================
-// 5. TABS & SEGMENTED CONTROLS
+// 7. TABS & SEGMENTED CONTROLS
 // ==============================================================================
 
-/**
- * Capsule Segmented Control (iOS / Fintech style): Soft container background
- * with a raised white active pill.
- */
 @Composable
 fun AfriSavSegmentedControl(
     items: List<String>,
@@ -704,43 +913,38 @@ fun AfriSavSegmentedControl(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(AppShapes.full)
-            .background(SurfaceSubtle)
-            .border(1.dp, BorderSlate100, AppShapes.full)
+            .clip(AppShapes.pill)
+            .background(if (isDark) DeepPlum else Purple100)
+            .border(1.dp, if (isDark) Purple800 else Purple200, AppShapes.pill)
             .padding(4.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         items.forEachIndexed { index, title ->
             val isSelected = index == selectedIndex
-            val animBg by animateColorAsState(
-                targetValue = if (isSelected) SurfaceBg else Color.Transparent,
-                animationSpec = tween(200, easing = FastOutSlowInEasing),
-                label = "segBg"
-            )
-            val textColor by animateColorAsState(
-                targetValue = if (isSelected) TextDark else TextSlate500,
-                label = "segText"
-            )
+            val activeBg = if (isDark) Purple800 else White
+            val activeText = if (isDark) White else Charcoal
+            val inactiveText = if (isDark) Purple300 else TextSlate500
 
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .clip(AppShapes.full)
-                    .background(animBg)
+                    .height(40.dp)
+                    .clip(AppShapes.pill)
+                    .background(if (isSelected) activeBg else Color.Transparent)
                     .then(
-                        if (isSelected) Modifier.shadow(elevation = 1.dp, shape = AppShapes.full)
+                        if (isSelected) Modifier.afriSavSoftShadow(AppShapes.pill)
                         else Modifier
                     )
-                    .clickable { onSelect(index) }
-                    .padding(vertical = AppSpacing.sm),
+                    .clickable { onSelect(index) },
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = title,
-                    style = AppTypography.label.copy(
+                    style = AppTypography.button.copy(
+                        fontSize = 13.sp,
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
                     ),
-                    color = textColor,
+                    color = if (isSelected) activeText else inactiveText,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -750,7 +954,8 @@ fun AfriSavSegmentedControl(
 }
 
 // ==============================================================================
-// 6. BADGES, TAGS & STATUS INDICATORS
+// 8. SEMANTIC BADGES & TAGS
+// Rule: Every semantic state must always pair colour with an icon and a word — never colour alone.
 // ==============================================================================
 
 enum class AfriSavBadgeType {
@@ -758,41 +963,51 @@ enum class AfriSavBadgeType {
     WARNING,
     ERROR,
     INFO,
-    NEUTRAL,
-    BRAND_GREEN,
-    BRAND_ORANGE
+    NEUTRAL
 }
 
-/**
- * Pill status indicator badge with soft tinted backgrounds and strong accessible text.
- */
 @Composable
 fun AfriSavBadge(
     text: String,
     type: AfriSavBadgeType,
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
-    isPill: Boolean = true
+    isPill: Boolean = true,
+    ground: SurfaceGround = if (isDark) SurfaceGround.DARK else SurfaceGround.LIGHT
 ) {
-    val dark = isDark
-    val (bgColor, contentColor) = when (type) {
-        AfriSavBadgeType.SUCCESS -> if (dark) AppColors.successBgDark to Color(0xFF4ADE80)
-                                     else AppColors.successBgLight to AppColors.success
-        AfriSavBadgeType.WARNING -> if (dark) AppColors.warningBgDark to Color(0xFFFBBF24)
-                                     else AppColors.warningBgLight to AppColors.warning
-        AfriSavBadgeType.ERROR -> if (dark) AppColors.errorBgDark to Color(0xFFF87171)
-                                   else AppColors.errorBgLight to AppColors.error
-        AfriSavBadgeType.INFO -> if (dark) AppColors.infoBgDark to Color(0xFF60A5FA)
-                                  else AppColors.infoBgLight to AppColors.info
-        AfriSavBadgeType.NEUTRAL -> if (dark) Color(0xFF334155) to Color(0xFFCBD5E1)
-                                     else Color(0xFFF1F5F9) to TextSlate500
-        AfriSavBadgeType.BRAND_GREEN -> if (dark) AppColors.brandGreenBgDark to Color(0xFF86EFAC)
-                                         else AppColors.brandGreenBgLight to PrimaryGreen
-        AfriSavBadgeType.BRAND_ORANGE -> if (dark) AppColors.brandOrangeBgDark to Color(0xFFFDBA74)
-                                          else AppColors.brandOrangeBgLight to SecondaryOrange
+    val dark = ground == SurfaceGround.DARK
+
+    // Semantic tokens paired with dedicated icons
+    val (bgColor, contentColor, defaultIcon) = when (type) {
+        AfriSavBadgeType.SUCCESS -> {
+            val bg = if (dark) DeepPlum else Color(0xFFDCFCE7)
+            val fg = if (dark) SemanticSuccessPlum else SemanticSuccessLight
+            Triple(bg, fg, Icons.Default.CheckCircle)
+        }
+        AfriSavBadgeType.WARNING -> {
+            val bg = if (dark) DeepPlum else Color(0xFFFEF3C7)
+            val fg = if (dark) SemanticWarningPlum else SemanticWarningLight
+            Triple(bg, fg, Icons.Default.Warning)
+        }
+        AfriSavBadgeType.ERROR -> {
+            val bg = if (dark) DeepPlum else Color(0xFFFEE2E2)
+            val fg = if (dark) SemanticErrorPlum else SemanticErrorLight
+            Triple(bg, fg, Icons.Default.ErrorOutline)
+        }
+        AfriSavBadgeType.INFO -> {
+            val bg = if (dark) DeepPlum else Purple100
+            val fg = if (dark) SemanticInfoPlum else SemanticInfoLight
+            Triple(bg, fg, Icons.Default.Info)
+        }
+        AfriSavBadgeType.NEUTRAL -> {
+            val bg = if (dark) Purple900 else Purple50
+            val fg = if (dark) Purple200 else Charcoal
+            Triple(bg, fg, Icons.Default.Circle)
+        }
     }
 
-    val shape = if (isPill) AppShapes.full else AppShapes.tag
+    val resolvedIcon = icon ?: defaultIcon
+    val shape = if (isPill) AppShapes.pill else AppShapes.chip
 
     Row(
         modifier = modifier
@@ -802,36 +1017,34 @@ fun AfriSavBadge(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        if (icon != null) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                modifier = Modifier.size(AppIconSize.xs),
-                tint = contentColor
-            )
-            Spacer(modifier = Modifier.width(4.dp))
-        }
+        // Colour is ALWAYS paired with an icon and a word
+        Icon(
+            imageVector = resolvedIcon,
+            contentDescription = null,
+            modifier = Modifier.size(AppIconSize.sm), // 16px icon
+            tint = contentColor
+        )
+        Spacer(modifier = Modifier.width(4.dp))
         Text(
             text = text,
-            style = AppTypography.labelSmall,
+            style = AppTypography.label, // 11px Bold caps
             color = contentColor
         )
     }
 }
 
 // ==============================================================================
-// 7. ICONS (Unified Size & Weight Scale)
+// 9. ICONS (Rounded-line, consistent 1.75px stroke at 24px)
+// Sizes: 16, 20, 24, 32px. No emoji anywhere in UI.
+// Excluded motifs: piggy bank, shopping cart, dollar/naira symbol, Africa outline, plate/fork, coin, shield.
 // ==============================================================================
 
-/**
- * Standardized icon component using unified size scale and theme colors.
- */
 @Composable
 fun AfriSavIcon(
     imageVector: ImageVector,
     contentDescription: String?,
     modifier: Modifier = Modifier,
-    size: Dp = AppIconSize.md,
+    size: Dp = AppIconSize.lg, // 24px default
     tint: Color = TextDark
 ) {
     Icon(
@@ -842,16 +1055,22 @@ fun AfriSavIcon(
     )
 }
 
-/**
- * Standardized Section Header with consistent typography, spacing, and optional action button.
- */
+// ==============================================================================
+// 10. SECTION & PAGE HEADERS
+// ==============================================================================
+
 @Composable
 fun AfriSavSectionHeader(
     title: String,
     modifier: Modifier = Modifier,
     actionText: String? = null,
-    onActionClick: (() -> Unit)? = null
+    onActionClick: (() -> Unit)? = null,
+    ground: SurfaceGround = if (isDark) SurfaceGround.DARK else SurfaceGround.LIGHT
 ) {
+    val isDarkGround = ground == SurfaceGround.DARK
+    val textColor = if (isDarkGround) White else Charcoal
+    val actionColor = if (isDarkGround) HarvestLime else SavPurple
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -861,8 +1080,8 @@ fun AfriSavSectionHeader(
     ) {
         Text(
             text = title,
-            style = AppTypography.sectionHeader,
-            color = TextDark
+            style = AppTypography.h3, // Sora 700, 20px
+            color = textColor
         )
         if (actionText != null && onActionClick != null) {
             TextButton(
@@ -870,18 +1089,15 @@ fun AfriSavSectionHeader(
                 contentPadding = PaddingValues(horizontal = AppSpacing.xs, vertical = AppSpacing.xxs)
             ) {
                 Text(
-                    text = actionText,
-                    style = AppTypography.label.copy(fontWeight = FontWeight.SemiBold),
-                    color = PrimaryGreen
+                    text = AppFormatters.toSentenceCase(actionText),
+                    style = AppTypography.button.copy(fontSize = 13.sp),
+                    color = actionColor
                 )
             }
         }
     }
 }
 
-/**
- * Standardized Page Header with status bar padding, back button, title, and optional actions.
- */
 @Composable
 fun AfriSavPageHeader(
     title: String,
@@ -889,18 +1105,25 @@ fun AfriSavPageHeader(
     subtitle: String? = null,
     onBackClick: (() -> Unit)? = null,
     backTestTag: String? = null,
+    ground: SurfaceGround = if (isDark) SurfaceGround.DARK else SurfaceGround.LIGHT,
     actions: @Composable (RowScope.() -> Unit)? = null
 ) {
+    val isDarkGround = ground == SurfaceGround.DARK
+    val bg = if (isDarkGround) DeepPlum else SurfaceBg
+    val borderCol = if (isDarkGround) CardBorderDark else CardBorderLight
+    val textCol = if (isDarkGround) White else Charcoal
+    val subCol = if (isDarkGround) Purple300 else TextSlate400
+
     Surface(
         modifier = modifier.fillMaxWidth(),
-        color = SurfaceBg,
-        border = BorderStroke(1.dp, BorderSlate100)
+        color = bg,
+        border = BorderStroke(1.dp, borderCol)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .statusBarsPadding()
-                .padding(horizontal = AppSpacing.lg, vertical = AppSpacing.md)
+                .padding(horizontal = AppSpacing.screenGutter, vertical = AppSpacing.md)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -916,12 +1139,12 @@ fun AfriSavPageHeader(
                             onClick = onBackClick,
                             modifier = Modifier
                                 .then(if (backTestTag != null) Modifier.testTag(backTestTag) else Modifier)
-                                .size(40.dp)
+                                .size(AppIconSize.xxl) // 48dp minimum target
                         ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = "Back",
-                                tint = TextDark
+                                tint = textCol
                             )
                         }
                         Spacer(modifier = Modifier.width(AppSpacing.xs))
@@ -929,14 +1152,14 @@ fun AfriSavPageHeader(
                     Column {
                         Text(
                             text = title,
-                            style = AppTypography.sectionHeader.copy(fontWeight = FontWeight.Bold),
-                            color = TextDark
+                            style = AppTypography.h2, // Sora 700, 24px
+                            color = textCol
                         )
                         if (subtitle != null) {
                             Text(
                                 text = subtitle,
-                                style = AppTypography.caption,
-                                color = TextSlate500
+                                style = AppTypography.small,
+                                color = subCol
                             )
                         }
                     }
@@ -953,13 +1176,10 @@ fun AfriSavPageHeader(
 }
 
 // ==============================================================================
-// 8. DESIGN SYSTEM SHOWCASE / STORYBOOK SCREEN
+// 11. DESIGN SYSTEM SHOWCASE SCREEN
+// Isolated verification for all tokens, ramps, button rules, and WCAG AA contrast.
 // ==============================================================================
 
-/**
- * Isolated Component Showcase / Storybook Screen to verify all tokens and
- * shared components in both Light and Dark mode.
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DesignSystemShowcaseScreen(
@@ -969,8 +1189,8 @@ fun DesignSystemShowcaseScreen(
     var selectedSegTab by remember { mutableStateOf(0) }
     var toggleState1 by remember { mutableStateOf(true) }
     var toggleState2 by remember { mutableStateOf(false) }
-    var sampleInputValue by remember { mutableStateOf("Fresh Bell Peppers") }
-    var sampleErrorValue by remember { mutableStateOf("Invalid amount") }
+    var sampleInputValue by remember { mutableStateOf("Rice & Grains Vault") }
+    var sampleErrorValue by remember { mutableStateOf("800") }
 
     val contentTheme = @Composable {
         Scaffold(
@@ -978,8 +1198,8 @@ fun DesignSystemShowcaseScreen(
                 TopAppBar(
                     title = {
                         Text(
-                            "Design System Showcase",
-                            style = AppTypography.sectionHeader,
+                            "AfriSav Brand Bible System",
+                            style = AppTypography.h3,
                             color = TextDark
                         )
                     },
@@ -995,18 +1215,23 @@ fun DesignSystemShowcaseScreen(
                     actions = {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(end = AppSpacing.sm)
+                            modifier = Modifier.padding(end = AppSpacing.md)
                         ) {
                             Text(
-                                if (forceDarkMode) "Dark" else "Light",
-                                style = AppTypography.caption,
+                                if (forceDarkMode) "Deep Plum Mode" else "Light Cream Mode",
+                                style = AppTypography.small,
                                 color = TextDark
                             )
                             Spacer(modifier = Modifier.width(AppSpacing.xs))
                             Switch(
                                 checked = forceDarkMode,
                                 onCheckedChange = { forceDarkMode = it },
-                                modifier = Modifier.size(36.dp)
+                                colors = SwitchDefaults.colors(
+                                    checkedThumbColor = Charcoal,
+                                    checkedTrackColor = HarvestLime,
+                                    uncheckedThumbColor = White,
+                                    uncheckedTrackColor = SavPurple
+                                )
                             )
                         }
                     },
@@ -1023,200 +1248,326 @@ fun DesignSystemShowcaseScreen(
                     .fillMaxSize()
                     .padding(paddingValues)
                     .verticalScroll(rememberScrollState())
-                    .padding(AppSpacing.lg),
+                    .padding(AppSpacing.screenGutter),
                 verticalArrangement = Arrangement.spacedBy(AppSpacing.xl)
             ) {
-                // Header introduction
-                AfriSavCard(
-                    containerColor = SurfaceBg,
-                    shape = AppShapes.card
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        AfriSavBadge("AfriSav v2.0", AfriSavBadgeType.BRAND_GREEN)
-                        Spacer(modifier = Modifier.width(AppSpacing.sm))
-                        AfriSavBadge("Fintech Design Tokens", AfriSavBadgeType.BRAND_ORANGE)
-                    }
-                    Spacer(modifier = Modifier.height(AppSpacing.sm))
-                    Text(
-                        "Clean, minimal, fintech-inspired design system with Nigerian emerald green & market orange accents.",
-                        style = AppTypography.body,
-                        color = TextSlate500
-                    )
-                }
-
-                // 1. TYPOGRAPHY SCALE
-                Text("1. Typography Scale", style = AppTypography.sectionHeader, color = TextDark)
+                // Intro Card
                 AfriSavCard {
-                    Text("Page Title (24sp Bold)", style = AppTypography.pageTitle, color = TextDark)
-                    Spacer(modifier = Modifier.height(AppSpacing.xs))
-                    Text("Section Header (18sp SemiBold)", style = AppTypography.sectionHeader, color = TextDark)
-                    Spacer(modifier = Modifier.height(AppSpacing.xs))
-                    Text("Card Title (15sp SemiBold)", style = AppTypography.cardTitle, color = TextDark)
-                    Spacer(modifier = Modifier.height(AppSpacing.xs))
-                    Text("Body Text (14sp Normal) — Regular conversational UI text and details.", style = AppTypography.body, color = TextDark)
-                    Spacer(modifier = Modifier.height(AppSpacing.xs))
-                    Text("Label / Action (13sp Medium)", style = AppTypography.label, color = TextDark)
-                    Spacer(modifier = Modifier.height(AppSpacing.xs))
-                    Text("Caption (11sp Normal) — Muted timestamps & secondary notes", style = AppTypography.caption, color = TextSlate400)
-                    Spacer(modifier = Modifier.height(AppSpacing.sm))
-                    Divider(color = BorderSlate100)
-                    Spacer(modifier = Modifier.height(AppSpacing.sm))
-                    Text("Balance Large (30sp Bold): ₦245,000.00", style = AppTypography.balanceLarge, color = PrimaryGreen)
-                }
-
-                // 2. BUTTONS
-                Text("2. Buttons & Actions", style = AppTypography.sectionHeader, color = TextDark)
-                AfriSavCard {
-                    AfriSavPrimaryButton(
-                        text = "Primary Emerald Action",
-                        leadingIcon = Icons.Default.Savings,
-                        onClick = { }
-                    )
-                    Spacer(modifier = Modifier.height(AppSpacing.md))
-                    AfriSavSecondaryButton(
-                        text = "Secondary Outlined Button",
-                        leadingIcon = Icons.Default.AccountBalanceWallet,
-                        onClick = { }
-                    )
-                    Spacer(modifier = Modifier.height(AppSpacing.md))
-                    AfriSavOrangeButton(
-                        text = "Orange Accent Action",
-                        leadingIcon = Icons.Default.FlashOn,
-                        onClick = { }
-                    )
-                    Spacer(modifier = Modifier.height(AppSpacing.md))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        AfriSavTertiaryButton(
-                            text = "Ghost / Tertiary Button",
-                            leadingIcon = Icons.Default.Check,
-                            onClick = { }
+                        Text(
+                            "Brand Bible (Edition One)",
+                            style = AppTypography.h3,
+                            color = TextDark
                         )
-                        Row(horizontalArrangement = Arrangement.spacedBy(AppSpacing.sm)) {
-                            AfriSavIconButton(
-                                icon = Icons.Default.Share,
-                                contentDescription = "Share",
-                                containerColor = SurfaceSubtle,
-                                onClick = { }
-                            )
-                            AfriSavIconButton(
-                                icon = Icons.Default.FavoriteBorder,
-                                contentDescription = "Favorite",
-                                containerColor = SurfaceSubtle,
-                                iconTint = SecondaryOrange,
-                                onClick = { }
+                        AfriSavBadge("WCAG 2.1 AA", AfriSavBadgeType.SUCCESS)
+                    }
+                    Spacer(modifier = Modifier.height(AppSpacing.xs))
+                    Text(
+                        "Sav Purple (#5B21B6), Deep Plum (#32105F), Harvest Lime (#A3E635), Warm Cream (#FFF8EA), White, Charcoal. Sora + Plus Jakarta Sans.",
+                        style = AppTypography.body,
+                        color = if (forceDarkMode) Purple300 else TextSlate500
+                    )
+                }
+
+                // 1. COLOUR RAMPS & TOKENS
+                Text("1. Colour Tokens & Ramps", style = AppTypography.h2, color = TextDark)
+                AfriSavCard {
+                    Text("Core Palette", style = AppTypography.h3, color = TextDark)
+                    Spacer(modifier = Modifier.height(AppSpacing.sm))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(AppSpacing.xs)
+                    ) {
+                        ColorSwatchBox("Sav Purple", SavPurple, White, Modifier.weight(1f))
+                        ColorSwatchBox("Deep Plum", DeepPlum, White, Modifier.weight(1f))
+                        ColorSwatchBox("Lime Accent", HarvestLime, Charcoal, Modifier.weight(1f))
+                        ColorSwatchBox("Warm Cream", WarmCream, Charcoal, Modifier.weight(1f))
+                    }
+
+                    Spacer(modifier = Modifier.height(AppSpacing.md))
+                    Text("Purple Tint Ramp (50–950)", style = AppTypography.small.copy(fontWeight = FontWeight.Bold), color = TextDark)
+                    Spacer(modifier = Modifier.height(AppSpacing.xs))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(2.dp)
+                    ) {
+                        val purpleRamp = listOf(Purple50, Purple100, Purple200, Purple300, Purple400, Purple500, Purple600, Purple700, Purple800, Purple900, Purple950)
+                        purpleRamp.forEach { color ->
+                            Box(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .height(24.dp)
+                                    .clip(RoundedCornerShape(4.dp))
+                                    .background(color)
                             )
                         }
                     }
+
+                    Spacer(modifier = Modifier.height(AppSpacing.md))
+                    Text("Lime Ramp (100 / 400 / 700)", style = AppTypography.small.copy(fontWeight = FontWeight.Bold), color = TextDark)
+                    Spacer(modifier = Modifier.height(AppSpacing.xs))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(AppSpacing.xs)
+                    ) {
+                        ColorSwatchBox("Lime 100", Lime100, Charcoal, Modifier.weight(1f))
+                        ColorSwatchBox("Lime 400", Lime400, Charcoal, Modifier.weight(1f))
+                        ColorSwatchBox("Lime 700 (Light Ink)", Lime700, White, Modifier.weight(1f))
+                    }
                 }
 
-                // 3. CARDS & ELEVATION
-                Text("3. Cards & Balance Display", style = AppTypography.sectionHeader, color = TextDark)
-                AfriSavBalanceCard(
-                    title = "Food Escrow Wallet",
-                    amount = "₦184,500.00",
-                    subtitle = "3 locked group orders in progress",
-                    badgeText = "Active Escrow",
-                    onPrimaryAction = { },
-                    primaryActionText = "Top Up",
-                    onSecondaryAction = { },
-                    secondaryActionText = "History"
-                )
+                // 2. THE BUTTON RULE SHOWCASE
+                Text("2. The Button Rule (Ground Decides Action Colour)", style = AppTypography.h2, color = TextDark)
 
-                // 4. INPUT FIELDS
-                Text("4. Input Fields", style = AppTypography.sectionHeader, color = TextDark)
+                // Light Ground Container (White / Warm Cream)
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = AppShapes.card,
+                    colors = CardDefaults.cardColors(containerColor = WarmCream),
+                    border = BorderStroke(1.dp, CardBorderLight)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(AppSpacing.cardPadding),
+                        verticalArrangement = Arrangement.spacedBy(AppSpacing.md)
+                    ) {
+                        Text(
+                            "Light Ground (Warm Cream / White)",
+                            style = AppTypography.h3,
+                            color = Charcoal
+                        )
+                        Text(
+                            "Sav Purple button (#5B21B6), White label (#FFFFFF) — 8.98:1 contrast.",
+                            style = AppTypography.small,
+                            color = Charcoal
+                        )
+                        AfriSavPrimaryButton(
+                            text = "Start saving (Sav Purple)",
+                            ground = SurfaceGround.LIGHT,
+                            onClick = { }
+                        )
+                        AfriSavSecondaryButton(
+                            text = "View details (Charcoal border)",
+                            ground = SurfaceGround.LIGHT,
+                            onClick = { }
+                        )
+                    }
+                }
+
+                // Dark Ground Container (Deep Plum #32105F)
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = AppShapes.card,
+                    colors = CardDefaults.cardColors(containerColor = DeepPlum),
+                    border = BorderStroke(1.dp, Purple800)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(AppSpacing.cardPadding),
+                        verticalArrangement = Arrangement.spacedBy(AppSpacing.md)
+                    ) {
+                        Text(
+                            "Dark Ground (Deep Plum #32105F)",
+                            style = AppTypography.h3,
+                            color = White
+                        )
+                        Text(
+                            "Harvest Lime button (#A3E635), Charcoal label (#171717) — 11.89:1 contrast.",
+                            style = AppTypography.small,
+                            color = Purple300
+                        )
+                        AfriSavPrimaryButton(
+                            text = "Confirm transaction (Lime)",
+                            ground = SurfaceGround.DARK,
+                            onClick = { }
+                        )
+                        AfriSavSecondaryButton(
+                            text = "Cancel (Purple 300 border)",
+                            ground = SurfaceGround.DARK,
+                            onClick = { }
+                        )
+                    }
+                }
+
+                // Disabled State
+                AfriSavCard {
+                    Text("Disabled State (38% Opacity, No Colour Shift)", style = AppTypography.h3, color = TextDark)
+                    Spacer(modifier = Modifier.height(AppSpacing.sm))
+                    AfriSavPrimaryButton(
+                        text = "Disabled action",
+                        enabled = false,
+                        onClick = { }
+                    )
+                }
+
+                // 3. TYPOGRAPHY SCALE
+                Text("3. Typography Scale (Sora & Plus Jakarta Sans)", style = AppTypography.h2, color = TextDark)
+                AfriSavCard {
+                    Text("Display (Sora 800, 40px)", style = AppTypography.display, color = TextDark)
+                    Spacer(modifier = Modifier.height(AppSpacing.xs))
+                    Text("H1 (Sora 800, 32px)", style = AppTypography.h1, color = TextDark)
+                    Spacer(modifier = Modifier.height(AppSpacing.xs))
+                    Text("H2 (Sora 700, 24px)", style = AppTypography.h2, color = TextDark)
+                    Spacer(modifier = Modifier.height(AppSpacing.xs))
+                    Text("H3 (Sora 700, 20px)", style = AppTypography.h3, color = TextDark)
+                    Spacer(modifier = Modifier.height(AppSpacing.xs))
+                    Text("Body L (Jakarta 400, 17px) — Leading editorial intro copy.", style = AppTypography.bodyL, color = TextDark)
+                    Spacer(modifier = Modifier.height(AppSpacing.xs))
+                    Text("Body (Jakarta 400, 15px) — Standard readable UI and description text.", style = AppTypography.body, color = TextDark)
+                    Spacer(modifier = Modifier.height(AppSpacing.xs))
+                    Text("Small (Jakarta 500, 13px) — Secondary timestamps and captions.", style = AppTypography.small, color = if (forceDarkMode) Purple300 else TextSlate400)
+                    Spacer(modifier = Modifier.height(AppSpacing.xs))
+                    Text("LABEL LEVEL (JAKARTA 700 CAPS, 11PX)", style = AppTypography.label, color = if (forceDarkMode) HarvestLime else SavPurple)
+                }
+
+                // 4. AMOUNT DISPLAY & CURRENCY RULES
+                Text("4. Amount Display & Currency Formatting", style = AppTypography.h2, color = TextDark)
+                AfriSavCard {
+                    Text("Standard Whole Amount (No .00 in UI)", style = AppTypography.small, color = if (forceDarkMode) Purple300 else TextSlate400)
+                    AfriSavAmountDisplay(amount = 25000.0, size = AmountDisplaySize.LARGE)
+
+                    Spacer(modifier = Modifier.height(AppSpacing.md))
+                    Text("Non-Whole Amount (With Kobo)", style = AppTypography.small, color = if (forceDarkMode) Purple300 else TextSlate400)
+                    AfriSavAmountDisplay(amount = 1250.50, size = AmountDisplaySize.MEDIUM)
+
+                    Spacer(modifier = Modifier.height(AppSpacing.md))
+                    Text("Abbreviated in Tight Space (>6 figures)", style = AppTypography.small, color = if (forceDarkMode) Purple300 else TextSlate400)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(AppSpacing.lg)
+                    ) {
+                        AfriSavAmountDisplay(amount = 1200000.0, size = AmountDisplaySize.SMALL, abbreviate = true)
+                        AfriSavAmountDisplay(amount = 250000.0, size = AmountDisplaySize.SMALL, abbreviate = true)
+                    }
+                }
+
+                // 5. PROGRESS BAR (Always Paired With Figure & Percentage)
+                Text("5. Progress Bar (10px Pill, Paired with Figure)", style = AppTypography.h2, color = TextDark)
+                AfriSavCard {
+                    AfriSavProgressBar(
+                        progress = 0.75f,
+                        label = "Goal:",
+                        figure = "₦187,500 of ₦250,000",
+                        percentage = 75.0
+                    )
+                    Spacer(modifier = Modifier.height(AppSpacing.lg))
+                    AfriSavProgressBar(
+                        progress = 0.40f,
+                        label = "Locked:",
+                        figure = "₦40,000 of ₦100,000",
+                        percentage = 40.0
+                    )
+                }
+
+                // 6. CARDS & ELEVATION
+                Text("6. Cards & Shadows (Border OR Shadow Rule)", style = AppTypography.h2, color = TextDark)
+                AfriSavCard {
+                    Text("Static Card (1px #E8DCC6 Border, 0 Shadow)", style = AppTypography.h3, color = TextDark)
+                    Text("20px radius, 20px padding. Content sits comfortably with ample negative space.", style = AppTypography.body, color = if (forceDarkMode) Purple300 else TextSlate500)
+                }
+                AfriSavClickableCard(onClick = { }) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text("Interactive Clickable Card (Soft Shadow, 0 Border)", style = AppTypography.h3, color = TextDark)
+                        Text("Shadow: 0 8px 24px -16px rgba(50,16,95,.28). Never border AND shadow together.", style = AppTypography.small, color = if (forceDarkMode) Purple300 else TextSlate400)
+                    }
+                    Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = if (forceDarkMode) HarvestLime else SavPurple)
+                }
+
+                // 7. INPUT FIELDS
+                Text("7. Input Fields (52px, 12px Radius, Visible Label)", style = AppTypography.h2, color = TextDark)
                 AfriSavCard {
                     AfriSavTextField(
                         value = sampleInputValue,
                         onValueChange = { sampleInputValue = it },
-                        label = "Item or Produce Name",
-                        placeholder = "e.g. 50kg Bag of Rice",
+                        label = "Produce Savings Target Name",
+                        placeholder = "e.g. Rice & Grains Vault",
                         leadingIcon = Icons.Default.Search
                     )
                     Spacer(modifier = Modifier.height(AppSpacing.md))
                     AfriSavTextField(
                         value = sampleErrorValue,
                         onValueChange = { sampleErrorValue = it },
-                        label = "Savings Target",
-                        leadingIcon = Icons.Default.Warning,
+                        label = "Monthly Deposit (₦)",
+                        leadingIcon = Icons.Default.AccountBalanceWallet,
                         isError = true,
-                        errorMessage = "Target amount must be at least ₦1,000"
+                        errorMessage = "Deposit cannot be less than ₦1,000"
                     )
                 }
 
-                // 5. TABS & SEGMENTED CONTROLS
-                Text("5. Segmented Controls & Tabs", style = AppTypography.sectionHeader, color = TextDark)
+                // 8. TABS & SEGMENTED CONTROLS
+                Text("8. Segmented Controls & Tabs", style = AppTypography.h2, color = TextDark)
                 AfriSavCard {
                     AfriSavSegmentedControl(
-                        items = listOf("All Orders", "Ongoing", "Completed"),
+                        items = listOf("Daily", "Weekly", "Monthly"),
                         selectedIndex = selectedSegTab,
                         onSelect = { selectedSegTab = it }
                     )
                 }
 
-                // 6. TOGGLES & SWITCHES
-                Text("6. Toggles & Switches", style = AppTypography.sectionHeader, color = TextDark)
+                // 9. TOGGLES & SWITCHES
+                Text("9. Toggles & Switches", style = AppTypography.h2, color = TextDark)
                 AfriSavCard {
                     AfriSavSwitchRow(
-                        title = "Order Tracking Notifications",
-                        subtitle = "Receive live dispatch rider updates",
-                        icon = Icons.Default.NotificationsActive,
+                        title = "Automated Vault Stash",
+                        subtitle = "Round up purchases and lock to vault",
+                        icon = Icons.Default.Lock,
                         checked = toggleState1,
                         onCheckedChange = { toggleState1 = it }
                     )
-                    Divider(color = BorderSlate100)
+                    Divider(color = if (forceDarkMode) Purple800 else CardBorderLight)
                     AfriSavSwitchRow(
-                        title = "Biometric Lock",
-                        subtitle = "Require fingerprint/PIN before fund release",
-                        icon = Icons.Default.Lock,
+                        title = "Escrow Payout Alerts",
+                        subtitle = "SMS and instant app notification",
+                        icon = Icons.Default.Notifications,
                         checked = toggleState2,
                         onCheckedChange = { toggleState2 = it }
                     )
                 }
 
-                // 7. STATUS BADGES & TAGS
-                Text("7. Badges & Status Indicators", style = AppTypography.sectionHeader, color = TextDark)
+                // 10. SEMANTIC BADGES (Never Colour Alone)
+                Text("10. Semantic Badges (Colour + Icon + Word)", style = AppTypography.h2, color = TextDark)
                 AfriSavCard {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(AppSpacing.sm)
                     ) {
-                        AfriSavBadge("Delivered", AfriSavBadgeType.SUCCESS, icon = Icons.Default.CheckCircle)
-                        AfriSavBadge("In Escrow", AfriSavBadgeType.WARNING, icon = Icons.Default.HourglassTop)
-                        AfriSavBadge("Failed", AfriSavBadgeType.ERROR, icon = Icons.Default.ErrorOutline)
+                        AfriSavBadge("Verified", AfriSavBadgeType.SUCCESS)
+                        AfriSavBadge("In Escrow", AfriSavBadgeType.WARNING)
+                        AfriSavBadge("Failed", AfriSavBadgeType.ERROR)
                     }
                     Spacer(modifier = Modifier.height(AppSpacing.sm))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(AppSpacing.sm)
                     ) {
-                        AfriSavBadge("Verified Buyer", AfriSavBadgeType.BRAND_GREEN)
-                        AfriSavBadge("Food Circle", AfriSavBadgeType.BRAND_ORANGE)
-                        AfriSavBadge("Draft", AfriSavBadgeType.NEUTRAL)
+                        AfriSavBadge("Notice", AfriSavBadgeType.INFO)
+                        AfriSavBadge("Standard", AfriSavBadgeType.NEUTRAL)
                     }
                 }
 
-                // 8. SPACING & ICON SCALE
-                Text("8. Icon Scale & Spacing Grid", style = AppTypography.sectionHeader, color = TextDark)
+                // 11. ICONOGRAPHY RULES
+                Text("11. Iconography (1.75px Stroke, Minimal Detail, No Emoji)", style = AppTypography.h2, color = TextDark)
                 AfriSavCard {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(AppSpacing.md)
+                        horizontalArrangement = Arrangement.spacedBy(AppSpacing.lg)
                     ) {
-                        AfriSavIcon(Icons.Default.Storefront, "Store XS", size = AppIconSize.xs, tint = PrimaryGreen)
-                        AfriSavIcon(Icons.Default.Storefront, "Store SM", size = AppIconSize.sm, tint = PrimaryGreen)
-                        AfriSavIcon(Icons.Default.Storefront, "Store MD", size = AppIconSize.md, tint = PrimaryGreen)
-                        AfriSavIcon(Icons.Default.Storefront, "Store LG", size = AppIconSize.lg, tint = PrimaryGreen)
-                        AfriSavIcon(Icons.Default.Storefront, "Store XL", size = AppIconSize.xl, tint = PrimaryGreen)
+                        AfriSavIcon(Icons.Default.AccountBalanceWallet, "Wallet 16px", size = AppIconSize.sm)
+                        AfriSavIcon(Icons.Default.AccountBalanceWallet, "Wallet 20px", size = AppIconSize.md)
+                        AfriSavIcon(Icons.Default.AccountBalanceWallet, "Wallet 24px", size = AppIconSize.lg)
+                        AfriSavIcon(Icons.Default.AccountBalanceWallet, "Wallet 32px", size = AppIconSize.xl)
                     }
-                    Spacer(modifier = Modifier.height(AppSpacing.md))
+                    Spacer(modifier = Modifier.height(AppSpacing.sm))
                     Text(
-                        "Unified Spacing: 4px, 8px, 12px, 16px, 24px, 32px, 48px",
-                        style = AppTypography.caption,
-                        color = TextSlate500
+                        "Icons inherit ink colour. No emojis. Excluded motifs (piggy bank, cart, naira symbol, plate/fork, coins, shields) avoided.",
+                        style = AppTypography.small,
+                        color = if (forceDarkMode) Purple300 else TextSlate400
                     )
                 }
 
@@ -1225,8 +1576,32 @@ fun DesignSystemShowcaseScreen(
         }
     }
 
-    // Wrap in dynamic theme toggle to inspect both Light and Dark mode visually
     AfriSavTheme(darkTheme = forceDarkMode) {
         contentTheme()
+    }
+}
+
+@Composable
+private fun ColorSwatchBox(
+    name: String,
+    bg: Color,
+    textColor: Color,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .height(56.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .background(bg)
+            .border(1.dp, CardBorderLight.copy(alpha = 0.4f), RoundedCornerShape(8.dp))
+            .padding(4.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = name,
+            style = AppTypography.small.copy(fontSize = 10.sp, fontWeight = FontWeight.Bold),
+            color = textColor,
+            textAlign = TextAlign.Center
+        )
     }
 }
